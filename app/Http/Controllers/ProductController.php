@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -19,17 +20,17 @@ class ProductController extends Controller
         // Apply filters
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('product_name', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%")
-                  ->orWhereHas('category', function($q) use ($search) {
-                      $q->where('category_name', 'LIKE', "%{$search}%");
-                  });
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('category_name', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
         if ($request->has('category') && !empty($request->category)) {
-            $query->whereHas('category', function($q) use ($request) {
+            $query->whereHas('category', function ($q) use ($request) {
                 $q->where('category_name', $request->category);
             });
         }
@@ -68,7 +69,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with(['category', 'productImages', 'reviews' => function($query) {
+        $product = Product::with(['category', 'productImages', 'reviews' => function ($query) {
             $query->approved()->with('user');
         }])->active()->find($id);
 
@@ -110,21 +111,22 @@ class ProductController extends Controller
      */
     public function featured()
     {
-        $products = Product::with('category')
-                          ->active()
-                          ->featured()
-                          ->orderBy('created_at', 'desc')
-                          ->limit(8)
-                          ->get();
+        try {
+            $products = \App\Models\Product::where('is_featured', true)
+                ->where('is_active', true)
+                ->with('category') // nếu có relation category
+                ->limit(8)
+                ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'products' => $products
-            ]
-        ]);
+            return response()->json($products);
+        } catch (\Exception $e) {
+            Log::error('API featured error: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Không thể tải sản phẩm nổi bật',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
-
     /**
      * Search products
      */
@@ -144,12 +146,12 @@ class ProductController extends Controller
         $query = Product::with('category')->active();
 
         $searchTerm = $request->q;
-        $query->where(function($q) use ($searchTerm) {
+        $query->where(function ($q) use ($searchTerm) {
             $q->where('product_name', 'LIKE', "%{$searchTerm}%")
-              ->orWhere('description', 'LIKE', "%{$searchTerm}%")
-              ->orWhereHas('category', function($q) use ($searchTerm) {
-                  $q->where('category_name', 'LIKE', "%{$searchTerm}%");
-              });
+                ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+                ->orWhereHas('category', function ($q) use ($searchTerm) {
+                    $q->where('category_name', 'LIKE', "%{$searchTerm}%");
+                });
         });
 
         $products = $query->orderBy('created_at', 'desc')->limit(20)->get();
