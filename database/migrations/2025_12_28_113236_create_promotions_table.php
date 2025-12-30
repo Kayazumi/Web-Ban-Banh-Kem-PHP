@@ -23,8 +23,8 @@ return new class extends Migration
             $table->integer('quantity')->default(-1); // -1 for unlimited
             $table->integer('used_count')->default(0);
             $table->integer('usage_limit_per_user')->default(1);
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
             $table->enum('status', ['pending', 'active', 'expired', 'cancelled'])->default('pending');
             $table->string('image_url', 255)->nullable();
             $table->json('applicable_products')->nullable();
