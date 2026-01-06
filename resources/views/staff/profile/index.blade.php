@@ -19,7 +19,7 @@
                 <i class="fas fa-user-shield"></i>
             </div>
             <h2 id="staffNameDisplay">{{ Auth::user()->full_name }}</h2>
-            <p>Quản lý thông tin cá nhân và bảo mật tài khoản của bạn.</p>
+            <p>Quản lý thông tin cá nhân và bảo mật tài khoản của bạn</p>
         </div>
 
         <!-- Tab Navigation -->

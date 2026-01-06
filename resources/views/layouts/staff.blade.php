@@ -17,7 +17,7 @@
   <nav class="navbar">
     <div class="nav-container">
       <div class="nav-logo">
-        <a href="{{ url('/home') }}">La Cuisine Ngọt</a>
+        <a href="{{ route('home') }}">La Cuisine Ngọt</a>
       </div>
 
       <div class="nav-menu">
@@ -31,23 +31,27 @@
         <i class="fas fa-shopping-cart nav-icon"></i>
 
         <div class="nav-user-icon">
-          <i class="fas fa-user-circle"></i>
-          <div class="user-menu hidden" id="userDropdown">
-            <ul>
-              <li class="user-info-name">
-                <strong>{{ Auth::user()->full_name }}</strong>
-                <br><small>{{ Auth::user()->role }}</small>
-              </li>
-              <hr>
-              <li><a href="{{ route('staff.profile') }}"><i class="fas fa-id-card"></i> Hồ sơ của tôi</a></li>
-              <li>
-                <button type="button" onclick="logout()" class="logout-btn">
-                  <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </button>
-              </li>
-            </ul>
-          </div>
+    <i class="fas fa-user-circle"></i>
+
+    <div class="user-menu">
+        <div class="user-info">
+            <strong>{{ Auth::user()->full_name }}</strong>
+            <small>{{ Auth::user()->role }}</small>
         </div>
+        <ul>
+            <li>
+                <a href="{{ route('staff.profile') }}">
+                    <i class="fas fa-id-card"></i> Hồ sơ của tôi
+                </a>
+            </li>
+            <li>
+                <button type="button" onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
       </div>
     </div>
   </nav>
