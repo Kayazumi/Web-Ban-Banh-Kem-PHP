@@ -1,0 +1,94 @@
+/* --- THIẾT KẾ PROFILE HIỆN ĐẠI - FOREST GREEN --- */
+body.staff-profile-page {
+    background-color: #EDDECD !important; /* Màu nền kem nhạt như ảnh mẫu */
+    font-family: 'Inter', sans-serif;
+}
+
+.profile-section {
+    padding: 100px 20px 60px; /* Cách navbar để không bị che */
+    display: flex;
+    justify-content: center;
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 850px;
+    background-color: #ffffff; /* Khung trắng bo tròn */
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.profile-header {
+    text-align: center;
+    padding: 40px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-avatar i {
+    font-size: 50px;
+    color: #3e5641; /* Màu xanh lá đậm */
+    background: #f4f7f6;
+    padding: 25px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    border-bottom: 2px solid #f0f0f0;
+    margin: 0 40px 30px;
+}
+
+.tab-link {
+    background: none;
+    border: none;
+    padding: 15px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: 0.3s;
+}
+
+.tab-link.active {
+    color: #3e5641;
+    border-bottom-color: #3e5641;
+}
+
+.profile-form {
+    padding: 0 60px 40px;
+}
+
+.form-row { display: flex; gap: 20px; margin-bottom: 20px; }
+.form-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+.form-group label { font-size: 14px; font-weight: 600; color: #555; }
+
+.form-group input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fdfdfd;
+}
+
+.form-group input:focus {
+    border-color: #3e5641;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(62, 86, 65, 0.1);
+}
+
+.save-btn {
+    background: #3e5641;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    float: right;
+}

@@ -1,0 +1,142 @@
+/* public/css/login.css */
+
+/* Ẩn các phần không cần thiết ở trang login */
+.nav-menu li:not(:first-child),
+.nav-search,
+.nav-cart,
+.nav-user .user-menu,
+.nav-login-1,
+.nav-login-2,
+.nav-separator {
+    display: none !important;
+}
+
+.nav-logo a {
+    font-size: 48px !important;
+}
+
+/* Form đăng nhập chính - đẹp, sang trọng, đồng bộ xanh rêu */
+.form-container {
+    max-width: 500px;
+    margin: 100px auto 120px;
+    padding: 50px 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    animation: fadeInUp 0.8s ease-out;
+    border: 1px solid #e8e8e8;
+}
+
+.form-title {
+    text-align: center;
+    font-family: 'Inspiration', cursive;
+    font-size: 3.2rem;
+    color: #395542;
+    margin-bottom: 40px;
+    font-weight: normal;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #333;
+    font-size: 15px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 16px 18px;
+    border: 2px solid #e1e5e9;
+    border-radius: 12px;
+    font-size: 16px;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #395542;
+    background: white;
+    box-shadow: 0 0 0 5px rgba(57, 85, 66, 0.15);
+}
+
+.btn-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #395542, #4a7c59);
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 8px 20px rgba(57, 85, 66, 0.25);
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(57, 85, 66, 0.35);
+}
+
+.btn-submit.loading {
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.btn-submit.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-links {
+    text-align: center;
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid #eee;
+}
+
+.form-links a {
+    color: #395542;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: color 0.3s;
+}
+
+.form-links a:hover {
+    color: #EDDECD;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .form-container {
+        margin: 80px 20px;
+        padding: 40px 25px;
+    }
+    .nav-logo a {
+        font-size: 38px !important;
+    }
+}

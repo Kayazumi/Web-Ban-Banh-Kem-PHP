@@ -2,24 +2,30 @@
 
 @section('title', 'La Cuisine Ngọt - Bánh Kem Cao Cấp')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/customer.css') }}">
+@endpush
+
 @section('content')
 <!-- Hero Section -->
 <section id="home" class="hero">
-    <div class="hero-content">
-        <h1>LA CUISINE NGỌT</h1>
-        <p class="hero-subtitle">Thương hiệu bánh kem cao cấp hàng đầu Việt Nam</p>
-        <p class="hero-description">
-            Mỗi chiếc bánh là một tác phẩm nghệ thuật, mang đến trải nghiệm vị giác tinh tế và cảm xúc ấm áp.
-            Chúng tôi cam kết sử dụng nguyên liệu cao cấp, quy trình sản xuất nghiêm ngặt để mang đến cho bạn
-            những sản phẩm tốt nhất.
-        </p>
-        <div class="hero-buttons">
-            <a href="#products" class="btn btn-primary">Xem sản phẩm</a>
-            <a href="#contact" class="btn btn-secondary">Liên hệ ngay</a>
+    <div class="container">
+        <div class="hero-content">
+            <h1>LA CUISINE NGỌT</h1>
+            <p class="hero-subtitle">Thương hiệu bánh kem cao cấp hàng đầu Việt Nam</p>
+            <p class="hero-description">
+                Mỗi chiếc bánh là một tác phẩm nghệ thuật, mang đến trải nghiệm vị giác tinh tế và cảm xúc ấm áp.
+                Chúng tôi cam kết sử dụng nguyên liệu cao cấp, quy trình sản xuất nghiêm ngặt để mang đến cho bạn
+                những sản phẩm tốt nhất.
+            </p>
+            <div class="hero-buttons">
+                <a href="#products" class="btn btn-primary">Xem sản phẩm</a>
+                <a href="#contact" class="btn btn-secondary">Liên hệ ngay</a>
+            </div>
         </div>
-    </div>
-    <div class="hero-image">
-        <img src="assets/images/chaomung1.jpg" alt="Bánh kem cao cấp">
+        <div class="hero-image">
+            <img src="{{ asset('images/chaomung1.jpg') }}" alt="Bánh kem cao cấp">
+        </div>
     </div>
 </section>
 
@@ -29,6 +35,9 @@
         <h2 class="section-title">Sản phẩm nổi bật</h2>
         <div class="products-grid" id="featuredProducts">
             <!-- Products will be loaded via AJAX -->
+            <div class="text-center" style="grid-column: 1/-1; padding: 3rem 0;">
+                <p style="color: #666;">Đang tải sản phẩm...</p>
+            </div>
         </div>
         <div class="text-center mt-4">
             <a href="{{ route('products.index') }}" class="btn btn-outline">Xem tất cả sản phẩm</a>
@@ -42,21 +51,21 @@
         <h2 class="section-title">Khuyến mãi hấp dẫn</h2>
         <div class="promotions-grid">
             <div class="promotion-card">
-                <img src="assets/images/buy-1-get-1.jpg" alt="Mua 1 tặng 1">
+                <img src="{{ asset('images/buy-1-get-1.jpg') }}" alt="Mua 1 tặng 1">
                 <div class="promotion-content">
                     <h3>Mua 1 tặng 1</h3>
                     <p>Áp dụng cho các loại bánh entremet</p>
                 </div>
             </div>
             <div class="promotion-card">
-                <img src="assets/images/free-ship.jpg" alt="Miễn phí giao hàng">
+                <img src="{{ asset('images/free-ship.jpg') }}" alt="Miễn phí giao hàng">
                 <div class="promotion-content">
                     <h3>Miễn phí giao hàng</h3>
                     <p>Đơn hàng từ 500.000đ</p>
                 </div>
             </div>
             <div class="promotion-card">
-                <img src="assets/images/gg.jpg" alt="Giảm giá">
+                <img src="{{ asset('images/gg.jpg') }}" alt="Giảm giá">
                 <div class="promotion-content">
                     <h3>Giảm 10%</h3>
                     <p>Cho khách hàng thân thiết</p>
@@ -83,7 +92,7 @@
                 </p>
             </div>
             <div class="about-image">
-                <img src="assets/images/tamnhin.jpg" alt="Tầm nhìn">
+                <img src="{{ asset('images/tamnhin.jpg') }}" alt="Tầm nhìn La Cuisine Ngọt">
             </div>
         </div>
     </div>
@@ -153,6 +162,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
 });
 
 async function loadFeaturedProducts() {
@@ -160,11 +183,22 @@ async function loadFeaturedProducts() {
         const response = await fetch('/api/products/featured');
         const data = await response.json();
 
-        if (data.success) {
+        if (data.success && data.data.products.length > 0) {
             displayProducts(data.data.products, 'featuredProducts');
+        } else {
+            document.getElementById('featuredProducts').innerHTML = `
+                <div class="text-center" style="grid-column: 1/-1; padding: 3rem 0;">
+                    <p style="color: #666;">Chưa có sản phẩm nào.</p>
+                </div>
+            `;
         }
     } catch (error) {
         console.error('Error loading featured products:', error);
+        document.getElementById('featuredProducts').innerHTML = `
+            <div class="text-center" style="grid-column: 1/-1; padding: 3rem 0;">
+                <p style="color: #dc3545;">Không thể tải sản phẩm. Vui lòng thử lại sau.</p>
+            </div>
+        `;
     }
 }
 
@@ -175,7 +209,9 @@ function displayProducts(products, containerId) {
     container.innerHTML = products.map(product => `
         <div class="product-card">
             <div class="product-image">
-                <img src="${product.image_url || '/images/placeholder.jpg'}" alt="${product.product_name}">
+                <img src="${product.image_url || '/images/placeholder.jpg'}" 
+                     alt="${product.product_name}"
+                     onerror="this.src='/images/placeholder.jpg'">
                 ${product.is_featured ? '<span class="badge featured">Nổi bật</span>' : ''}
                 ${product.is_new ? '<span class="badge new">Mới</span>' : ''}
             </div>
@@ -187,7 +223,7 @@ function displayProducts(products, containerId) {
                         : ''}
                     <span class="current-price">${formatPrice(product.price)}</span>
                 </p>
-                <a href="/products/${product.product_id}" class="btn btn-sm">Xem chi tiết</a>
+                <a href="/products/${product.product_id}" class="btn btn-sm btn-primary">Xem chi tiết</a>
             </div>
         </div>
     `).join('');
@@ -204,6 +240,12 @@ async function handleContactSubmit(e) {
     e.preventDefault();
 
     const formData = new FormData(e.target);
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
+    // Disable button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Đang gửi...';
 
     try {
         const response = await fetch('/api/contacts', {
@@ -221,11 +263,15 @@ async function handleContactSubmit(e) {
             alert('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
             e.target.reset();
         } else {
-            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
         }
     } catch (error) {
         console.error('Error submitting contact form:', error);
-        alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+    } finally {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
     }
 }
 </script>

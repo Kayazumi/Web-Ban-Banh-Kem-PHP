@@ -26,7 +26,10 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
-        if (!Auth::user()->isAdmin()) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,

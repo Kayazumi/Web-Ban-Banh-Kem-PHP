@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Staff\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,4 +78,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::apiResource('/users', AdminUserController::class);
     Route::put('/users/{id}/status', [AdminUserController::class, 'updateStatus']);
     Route::put('/users/{id}/password', [AdminUserController::class, 'changePassword']);
+});
+
+Route::middleware(['auth:sanctum', 'staff'])->group(function () {
+    Route::put('/staff/profile', [ProfileController::class, 'update']);
+    Route::post('/staff/password', [ProfileController::class, 'changePassword']);
 });

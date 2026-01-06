@@ -2,70 +2,81 @@
 
 @section('title', 'Đăng nhập - La Cuisine Ngọt')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+@endpush
+
 @section('content')
-<div class="auth-container">
-    <div class="auth-form">
-        <h2>Đăng nhập</h2>
+<div class="form-container">
+    <h2 class="form-title">Đăng nhập</h2>
 
-        <form id="loginForm">
-            @csrf
-            <div class="form-group">
-                <label for="username">Tên đăng nhập hoặc Email</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Mật khẩu</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-full">Đăng nhập</button>
-        </form>
-
-        <div class="auth-links">
-            <p>Chưa có tài khoản? <a href="{{ route('register') }}">Đăng ký ngay</a></p>
+    <form id="loginForm">
+        @csrf
+        <div class="form-group">
+            <label for="username">Tên đăng nhập hoặc Email</label>
+            <input type="text" id="username" name="username" required autocomplete="username">
         </div>
+
+        <div class="form-group">
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn-submit">Đăng nhập</button>
+    </form>
+
+    <div class="form-links">
+        <p>Chưa có tài khoản? <a href="{{ route('register') }}">Đăng ký ngay</a></p>
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('loginForm');
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = loginForm.querySelector('.btn-submit');
 
-    loginForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-        const formData = new FormData(loginForm);
+            // Hiệu ứng loading
+            submitBtn.classList.add('loading');
+            submitBtn.textContent = 'Đang đăng nhập...';
 
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': window.Laravel.csrfToken
-                },
-                body: formData
-            });
+            const csrfToken = document.querySelector('input[name="_token"]').value;
 
-            const data = await response.json();
+            const formData = {
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value
+            };
 
-            if (data.success) {
-                // Redirect based on user role
-                if (data.data.redirect) {
-                    window.location.href = data.data.redirect;
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.data.redirect || '/';
                 } else {
-                    window.location.href = '/';
+                    alert(data.message || 'Đăng nhập thất bại');
                 }
-            } else {
-                alert(data.message || 'Đăng nhập thất bại');
+            } catch (error) {
+                console.error('Lỗi:', error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.textContent = 'Đăng nhập';
             }
-        } catch (error) {
-            console.error('Login error:', error);
-            alert('Có lỗi xảy ra. Vui lòng thử lại.');
-        }
+        });
     });
-});
 </script>
 @endpush

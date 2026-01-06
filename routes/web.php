@@ -1,71 +1,62 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Staff\ProfileController;
+use Illuminate\Support\Facades\Auth;
 
-// Public routes
+// 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// Authentication routes
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/login', 'showLoginForm')->name('login')->middleware('guest');
-    Route::post('/login', 'login')->name('login.post')->middleware('guest');
-    Route::get('/register', 'showRegisterForm')->name('register')->middleware('guest');
-    Route::post('/register', 'register')->name('register.post')->middleware('guest');
-    Route::post('/logout', 'logout')->name('logout')->middleware('auth');
+// 2. AUTHENTICATION - Cho khách chưa đăng nhập
+Route::middleware('guest')->group(function () {
+    // Hiển thị form đăng nhập
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+
+    // Nếu bạn có đăng ký
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+    // QUAN TRỌNG: Route xử lý AJAX login - ĐỔI THÀNH /login
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
-// Protected routes (require authentication)
-Route::middleware('auth')->group(function () {
-    // User profile
-    Route::get('/profile', function () {
-        return view('profile');
-    })->name('profile');
+// 3. Đăng xuất - Dành cho người đã đăng nhập
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->name('logout')
+    ->middleware('auth');
 
-    // Cart routes
-    Route::get('/cart', function () {
-        return view('cart');
-    })->name('cart');
-
-    // Order routes
-    Route::get('/orders', function () {
-        return view('orders');
-    })->name('orders.index');
-
-    Route::get('/orders/{id}', function ($id) {
-        return view('order-detail', ['orderId' => $id]);
-    })->name('orders.show');
-
-    // Product routes
-    Route::get('/products', function () {
-        return view('products');
-    })->name('products.index');
-
-    Route::get('/products/{id}', function ($id) {
-        return view('product-detail', ['productId' => $id]);
-    })->name('products.show');
+// 4. ROUTE DÀNH CHO NHÂN VIÊN (STAFF)
+Route::middleware(['auth', 'staff'])->prefix('staff')->name('staff.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::put('/api/profile', [ProfileController::class, 'update']);
+    Route::post('/api/password', [ProfileController::class, 'changePassword']);
 });
 
-// Admin routes
+// 5. ROUTE DÀNH CHO ADMIN
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
-    Route::get('/products', function () {
-        return view('admin.products');
-    })->name('products');
-
-    Route::get('/orders', function () {
-        return view('admin.orders');
-    })->name('orders');
-
     Route::get('/users', function () {
         return view('admin.users');
     })->name('users');
+});
+
+// 6. ROUTE CHUNG CHO NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (CUSTOMER / USER THƯỜNG)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', function () {
+        return view('profile');
+    })->name('profile');
+
+    Route::get('/cart', function () {
+        return view('cart');
+    })->name('cart');
+
+    Route::get('/orders', function () {
+        return view('orders.index');
+    })->name('orders.index');
 });
