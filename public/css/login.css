@@ -92,12 +92,21 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .form-links {
@@ -125,6 +134,7 @@
         margin: 80px 20px;
         padding: 40px 25px;
     }
+
     .nav-logo a {
         font-size: 38px !important;
     }

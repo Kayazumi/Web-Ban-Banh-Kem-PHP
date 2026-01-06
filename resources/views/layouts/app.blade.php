@@ -7,6 +7,7 @@
     <title>@yield('title', 'La Cuisine Ngọt - Bánh Kem Cao Cấp')</title>
     <meta name="description" content="@yield('description', 'La Cuisine Ngọt - Thương hiệu bánh kem cao cấp hàng đầu Việt Nam')">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2921/2921822.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('css/customer.css') }}">
 
     @stack('styles')
+
     <style>
     /* Global centered modal used for confirmations/alerts */
     .global-modal-overlay {
@@ -104,6 +106,14 @@
         box-shadow: 0 6px 18px rgba(31,77,58,0.12);
     }
     </style>
+
+
+    <!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 </head>
 
 <body>
@@ -158,36 +168,55 @@
         </div>
     </nav>
 
-    <!-- Search Bar -->
-    <div class="search-bar hidden">
-        <input type="text" id="searchInput" placeholder="Nhập từ khóa tìm kiếm...">
-        <button class="search-submit-btn" type="button" id="searchSubmitBtn">
-            <i class="fas fa-check"></i>
+
+<!-- Search Bar -->
+<div class="search-bar hidden">
+    <input type="text" id="searchInput" placeholder="Tìm kiếm hương vị ngọt ngào...">
+
+    <button class="search-submit-btn" type="button" id="searchSubmitBtn">
+        <i class="fas fa-search"></i>
+    </button>
+
+    <div class="filter-wrapper">
+        <button class="filter-btn" title="Lọc sản phẩm">
+            <i class="fas fa-filter"></i>
         </button>
 
-        <div class="filter-wrapper">
-            <button class="filter-btn">Lọc</button>
+        <div class="filter-popup hidden">
+            <div class="filter-content">
+                <label for="category">Danh mục</label>
+                <select id="category">
+                    <option value="">Tất cả danh mục</option>
+                    <option value="banh-sinh-nhat">Bánh sinh nhật</option>
+                    <option value="banh-kem-tuoi">Bánh kem tươi</option>
+                    <option value="banh-cupcake">Cupcake</option>
+                    <option value="banh-man">Bánh mặn</option>
+                </select>
 
-            <div class="filter-popup hidden">
-                <div class="filter-content">
-                    <label for="categorySelect">Danh mục</label>
-                    <select id="categorySelect">
-                        <option value="">Tất cả danh mục</option>
-                    </select>
+                <label for="price-range">Khoảng giá</label>
+                <select id="price-range">
+                    <option value="">Tất cả giá</option>
+                    <option value="0-200000">Dưới 200.000đ</option>
+                    <option value="200000-400000">200.000đ - 400.000đ</option>
+                    <option value="400000-600000">400.000đ - 600.000đ</option>
+                    <option value="600000-1000000">600.000đ - 1.000.000đ</option>
+                    <option value="1000000+">Trên 1.000.000đ</option>
+                </select>
 
-                    <label for="priceSelect">Giá</label>
-                    <select id="priceSelect">
-                        <option value="">Tất cả giá</option>
-                        <option value="duoi500">Dưới 500.000</option>
-                        <option value="500-700">500.000 - 700.000</option>
-                        <option value="tren700">Trên 700.000</option>
-                    </select>
+                <label for="sort">Sắp xếp theo</label>
+                <select id="sort">
+                    <option value="newest">Mới nhất</option>
+                    <option value="price-asc">Giá tăng dần</option>
+                    <option value="price-desc">Giá giảm dần</option>
+                    <option value="bestseller">Bán chạy nhất</option>
+                </select>
 
-                    <button id="filterButton">Lọc</button>
-                </div>
+                <button type="button" id="applyFilterBtn">Áp dụng lọc</button>
+                <button type="button" id="clearFilterBtn" style="background: #999; margin-top: 8px;">Xóa lọc</button>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Main Content -->
     <main>
@@ -276,6 +305,21 @@
                 // canceled
             });
         }
+
+        document.addEventListener('click', function(e) {
+        const filterWrapper = document.querySelector('.filter-wrapper');
+        const filterPopup = document.querySelector('.filter-popup');
+        const filterBtn = document.querySelector('.filter-btn');
+
+        if (!filterWrapper.contains(e.target)) {
+            filterPopup.classList.add('hidden');
+        }
+    });
+
+    // Ngăn đóng khi click vào bên trong popup
+    document.querySelector('.filter-popup')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
     </script>
 
     @stack('scripts')

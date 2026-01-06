@@ -109,24 +109,48 @@ class ProductController extends Controller
     /**
      * Get featured products
      */
+       /**
+     * Get featured products for homepage
+     */
     public function featured()
     {
         try {
-            $products = \App\Models\Product::where('is_featured', true)
-                ->where('is_active', true)
-                ->with('category') // nếu có relation category
-                ->limit(8)
-                ->get();
+            $products = Product::where('is_active', true)
+                ->where(function ($query) {
+                    $query->where('is_featured', true)
+                          ->orWhere('is_new', true); // Có thể thêm sản phẩm mới vào nổi bật
+                })
+                ->orderBy('is_featured', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->limit(12) // Hiển thị tối đa 12 sản phẩm trên trang chủ
+                ->get()
+                ->map(function ($product) {
+                    return [
+                        'product_id' => $product->ProductID,
+                        'product_name' => $product->product_name,
+                        'image_url' => asset($product->image_url),
+                        'price' => (float) $product->price,
+                        'original_price' => $product->original_price ? (float) $product->original_price : null,
+                        'is_featured' => $product->is_featured,
+                        'is_new' => $product->is_new,
+                    ];
+                });
 
-            return response()->json($products);
-        } catch (\Exception $e) {
-            Log::error('API featured error: ' . $e->getMessage());
             return response()->json([
-                'error' => 'Không thể tải sản phẩm nổi bật',
-                'message' => $e->getMessage()
+                'success' => true,
+                'data' => [
+                    'products' => $products
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('API featured products error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể tải sản phẩm nổi bật'
             ], 500);
         }
     }
+
     /**
      * Search products
      */

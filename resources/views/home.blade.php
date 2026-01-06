@@ -29,18 +29,35 @@
     </div>
 </section>
 
-<!-- Featured Products Section -->
-<section id="products" class="products-section">
-    <div class="container">
-        <h2 class="section-title">Sản phẩm nổi bật</h2>
-        <div class="products-grid" id="featuredProducts">
-            <!-- Products will be loaded via AJAX -->
-            <div class="text-center" style="grid-column: 1/-1; padding: 3rem 0;">
-                <p style="color: #666;">Đang tải sản phẩm...</p>
+<!-- Featured Products Carousel -->
+<!-- Featured Products Carousel -->
+<section id="products" class="products-section py-5 bg-light">
+    <div class="container position-relative">
+        <h2 class="section-title text-center mb-5">Sản phẩm nổi bật</h2>
+
+        <!-- Wrapper cho Swiper và Navigation -->
+        <div class="swiper-container-wrapper">
+            <!-- Swiper -->
+            <div class="swiper featuredProductsSwiper">
+                <div class="swiper-wrapper" id="featuredProducts">
+                    <!-- AJAX sẽ chèn sản phẩm vào đây -->
+                    <div class="swiper-slide text-center">
+                        <p class="text-muted">Đang tải sản phẩm...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons - ĐI RA NGOÀI Swiper -->
+            <div class="swiper-button-prev custom-swiper-button">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="swiper-button-next custom-swiper-button">
+                <i class="fas fa-chevron-right"></i>
             </div>
         </div>
-        <div class="text-center mt-4">
-            <a href="{{ route('products.index') }}" class="btn btn-outline">Xem tất cả sản phẩm</a>
+
+        <div class="text-center mt-5">
+            <a href="#" class="btn btn-outline">Xem tất cả sản phẩm</a>
         </div>
     </div>
 </section>
@@ -151,28 +168,20 @@
 </section>
 @endsection
 
+
 @push('scripts')
 <script>
-// Load featured products on page load
+// Load sản phẩm nổi bật khi trang sẵn sàng
 document.addEventListener('DOMContentLoaded', function() {
     loadFeaturedProducts();
 
-    // Handle contact form
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', handleContactSubmit);
-    }
-
-    // Smooth scrolling for anchor links
+    // Smooth scroll cho các link #
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+        anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                target.scrollIntoView({ behavior: 'smooth' });
             }
         });
     });
@@ -184,95 +193,97 @@ async function loadFeaturedProducts() {
         const data = await response.json();
 
         if (data.success && data.data.products.length > 0) {
-            displayProducts(data.data.products, 'featuredProducts');
+            // Chỉ lấy tối đa 6 sản phẩm để carousel đẹp (Swiper sẽ tự loop)
+            const products = data.data.products.slice(0, 6);
+            displayProducts(products);
         } else {
-            document.getElementById('featuredProducts').innerHTML = `
-                <div class="text-center" style="grid-column: 1/-1; padding: 3rem 0;">
-                    <p style="color: #666;">Chưa có sản phẩm nào.</p>
-                </div>
-            `;
+            showEmptyMessage('Chưa có sản phẩm nổi bật nào.');
         }
     } catch (error) {
-        console.error('Error loading featured products:', error);
-        document.getElementById('featuredProducts').innerHTML = `
-            <div class="text-center" style="grid-column: 1/-1; padding: 3rem 0;">
-                <p style="color: #dc3545;">Không thể tải sản phẩm. Vui lòng thử lại sau.</p>
-            </div>
-        `;
+        console.error('Lỗi tải sản phẩm:', error);
+        showEmptyMessage('Không thể tải sản phẩm. Vui lòng thử lại sau.');
     }
 }
 
-function displayProducts(products, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+function displayProducts(products) {
+    const wrapper = document.querySelector('#featuredProducts');
+    if (!wrapper) return;
 
-    container.innerHTML = products.map(product => `
-        <div class="product-card">
-            <div class="product-image">
-                <img src="${product.image_url || '/images/placeholder.jpg'}" 
-                     alt="${product.product_name}"
-                     onerror="this.src='/images/placeholder.jpg'">
-                ${product.is_featured ? '<span class="badge featured">Nổi bật</span>' : ''}
-                ${product.is_new ? '<span class="badge new">Mới</span>' : ''}
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">${product.product_name}</h3>
-                <p class="product-price">
-                    ${product.original_price && product.original_price > product.price
-                        ? `<span class="original-price">${formatPrice(product.original_price)}</span>`
-                        : ''}
-                    <span class="current-price">${formatPrice(product.price)}</span>
-                </p>
-                <a href="/products/${product.product_id}" class="btn btn-sm btn-primary">Xem chi tiết</a>
+    wrapper.innerHTML = products.map(product => `
+        <div class="swiper-slide">
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="${product.image_url || '/images/placeholder.jpg'}" 
+                         alt="${product.product_name}"
+                         onerror="this.src='/images/placeholder.jpg'">
+                    ${product.is_featured ? '<span class="badge featured">Nổi bật</span>' : ''}
+                    ${product.is_new ? '<span class="badge new">Mới</span>' : ''}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.product_name}</h3>
+                    <div class="product-price">
+                        ${product.original_price && product.original_price > product.price 
+                            ? `<span class="original-price">${formatPrice(product.original_price)}</span>` 
+                            : ''}
+                        <span class="current-price">${formatPrice(product.price)}</span>
+                    </div>
+                    <a href="/products/${product.product_id}" class="btn btn-primary">Xem chi tiết</a>
+                </div>
             </div>
         </div>
     `).join('');
+
+    // Đợi DOM cập nhật xong rồi khởi tạo Swiper
+    setTimeout(initFeaturedSwiper, 100);
+}
+
+function initFeaturedSwiper() {
+    if (window.featuredSwiper) {
+        window.featuredSwiper.destroy(true, true);
+    }
+
+    window.featuredSwiper = new Swiper('.featuredProductsSwiper', {
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+        },
+        speed: 800,
+        spaceBetween: 30, // Khoảng cách giữa các bánh (giảm xuống một chút cho cân đối)
+        slidesPerView: 3, // Hiển thị đúng 3 sản phẩm
+        centeredSlides: false, // Giữ false để bánh đầu tiên sát lề trái
+
+        navigation: {
+            nextEl: '.swiper-button-next.custom-swiper-button',
+            prevEl: '.swiper-button-prev.custom-swiper-button',
+        },
+
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
+                spaceBetween: 10
+            },
+            768: {
+                slidesPerView: 2,
+                spaceBetween: 20
+            },
+            992: {
+                slidesPerView: 3,
+                spaceBetween: 30
+            }
+        }
+    });
+}
+
+function showEmptyMessage(msg) {
+    const wrapper = document.querySelector('#featuredProducts');
+    if (wrapper) {
+        wrapper.innerHTML = `<div class="swiper-slide"><div style="text-align:center; padding:4rem 0; color:#666;">${msg}</div></div>`;
+    }
 }
 
 function formatPrice(price) {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(price);
-}
-
-async function handleContactSubmit(e) {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-
-    // Disable button and show loading state
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Đang gửi...';
-
-    try {
-        const response = await fetch('/api/contacts', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': window.Laravel.csrfToken,
-                'Accept': 'application/json'
-            },
-            body: formData
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            alert('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
-            e.target.reset();
-        } else {
-            alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
-        }
-    } catch (error) {
-        console.error('Error submitting contact form:', error);
-        alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
-    } finally {
-        // Re-enable button
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalText;
-    }
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 }
 </script>
 @endpush

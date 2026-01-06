@@ -1,114 +1,166 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Khai báo các phần tử giao diện
-    const tabLinks = document.querySelectorAll(".tab-link");
-    const tabContents = document.querySelectorAll(".tab-content");
-    const infoForm = document.getElementById("infoForm");
-    const passwordForm = document.getElementById("passwordForm");
-    const staffNameDisplay = document.getElementById("staffNameDisplay");
+// Profile Page JavaScript - La Cuisine Ngọt
 
-    // 2. Lay CSRF Token tu the meta de bao mat (Bat buoc trong Laravel)
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+document.addEventListener('DOMContentLoaded', function() {
+    // ===== TAB SWITCHING =====
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-    // 3. Xu ly chuyen doi Tab (Thong tin / Mat khau)
     tabLinks.forEach(link => {
-        link.addEventListener("click", function() {
-            // Xoa trang thai active cu
-            tabLinks.forEach(item => item.classList.remove("active"));
-            tabContents.forEach(item => item.classList.remove("active"));
+        link.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
 
-            // Them trang thai active cho tab duoc chon
-            this.classList.add("active");
-            const tabId = this.getAttribute("data-tab");
-            document.getElementById(tabId).classList.add("active");
+            // Remove active class from all tabs and contents
+            tabLinks.forEach(l => l.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            // Add active class to clicked tab and corresponding content
+            this.classList.add('active');
+            document.getElementById(targetTab).classList.add('active');
         });
     });
 
-    // 4. Xu ly cap nhat thong tin ca nhan
+    // ===== UPDATE PROFILE INFO FORM =====
+    const infoForm = document.getElementById('infoForm');
     if (infoForm) {
-        infoForm.addEventListener("submit", async function(e) {
+        infoForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const formData = {
-                full_name: document.getElementById("nameInput").value,
-                phone: document.getElementById("phoneInput").value,
-                address: document.getElementById("addressInput").value
-            };
+            const submitBtn = this.querySelector('.save-btn');
+            const originalText = submitBtn.textContent;
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang lưu...';
+
+            const formData = new FormData(this);
 
             try {
-                const response = await fetch("/api/staff/profile", {
-                    method: "PUT",
+                const response = await fetch('/api/profile/update', {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken,
-                        "Accept": "application/json"
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: formData
                 });
 
-                const result = await response.json();
+                const data = await response.json();
 
-                if (response.ok) {
-                    alert("Thanh cong: " + result.message);
-                    // Cap nhat ten hien thi tren tieu de trang
-                    if (staffNameDisplay) {
-                        staffNameDisplay.innerText = formData.full_name;
+                if (data.success) {
+                    showAlert('success', 'Cập nhật thông tin thành công!');
+                    
+                    // Update displayed name if changed
+                    const newName = formData.get('full_name');
+                    if (newName) {
+                        document.getElementById('staffNameDisplay').textContent = newName;
+                        const userNameElements = document.querySelectorAll('.user-name');
+                        userNameElements.forEach(el => el.textContent = newName);
                     }
                 } else {
-                    // Xu ly loi Validation tu Laravel (UpdateProfileRequest)
-                    if (result.errors) {
-                        const errorMessages = Object.values(result.errors).flat().join("\n");
-                        alert("Loi du lieu:\n" + errorMessages);
-                    } else {
-                        alert("Loi: " + result.message);
-                    }
+                    showAlert('error', data.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
                 }
             } catch (error) {
-                console.error("Loi ket noi:", error);
-                alert("Khong the ket noi den may chu.");
+                console.error('Error:', error);
+                showAlert('error', 'Không thể kết nối đến máy chủ. Vui lòng thử lại.');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
         });
     }
 
-    // 5. Xu ly doi mat khau
+    // ===== CHANGE PASSWORD FORM =====
+    const passwordForm = document.getElementById('passwordForm');
     if (passwordForm) {
-        passwordForm.addEventListener("submit", async function(e) {
+        passwordForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const data = {
-                oldPassword: document.getElementById("oldPassword").value,
-                newPassword: document.getElementById("newPassword").value,
-                newPassword_confirmation: document.getElementById("confirmPassword").value
-            };
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate password match
+            if (newPassword !== confirmPassword) {
+                showAlert('error', 'Mật khẩu xác nhận không khớp!');
+                return;
+            }
+
+            // Validate password length
+            if (newPassword.length < 6) {
+                showAlert('error', 'Mật khẩu phải có ít nhất 6 ký tự!');
+                return;
+            }
+
+            const submitBtn = this.querySelector('.save-btn');
+            const originalText = submitBtn.textContent;
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang đổi...';
+
+            const formData = new FormData(this);
 
             try {
-                const response = await fetch("/api/staff/password", {
-                    method: "POST",
+                const response = await fetch('/api/profile/change-password', {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken,
-                        "Accept": "application/json"
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
-                const result = await response.json();
+                const data = await response.json();
 
-                if (response.ok) {
-                    alert("Thanh cong: " + result.message);
-                    passwordForm.reset(); // Xoa trang form sau khi thanh cong
+                if (data.success) {
+                    showAlert('success', 'Đổi mật khẩu thành công!');
+                    this.reset();
                 } else {
-                    // Xu ly loi mat khau cu khong khop hoac mat khau moi khong hop le
-                    if (result.errors) {
-                        const errorMessages = Object.values(result.errors).flat().join("\n");
-                        alert("Loi mat khau:\n" + errorMessages);
-                    } else {
-                        alert("Loi: " + result.message);
-                    }
+                    showAlert('error', data.message || 'Mật khẩu hiện tại không đúng.');
                 }
             } catch (error) {
-                console.error("Loi ket noi:", error);
-                alert("Khong the thuc hien doi mat khau.");
+                console.error('Error:', error);
+                showAlert('error', 'Không thể kết nối đến máy chủ. Vui lòng thử lại.');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
+        });
+    }
+
+    // ===== SHOW ALERT FUNCTION =====
+    function showAlert(type, message) {
+        // Remove existing alerts
+        const existingAlerts = document.querySelectorAll('.custom-alert');
+        existingAlerts.forEach(alert => alert.remove());
+
+        // Create new alert
+        const alert = document.createElement('div');
+        alert.className = `custom-alert alert-${type}`;
+        alert.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${message}</span>
+            <button class="alert-close">&times;</button>
+        `;
+
+        // Add to body
+        document.body.appendChild(alert);
+
+        // Show alert
+        setTimeout(() => alert.classList.add('show'), 10);
+
+        // Auto hide after 5 seconds
+        const hideTimeout = setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 300);
+        }, 5000);
+
+        // Close button
+        alert.querySelector('.alert-close').addEventListener('click', function() {
+            clearTimeout(hideTimeout);
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 300);
         });
     }
 });

@@ -2,24 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Category;
-use App\Models\Product;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        // Seed categories
+        // 1. Seed categories
         $categories = [
             [
                 'CategoryID' => 1,
@@ -64,10 +58,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            DB::table('categories')->insert($category);
+            DB::table('categories')->updateOrInsert(
+                ['CategoryID' => $category['CategoryID']],
+                $category
+            );
         }
 
-        // Seed users
+        // 2. Seed users mẫu
         $users = [
             [
                 'UserID' => 1,
@@ -108,33 +105,40 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($users as $user) {
-            DB::table('users')->insert($user);
+            DB::table('users')->updateOrInsert(
+                ['UserID' => $user['UserID']],
+                $user
+            );
         }
 
-        // Seed sample products
+        // 3. Seed 12 sản phẩm đầy đủ - ĐÃ SỬA ĐƯỜNG DẪN ẢNH THÀNH /images/
         $products = [
+            // 1. Entremets Rose
             [
                 'ProductID' => 1,
                 'product_name' => 'Entremets Rose',
                 'category_id' => 1,
-                'description' => '<p>Một chiếc entremets tựa như đoá hồng nở trong nắng sớm — nhẹ nhàng, tinh khôi và ngọt ngào theo cách riêng.</p>',
+                'description' => '<p>Một chiếc entremets tựa như đoá hồng nở trong nắng sớm — nhẹ nhàng, tinh khôi và ngọt ngào theo cách riêng. Entremets Rose là sự hòa quyện giữa vải thiều mọng nước, mâm xôi chua thanh, phô mai trắng béo mịn và hương hoa hồng phảng phất, tạo nên cảm giác trong trẻo, nữ tính và đầy tinh tế.</p>',
                 'price' => 650000,
                 'original_price' => 750000,
                 'quantity' => 15,
+                'unit' => 'cái',
                 'status' => 'available',
-                'image_url' => 'assets/images/entremets-rose.jpg',
+                'image_url' => 'images/entremets-rose.jpg',
                 'weight' => 500,
                 'shelf_life' => 3,
-                'is_featured' => true,
                 'short_intro' => '<b>Hoa hồng – Vải thiều – Mâm xôi – Phô mai trắng</b>',
-                'short_paragraph' => 'Chiếc entremets nhẹ như một khúc nhạc Pháp, hòa quyện hương hoa hồng thanh thoát, vải thiều ngọt mát, mâm xôi chua nhẹ và mousse phô mai trắng béo mềm.',
+                'short_paragraph' => 'Chiếc entremets nhẹ như một khúc nhạc Pháp, hòa quyện hương hoa hồng thanh thoát, vải thiều ngọt mát, mâm xôi chua nhẹ và mousse phô mai trắng béo mềm. Từng lớp bánh được sắp đặt tỉ mỉ để mang đến cảm giác trong trẻo, tinh khôi và đầy nữ tính — một "nụ hồng ngọt ngào" dành cho những tâm hồn yêu sự dịu dàng.',
                 'structure' => '<ul><li><b>Lớp 1 – Biscuit Madeleine Framboise:</b> Cốt bánh mềm nhẹ, thấm vị chua thanh tự nhiên từ mâm xôi tươi.</li><li><b>Lớp 2 – Confit Framboise:</b> Mứt mâm xôi cô đặc nấu chậm, giữ trọn vị chua ngọt tươi mới.</li><li><b>Lớp 3 – Crémeux Litchi Rose:</b> Nhân kem vải thiều hòa cùng hương hoa hồng – mềm mịn, thanh tao và thơm dịu.</li><li><b>Lớp 4 – Mousse Fromage Blanc:</b> Lớp mousse phô mai trắng mịn như mây, mang vị béo nhẹ và cảm giác tan ngay nơi đầu lưỡi.</li><li><b>Lớp 5 – Shortbread:</b> Đế bánh bơ giòn tan, tạo điểm nhấn hài hòa cho tổng thể.</li></ul><p>Trang trí bằng hoa edible, mâm xôi tươi và lớp xịt nhung trắng (velours) — tinh khôi, thanh lịch.</p>',
                 'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
                 'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => true,
+                'is_new' => false,
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            // 2. Lime and Basil Entremets
             [
                 'ProductID' => 2,
                 'product_name' => 'Lime and Basil Entremets',
@@ -143,16 +147,268 @@ class DatabaseSeeder extends Seeder
                 'price' => 600000,
                 'original_price' => 680000,
                 'quantity' => 12,
+                'unit' => 'cái',
                 'status' => 'available',
-                'image_url' => 'assets/images/lime-and-basil-entremets.jpg',
+                'image_url' => 'images/lime-and-basil-entremets.jpg',
                 'weight' => 500,
                 'shelf_life' => 3,
-                'is_featured' => true,
                 'short_intro' => '<b>Chanh, Húng Quế và Kem Tươi</b>',
                 'short_paragraph' => 'Chiếc entremets mang sắc xanh ngọc thạch quyến rũ, là bản hòa tấu bất ngờ giữa vị chua sáng rỡ của những trái chanh xanh căng mọng và hương thơm ấm áp, nồng nàn của húng quế.',
                 'structure' => '<ul><li><b>Lớp 1 – Biscuit Sablé (Đế bánh giòn):</b> Đế bơ giòn rụm, tạo độ tương phản hoàn hảo với phần mousse mềm mại phía trên.</li><li><b>Lớp 2 – Crèmeux Citron Vert (Kem chanh xanh):</b> Nhân kem chua dịu, đậm đặc từ nước cốt và vỏ chanh, mang vị chua thanh khiết, tươi mát.</li><li><b>Lớp 3 – Mousse Basilic (Mousse húng quế):</b> Lớp mousse nhẹ, xốp, thấm đượm hương thơm tinh tế của lá húng quế.</li><li><b>Lớp 4 – Gelée chanh:</b> Một lớp gelée chanh mỏng, tăng độ tươi mới và tạo chiều sâu cho bánh.</li><li><b>Lớp 5 – Miroir Glaze Vert:</b> Lớp phủ bóng màu xanh lá ngọc, giữ độ ẩm và tạo vẻ ngoài hấp dẫn.</li></ul><p>Trang trí: lát chanh tươi và lá húng quế (hoặc bạc hà), điểm xuyết chút đường bột.</p>',
                 'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
                 'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => true,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 3. Blanche Figues & Framboises
+            [
+                'ProductID' => 3,
+                'product_name' => 'Blanche Figues & Framboises',
+                'category_id' => 1,
+                'description' => '<p>Có những ngày, chỉ cần một miếng bánh thôi cũng đủ khiến lòng nhẹ đi đôi chút. Entremets Sung – Mâm Xôi – Sô Cô La Trắng là bản giao hưởng giữa vị chua thanh của mâm xôi, độ ngọt dịu của sung chín và sự béo mịn, thanh tao của sô cô la trắng.</p>',
+                'price' => 650000,
+                'original_price' => 750000,
+                'quantity' => 10,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/blanche-figues&framboises.jpg',
+                'weight' => 550,
+                'shelf_life' => 3,
+                'short_intro' => '<b>Sung – Mâm Xôi – Sô Cô La Trắng</b>',
+                'short_paragraph' => 'Chiếc entremets mang vẻ tinh tế với lớp gương sô cô la trắng bóng mịn bao phủ. Bên trong là bánh bông xốp mâm xôi, compoté sung – mâm xôi dẻo thơm và mousse sô cô la trắng béo nhẹ, tan ngay trong miệng.',
+                'structure' => '<ul><li><b>Lớp 1 – Cốt bánh mâm xôi:</b> Bánh bông xốp mềm nhẹ, thấm vị chua thanh tự nhiên từ mâm xôi tươi.</li><li><b>Lớp 2 – Compoté sung – mâm xôi:</b> Hỗn hợp trái cây nấu chậm giữ cấu trúc và hương vị.</li><li><b>Lớp 3 – Mousse sô cô la trắng:</b> Mềm mượt, nhẹ bẫng như mây với sô cô la trắng cao cấp.</li><li><b>Lớp 4 – Gương sô cô la trắng:</b> Phủ bề mặt bằng glaçage mịn như lụa.</li></ul>',
+                'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
+                'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => true,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 4. Mousse Chanh Dây
+            [
+                'ProductID' => 4,
+                'product_name' => 'Mousse Chanh Dây',
+                'category_id' => 2,
+                'description' => '<p>Bánh Mousse Chanh Dây là món tráng miệng tinh tế, mang đến cảm giác tươi mát và sảng khoái ngay từ muỗng đầu tiên.</p>',
+                'price' => 550000,
+                'original_price' => 600000,
+                'quantity' => 25,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/mousse-chanh-day.jpg',
+                'weight' => 450,
+                'shelf_life' => 2,
+                'short_intro' => '<b>Chanh dây, whipping cream, phô mai mascarpone</b>',
+                'short_paragraph' => 'Chiếc Mousse Chanh Dây là sự kết hợp tinh tế của hương vị nhiệt đới tươi mới. Lớp custard chua thanh hòa quyện cùng những miếng chanh dây mọng nước, điểm xuyết lớp mousse whipping mềm mịn, béo nhẹ, tan ngay trên đầu lưỡi.',
+                'structure' => '<ul><li><b>Lớp 1 – Đế bánh (Base Cookie / Biscuit):</b> Đế giòn rụm, thơm bơ.</li><li><b>Lớp 2 – Kem chanh dây + Whipping & Mascarpone:</b> Mousse mềm mượt, béo nhẹ và chua thanh.</li><li><b>Lớp 3 – Gelée chanh dây:</b> Lớp gelée tươi mát, hơi sánh nhẹ tăng độ sống động.</li></ul>',
+                'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
+                'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => true,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 5. Mousse Dưa Lưới
+            [
+                'ProductID' => 5,
+                'product_name' => 'Mousse Dưa Lưới',
+                'category_id' => 2,
+                'description' => '<p>Ra đời giữa những ngày oi ả của Sài Gòn, chiếc Bánh Dưa Lưới như mang đến một khoảng trời mát lành và thanh khiết.</p>',
+                'price' => 550000,
+                'original_price' => 600000,
+                'quantity' => 20,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/mousse-dua-luoi.jpg',
+                'weight' => 450,
+                'shelf_life' => 2,
+                'short_intro' => '<b>Dưa lưới hữu cơ, kem sữa, phô mai Mascarpone</b>',
+                'short_paragraph' => 'Bánh có vị thơm và béo nhẹ nhàng từ phô mai tươi kết hợp cùng kem sữa và dưa lưới mật Fuji nấu chậm, bên trong là rất nhiều dưa lưới tươi và cốt bánh gato vani, cùng với một ít rượu dưa lưới nồng nàn.',
+                'structure' => '<ul><li><b>Lớp 1 – Bánh bông lan vị vani (Vanilla Génoise):</b> Cốt bánh xốp mềm, ẩm mượt.</li><li><b>Lớp 2 – Dưa lưới mật tươi thái hạt lựu:</b> Miếng dưa tươi căng mọng.</li><li><b>Lớp 3 – Mousse dưa lưới:</b> Mousse mềm mượt, béo nhẹ.</li></ul>',
+                'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
+                'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => false,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 6. Mousse Việt Quất
+            [
+                'ProductID' => 6,
+                'product_name' => 'Mousse Việt Quất',
+                'category_id' => 2,
+                'description' => '<p>Bánh Mousse Việt Quất là sự kết hợp hoàn hảo giữa vị chua nhẹ thanh mát của quả việt quất và vị béo ngậy của kem tươi.</p>',
+                'price' => 550000,
+                'original_price' => 600000,
+                'quantity' => 18,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/mousse-viet-quat.jpg',
+                'weight' => 450,
+                'shelf_life' => 2,
+                'short_intro' => '<b>Việt quất, whipping cream</b>',
+                'short_paragraph' => 'Mousse Việt Quất chinh phục vị giác bằng sắc tím quyến rũ và hương vị trái cây thanh mát. Lớp mousse mềm mượt, hòa quyện cùng vị chua nhẹ, mang lại cảm giác thanh tao và dễ chịu.',
+                'structure' => '<ul><li><b>Lớp 1 – Đế bánh bơ giòn:</b> Lớp đế cookie được nướng thủ công đến độ vàng ươm, giòn tan, mang hương bơ thơm dịu và vị ngọt vừa phải.</li><li><b>Lớp 2 – Mousse việt quất:</b> Lớp mousse tím nhạt mịn màng như nhung, hoà quyện giữa vị chua thanh của việt quất tươi và vị béo nhẹ của kem tươi.</li><li><b>Lớp 3 – Phủ việt quất tươi:</b> Bề mặt bánh được phủ đầy những quả việt quất tươi mọng nước, điểm xuyết sắc tím quyến rũ.</li></ul>',
+                'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
+                'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => false,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 7. Orange Serenade
+            [
+                'ProductID' => 7,
+                'product_name' => 'Orange Serenade',
+                'category_id' => 3,
+                'description' => '<p>Orange Serenade được lấy cảm hứng từ tách trà Earl Grey ấm áp và lát cam tươi mát của mùa hè.</p>',
+                'price' => 550000,
+                'original_price' => 600000,
+                'quantity' => 15,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/orange-serenade.jpg',
+                'weight' => 600,
+                'shelf_life' => 3,
+                'short_intro' => '<b>Cam tươi, Earl Grey, kem phô mai, whipping cream</b>',
+                'short_paragraph' => 'Chiếc bánh là sự kết hợp thanh tao giữa vị trà bá tước Earl Grey dịu nhẹ và vị cam tươi sáng chua ngọt. Cảm giác béo mịn, thoang thoảng hương trà và thoảng vị cam mọng nước như một buổi chiều hè dịu nắng.',
+                'structure' => '<ul><li><b>Lớp 1 – Gato trà bá tước (Earl Grey sponge):</b> Cốt bánh mềm ẩm, ủ cùng trà bá tước.</li><li><b>Lớp 2 – Jelly cam (Orange jelly):</b> Thạch cam mát lạnh, dẻo nhẹ.</li><li><b>Lớp 3 – Kem phô mai cam (Orange cream cheese):</b> Kem phô mai chua nhẹ, béo mịn.</li><li><b>Lớp 4 – Earl Grey cream:</b> Lớp kem trà mịn mượt.</li></ul>',
+                'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
+                'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => false,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 8. Strawberry Cloud Cake
+            [
+                'ProductID' => 8,
+                'product_name' => 'Strawberry Cloud Cake',
+                'category_id' => 3,
+                'description' => '<p>Strawberry Cloud Cake là chiếc bánh mang phong vị tươi sáng của những trái dâu mọng và việt quất ngọt thanh.</p>',
+                'price' => 500000,
+                'original_price' => 550000,
+                'quantity' => 12,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/strawberry-cloud-cake.jpg',
+                'weight' => 650,
+                'shelf_life' => 3,
+                'short_intro' => '<b>Dâu tươi, việt quất, kem tươi Pháp, cốt bánh vanilla mềm ẩm</b>',
+                'short_paragraph' => 'Chiếc bánh kem mang sắc trắng thanh khiết, điểm xuyết tầng dâu đỏ và việt quất xanh tím rực rỡ. Từng lớp bánh là sự hòa quyện giữa vị béo nhẹ của kem tươi, vị ngọt thanh của trái cây và cốt bánh vanilla mềm mịn — đơn giản mà tinh tế, như một áng mây ngọt ngào dành tặng những khoảnh khắc yêu thương.',
+                'structure' => '<ul><li><b>Lớp 1 – Cốt bánh vanilla mềm ẩm:</b> Lớp nền truyền thống, mềm mịn.</li><li><b>Lớp 2 – Kem tươi whipping nhẹ béo:</b> Kem đánh bông mềm mịn.</li><li><b>Lớp 3 – Mặt bánh phủ dâu tây & việt quất tươi:</b> Trái cây tươi trang trí trên mặt.</li></ul>',
+                'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
+                'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => false,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 9. Earl Grey Bloom
+            [
+                'ProductID' => 9,
+                'product_name' => 'Earl Grey Bloom',
+                'category_id' => 3,
+                'description' => '<p>Earl Grey Bloom là bản hòa ca của trà, trái cây và hương hoa — chiếc bánh dành riêng cho những ai yêu nét đẹp nhẹ nhàng, thanh lịch.</p>',
+                'price' => 500000,
+                'original_price' => 550000,
+                'quantity' => 10,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/earl-grey-bloom.jpg',
+                'weight' => 650,
+                'shelf_life' => 3,
+                'short_intro' => '<b>Trà bá tước, xoài tươi, dâu tây, whipping cream</b>',
+                'short_paragraph' => 'Chiếc bánh là phiên bản đặc biệt của dòng Earl Grey cake — mang hương vị thanh nhã, nhẹ nhàng và đầy nữ tính. Lớp cốt trà bá tước thơm dịu kết hợp cùng vị trái cây tươi chua ngọt, tạo nên tổng thể hài hòa, tinh tế và dễ chịu.',
+                'structure' => '<ul><li><b>Lớp 1 – Cốt bánh Earl Grey:</b> Bông lan mềm ẩm, ủ cùng trà bá tước.</li><li><b>Lớp 2 – Nhân trái cây tươi:</b> Xoài chín và dâu tây tươi xen kẽ.</li><li><b>Lớp 3 – Kem Earl Grey:</b> Kem whipping pha chiết xuất trà bá tước.</li></ul>',
+                'usage' => '<ul class="no-dot"><li>Bảo quản bánh trong hộp kín, giữ ở ngăn mát tủ lạnh (2–6°C).</li><li>Tránh để bánh tiếp xúc trực tiếp với ánh nắng hoặc nhiệt độ phòng quá lâu.</li><li>Bánh ngon nhất khi dùng trong vòng 24 giờ kể từ lúc nhận.</li><li>Nên dùng muỗng lạnh để cảm nhận rõ từng tầng hương vị – mềm, mịn và tan chảy tinh tế.</li></ul>',
+                'bonus' => '<ul class="no-dot"><li>Bộ dao, muỗng và dĩa gỗ mang phong cách thủ công, tinh tế.</li><li>Hộp nến nhỏ để bạn dễ dàng biến chiếc bánh thành món quà hoặc điểm nhấn cho những dịp đặc biệt.</li><li>Thiệp cảm ơn La Cuisine Ngọt – gửi gắm lời chúc ngọt ngào kèm thông điệp từ trái tim.</li></ul>',
+                'is_featured' => true,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 10. Nón Sinh Nhật
+            [
+                'ProductID' => 10,
+                'product_name' => 'Nón Sinh Nhật',
+                'category_id' => 4,
+                'description' => '<p>Nón sinh nhật xinh xắn</p>',
+                'price' => 10000,
+                'original_price' => 10000,
+                'quantity' => 200,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/non.jpg',
+                'weight' => 20,
+                'shelf_life' => 365,
+                'short_intro' => '',
+                'short_paragraph' => '',
+                'structure' => '',
+                'usage' => '',
+                'bonus' => '',
+                'is_featured' => false,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 11. Pháo Hoa
+            [
+                'ProductID' => 11,
+                'product_name' => 'Pháo Hoa',
+                'category_id' => 4,
+                'description' => '<p>Pháo hoa trang trí bánh</p>',
+                'price' => 55000,
+                'original_price' => 55000,
+                'quantity' => 150,
+                'unit' => 'cái',
+                'status' => 'available',
+                'image_url' => 'images/phaohoa.jpg',
+                'weight' => 50,
+                'shelf_life' => 365,
+                'short_intro' => '',
+                'short_paragraph' => '',
+                'structure' => '',
+                'usage' => '',
+                'bonus' => '',
+                'is_featured' => false,
+                'is_new' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // 12. Bóng Bay và Dây Trang Trí
+            [
+                'ProductID' => 12,
+                'product_name' => 'Bóng Bay và Dây Trang Trí',
+                'category_id' => 4,
+                'description' => '<p>Set bóng bay và dây trang trí</p>',
+                'price' => 40000,
+                'original_price' => 40000,
+                'quantity' => 100,
+                'unit' => 'set',
+                'status' => 'available',
+                'image_url' => 'images/trang-tri.jpg',
+                'weight' => 100,
+                'shelf_life' => 365,
+                'short_intro' => '',
+                'short_paragraph' => '',
+                'structure' => '',
+                'usage' => '',
+                'bonus' => '',
+                'is_featured' => false,
+                'is_new' => false,
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -160,7 +416,10 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            DB::table('products')->insert($product);
+            DB::table('products')->updateOrInsert(
+                ['ProductID' => $product['ProductID']],
+                $product
+            );
         }
     }
 }

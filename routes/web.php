@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Staff\ProfileController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
 
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 Route::get('/', function () {
@@ -60,3 +61,5 @@ Route::middleware('auth')->group(function () {
         return view('orders.index');
     })->name('orders.index');
 });
+
+Route::get('/', [HomeController::class, 'index'])->name('home');

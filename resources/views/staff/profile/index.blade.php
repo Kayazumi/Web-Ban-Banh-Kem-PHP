@@ -1,13 +1,9 @@
 @extends('layouts.staff')
 
-@section('title', 'Hồ sơ Nhân viên - La Cuisine Ngọt')
+@section('title', 'Hồ sơ Nhân viên')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
-@endpush
-
-@push('scripts')
-    <script src="{{ asset('js/profile.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
 @endpush
 
 @section('content')
@@ -38,26 +34,48 @@
                 @csrf
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="nameInput">Họ và Tên</label>
-                        <input type="text" id="nameInput" name="full_name" value="{{ Auth::user()->full_name }}" required>
+                        <label for="nameInput">Họ và Tên <span style="color: #e74c3c;">*</span></label>
+                        <input 
+                            type="text" 
+                            id="nameInput" 
+                            name="full_name" 
+                            value="{{ Auth::user()->full_name }}" 
+                            required
+                            placeholder="Nhập họ và tên">
                     </div>
                     <div class="form-group">
                         <label for="phoneInput">Số điện thoại</label>
-                        <input type="tel" id="phoneInput" name="phone" value="{{ Auth::user()->phone ?? '' }}" placeholder="Nhập số điện thoại">
+                        <input 
+                            type="tel" 
+                            id="phoneInput" 
+                            name="phone" 
+                            value="{{ Auth::user()->phone ?? '' }}" 
+                            placeholder="Nhập số điện thoại"
+                            pattern="[0-9]{10,11}">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Email (Không thể sửa)</label>
-                    <input type="email" value="{{ Auth::user()->email }}" readonly>
+                    <input 
+                        type="email" 
+                        value="{{ Auth::user()->email }}" 
+                        readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="addressInput">Địa chỉ</label>
-                    <input type="text" id="addressInput" name="address" value="{{ Auth::user()->address ?? '' }}" placeholder="Nhập địa chỉ">
+                    <input 
+                        type="text" 
+                        id="addressInput" 
+                        name="address" 
+                        value="{{ Auth::user()->address ?? '' }}" 
+                        placeholder="Nhập địa chỉ">
                 </div>
 
-                <button type="submit" class="save-btn">Lưu thay đổi</button>
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save"></i> Lưu thay đổi
+                </button>
             </form>
         </div>
 
@@ -66,23 +84,49 @@
             <form id="passwordForm" class="profile-form">
                 @csrf
                 <div class="form-group">
-                    <label for="oldPassword">Mật khẩu hiện tại</label>
-                    <input type="password" id="oldPassword" name="oldPassword" required>
+                    <label for="oldPassword">Mật khẩu hiện tại <span style="color: #e74c3c;">*</span></label>
+                    <input 
+                        type="password" 
+                        id="oldPassword" 
+                        name="oldPassword" 
+                        required
+                        placeholder="Nhập mật khẩu hiện tại"
+                        autocomplete="current-password">
                 </div>
 
                 <div class="form-group">
-                    <label for="newPassword">Mật khẩu mới</label>
-                    <input type="password" id="newPassword" name="newPassword" required>
+                    <label for="newPassword">Mật khẩu mới <span style="color: #e74c3c;">*</span></label>
+                    <input 
+                        type="password" 
+                        id="newPassword" 
+                        name="newPassword" 
+                        required
+                        placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+                        autocomplete="new-password"
+                        minlength="6">
                 </div>
 
                 <div class="form-group">
-                    <label for="confirmPassword">Xác nhận mật khẩu mới</label>
-                    <input type="password" id="confirmPassword" name="newPassword_confirmation" required>
+                    <label for="confirmPassword">Xác nhận mật khẩu mới <span style="color: #e74c3c;">*</span></label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="newPassword_confirmation" 
+                        required
+                        placeholder="Nhập lại mật khẩu mới"
+                        autocomplete="new-password"
+                        minlength="6">
                 </div>
 
-                <button type="submit" class="save-btn">Đổi mật khẩu</button>
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-key"></i> Đổi mật khẩu
+                </button>
             </form>
         </div>
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script src="{{ asset('js/profile.js') }}"></script>
+@endpush
