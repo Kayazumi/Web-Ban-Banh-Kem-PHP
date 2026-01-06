@@ -23,6 +23,87 @@
     <link rel="stylesheet" href="{{ asset('css/customer.css') }}">
 
     @stack('styles')
+    <style>
+    /* Global centered modal used for confirmations/alerts */
+    .global-modal-overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.5);
+        z-index: 99999;
+    }
+    .global-modal {
+        background: #0f1b1a;
+        color: #e8fff9;
+        border-radius: 10px;
+        max-width: 540px;
+        width: 92%;
+        padding: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    .global-modal .modal-title { font-weight:700; margin-bottom:8px; }
+    .global-modal .modal-body { margin-bottom:14px; line-height:1.45; }
+    .global-modal .modal-actions { text-align:right; }
+    .global-modal .btn-primary {
+        background:#7fe3d0;
+        color:#05332d;
+        border:0;
+        padding:8px 14px;
+        border-radius:8px;
+        cursor:pointer;
+        font-weight:600;
+    }
+    .global-modal .btn-secondary {
+        background:transparent;
+        color:#cdebe5;
+        border:1px solid rgba(255,255,255,0.06);
+        padding:8px 12px;
+        border-radius:8px;
+        cursor:pointer;
+        margin-right:8px;
+    }
+    /* Auth links in navbar - make login/register visually prominent */
+    .nav-login-1, .nav-login-2 {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 600;
+        transition: all .15s ease;
+        margin-left: 6px;
+    }
+    .nav-login-1:hover, .nav-login-2:hover { transform: translateY(-1px); opacity: 0.95; }
+    .nav-login-2 {
+        background: #fff;
+        color: #1f4d3a;
+        padding: 8px 14px;
+    }
+    .nav-separator { color: rgba(255,255,255,0.35); margin: 0 6px; }
+    /* auth-actions container style */
+    .auth-actions {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        margin-left: 12px;
+    }
+    /* make login link look like subtle outline button */
+    .nav-login-1 {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.08);
+        padding: 8px 12px;
+        color: #fff;
+    }
+    /* adjust register button to match register page style */
+    .nav-login-2 {
+        background: #fff;
+        color: #1f4d3a;
+        padding: 8px 14px;
+        box-shadow: 0 6px 18px rgba(31,77,58,0.12);
+    }
+    </style>
 </head>
 
 <body>
@@ -66,10 +147,11 @@
                                 <li><button id="logoutBtn" onclick="logout()">Đăng xuất</button></li>
                             </ul>
                         </div>
-                    @else
-                        <a href="{{ route('login') }}" class="nav-login-1">ĐĂNG NHẬP</a>
-                        <span class="nav-separator">|</span>
-                        <a href="{{ route('register') }}" class="nav-login-2">ĐĂNG KÝ</a>
+                @else
+                        <div class="auth-actions">
+                            <a href="{{ route('login') }}" class="nav-login-1">ĐĂNG NHẬP</a>
+                            <a href="{{ route('register') }}" class="nav-login-2">ĐĂNG KÝ</a>
+                        </div>
                     @endauth
                 </li>
             </ul>
@@ -173,9 +255,9 @@
             document.querySelector('.filter-popup')?.classList.toggle('hidden');
         });
 
-        // Logout function
+        // Logout function (uses centered confirm modal)
         function logout() {
-            if (confirm('Bạn có chắc muốn đăng xuất?')) {
+            showConfirm('Bạn có chắc muốn đăng xuất?', function() {
                 fetch(window.Laravel.routes.logout, {
                     method: 'POST',
                     headers: {
@@ -190,10 +272,95 @@
                     }
                 })
                 .catch(error => console.error('Error:', error));
-            }
+            }, function() {
+                // canceled
+            });
         }
     </script>
 
     @stack('scripts')
+    <!-- Global modal HTML -->
+    <div id="globalModalOverlay" class="global-modal-overlay" aria-hidden="true">
+        <div class="global-modal" role="dialog" aria-modal="true" aria-labelledby="globalModalTitle">
+            <div id="globalModalTitle" class="modal-title">Thông báo</div>
+            <div id="globalModalBody" class="modal-body"></div>
+            <div class="modal-actions">
+                <button id="globalModalCancel" class="btn-secondary" style="display:none;">Huỷ</button>
+                <button id="globalModalOk" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        const overlay = document.getElementById('globalModalOverlay');
+        const titleEl = document.getElementById('globalModalTitle');
+        const bodyEl = document.getElementById('globalModalBody');
+        const okBtn = document.getElementById('globalModalOk');
+        const cancelBtn = document.getElementById('globalModalCancel');
+
+        function showConfirm(message, onOk, onCancel, opts = {}) {
+            titleEl.textContent = opts.title || 'Xác nhận';
+            bodyEl.innerHTML = escapeHtml(message);
+            cancelBtn.style.display = 'inline-block';
+            okBtn.textContent = opts.okText || 'OK';
+            cancelBtn.textContent = opts.cancelText || 'Huỷ';
+            overlay.style.display = 'flex';
+            overlay.setAttribute('aria-hidden', 'false');
+
+            function handleOk() {
+                hide();
+                okBtn.removeEventListener('click', handleOk);
+                cancelBtn.removeEventListener('click', handleCancel);
+                if (onOk) onOk();
+            }
+            function handleCancel() {
+                hide();
+                okBtn.removeEventListener('click', handleOk);
+                cancelBtn.removeEventListener('click', handleCancel);
+                if (onCancel) onCancel();
+            }
+
+            okBtn.addEventListener('click', handleOk);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+
+        function showAlert(message, onOk, opts = {}) {
+            titleEl.textContent = opts.title || 'Thông báo';
+            bodyEl.innerHTML = message;
+            cancelBtn.style.display = 'none';
+            okBtn.textContent = opts.okText || 'OK';
+            overlay.style.display = 'flex';
+            overlay.setAttribute('aria-hidden', 'false');
+
+            function handleOk() {
+                hide();
+                okBtn.removeEventListener('click', handleOk);
+                if (onOk) onOk();
+            }
+            okBtn.addEventListener('click', handleOk);
+            if (onOk && opts.autoClose) {
+                setTimeout(handleOk, opts.timeout || 2000);
+            }
+        }
+
+        function hide() {
+            overlay.style.display = 'none';
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+
+        function escapeHtml(unsafe) {
+            return String(unsafe)
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+        }
+
+        window.showConfirm = showConfirm;
+        window.showAlert = showAlert;
+    })();
+    </script>
 </body>
 </html>

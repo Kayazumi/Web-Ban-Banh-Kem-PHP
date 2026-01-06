@@ -111,6 +111,31 @@ body {
     cursor: pointer;
 }
 
+/* Make login/register nav links look like pill buttons and consistent */
+.nav-login-1,
+.nav-login-2 {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent !important;
+    color: #ffffff !important;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: none !important;
+}
+.nav-login-1:hover,
+.nav-login-2:hover {
+    background: rgba(255,255,255,0.04) !important;
+    color: #EDDECD !important;
+}
+
+/* Ensure no stray white box from other rules covers nav links */
+.nav-login-1::before, .nav-login-2::before,
+.nav-login-1::after, .nav-login-2::after {
+    display: none !important;
+    content: none !important;
+}
+
 .nav-separator {
     color: #ffffff;
     margin: 0 0.5rem;

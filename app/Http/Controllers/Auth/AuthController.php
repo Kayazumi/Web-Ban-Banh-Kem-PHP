@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -61,5 +64,58 @@ class AuthController extends Controller
         }
 
         return redirect('/login');
+    }
+
+    /**
+     * Hiển thị trang đăng ký
+     */
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Xử lý đăng ký tài khoản
+     */
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'username' => 'required|string|max:50|unique:users,username',
+            'email' => 'required|email|max:150|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $fullName = trim($request->first_name . ' ' . $request->last_name);
+
+        $user = User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password_hash' => Hash::make($request->password),
+            'full_name' => $fullName,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'role' => 'customer',
+            'status' => 'active',
+        ]);
+        // Don't auto-login; return success and redirect to login page
+        return response()->json([
+            'success' => true,
+            'message' => 'Tài khoản của bạn đã được tạo!',
+            'data' => [
+                'redirect' => route('login')
+            ]
+        ], 201);
     }
 }

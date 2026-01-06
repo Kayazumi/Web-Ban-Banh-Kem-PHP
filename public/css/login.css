@@ -1,16 +1,5 @@
 /* public/css/login.css */
 
-/* Ẩn các phần không cần thiết ở trang login */
-.nav-menu li:not(:first-child),
-.nav-search,
-.nav-cart,
-.nav-user .user-menu,
-.nav-login-1,
-.nav-login-2,
-.nav-separator {
-    display: none !important;
-}
-
 .nav-logo a {
     font-size: 48px !important;
 }
