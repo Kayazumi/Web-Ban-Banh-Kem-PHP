@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\OrderStatusHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -129,7 +131,8 @@ class OrderController extends Controller
             'order_id' => $order->OrderID,
             'old_status' => $oldStatus,
             'new_status' => $newStatus,
-            'changed_by' => auth()->id(),
+            // Use the authenticated user's id (works with custom primaryKey)
+            'changed_by' => Auth::id() ?? null,
             'note' => $request->note
         ]);
 
@@ -176,5 +179,54 @@ class OrderController extends Controller
             'success' => true,
             'data' => $stats
         ]);
+    }
+
+    /**
+     * Monthly revenue for a given year (returns map month => revenue)
+     */
+    public function monthlyRevenue(Request $request)
+    {
+        $year = (int) $request->get('year', date('Y'));
+
+        $rows = DB::table('orders')
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, SUM(final_amount) as revenue")
+            ->whereYear('created_at', $year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        $result = [];
+        foreach ($rows as $r) {
+            $result[$r->month] = (float) $r->revenue;
+        }
+
+        return response()->json(['success' => true, 'data' => ['monthly' => $result]]);
+    }
+
+    /**
+     * Product breakdown for a specific year-month (format YYYY-MM)
+     */
+    public function productBreakdown(Request $request)
+    {
+        $year = (int) $request->get('year', date('Y'));
+        $month = (int) $request->get('month', date('n'));
+
+        $start = \Carbon\Carbon::create($year, $month, 1)->startOfMonth()->toDateTimeString();
+        $end = \Carbon\Carbon::create($year, $month, 1)->endOfMonth()->toDateTimeString();
+
+        $rows = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', 'orders.OrderID')
+            ->join('products', 'order_items.product_id', 'products.ProductID')
+            ->selectRaw('products.product_name as name, SUM(order_items.quantity) as qty, SUM(order_items.subtotal) as revenue')
+            ->whereBetween('orders.created_at', [$start, $end])
+            ->groupBy('products.product_name')
+            ->orderByDesc('qty')
+            ->get();
+
+        $names = $rows->pluck('name')->toArray();
+        $qtys = $rows->pluck('qty')->map(function($v){ return (int)$v; })->toArray();
+        $revenues = $rows->pluck('revenue')->map(function($v){ return (float)$v; })->toArray();
+
+        return response()->json(['success' => true, 'data' => ['names' => $names, 'qtys' => $qtys, 'revenues' => $revenues]]);
     }
 }

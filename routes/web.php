@@ -31,8 +31,43 @@ Route::post('/logout', [AuthController::class, 'logout'])
 // 4. ROUTE DÀNH CHO ADMIN
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
-        return view('admin.dashboard');
+        // summary metrics
+        $totalRevenue = DB::table('orders')->sum('final_amount') ?: 0;
+        $totalOrders = DB::table('orders')->count();
+        $deliveredCount = DB::table('orders')->where('order_status', 'delivery_successful')->count();
+        $newCustomers = DB::table('users')->where('role', 'customer')->count();
+
+        // monthly revenue for latest 12 months (computed in PHP for DB compatibility)
+        $ordersForMonthly = DB::table('orders')->select('created_at','final_amount')->whereNotNull('created_at')->get();
+        $monthly = [];
+        foreach ($ordersForMonthly as $o) {
+            try {
+                $m = \Carbon\Carbon::parse($o->created_at)->format('Y-m');
+            } catch (\Exception $e) {
+                continue;
+            }
+            if (!isset($monthly[$m])) $monthly[$m] = 0;
+            $monthly[$m] += (float) $o->final_amount;
+        }
+        // keep ordered by month
+        ksort($monthly);
+
+        // top products by quantity sold
+        $topProducts = DB::table('order_items')
+            ->join('products','order_items.product_id','products.ProductID')
+            ->selectRaw('products.product_name as name, SUM(order_items.quantity) as qty, SUM(order_items.subtotal) as revenue')
+            ->groupBy('products.product_name')
+            ->orderByDesc('qty')
+            ->limit(10)
+            ->get();
+
+        $laravelUser = Auth::user();
+        return view('admin.dashboard', compact('totalRevenue','totalOrders','deliveredCount','newCustomers','monthly','topProducts','laravelUser'));
     })->name('dashboard');
+
+    // Reports endpoints (session-authenticated) for dashboard charts
+    Route::get('/reports/monthly', [\App\Http\Controllers\Admin\OrderController::class, 'monthlyRevenue']);
+    Route::get('/reports/products', [\App\Http\Controllers\Admin\OrderController::class, 'productBreakdown']);
 
     Route::get('/users', function () {
         return view('admin.users');

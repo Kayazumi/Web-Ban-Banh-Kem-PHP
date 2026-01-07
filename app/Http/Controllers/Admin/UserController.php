@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -102,7 +103,7 @@ class UserController extends Controller
         }
 
         // Prevent admin from banning themselves
-        if ($user->UserID === auth()->id() && $request->status === 'banned') {
+        if ($user->UserID === Auth::id() && $request->status === 'banned') {
             return response()->json([
                 'success' => false,
                 'message' => 'Không thể tự khóa tài khoản của chính mình'
@@ -153,7 +154,7 @@ class UserController extends Controller
         }
 
         // Prevent changing own role if not admin
-        if ($user->UserID === auth()->id() && isset($request->role) && $request->role !== $user->role) {
+        if ($user->UserID === Auth::id() && isset($request->role) && $request->role !== $user->role) {
             return response()->json([
                 'success' => false,
                 'message' => 'Không thể thay đổi vai trò của chính mình'
@@ -266,7 +267,7 @@ class UserController extends Controller
         }
 
         // Prevent deleting own account
-        if ($user->UserID === auth()->id()) {
+        if ($user->UserID === Auth::id()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Không thể xóa tài khoản của chính mình'
@@ -274,7 +275,7 @@ class UserController extends Controller
         }
 
         // Prevent deleting other admins (optional security)
-        if ($user->role === 'admin' && auth()->user()->role !== 'admin') {
+        if ($user->role === 'admin' && Auth::user()->role !== 'admin') {
             return response()->json([
                 'success' => false,
                 'message' => 'Không có quyền xóa tài khoản admin'

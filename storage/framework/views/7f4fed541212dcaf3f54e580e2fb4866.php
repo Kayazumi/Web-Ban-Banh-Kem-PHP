@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin - La Cuisine Ngọt')</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title><?php echo $__env->yieldContent('title', 'Admin - La Cuisine Ngọt'); ?></title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- THAY ĐỔI TẠI ĐÂY: Load CSS thủ công -->
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/admin.css')); ?>">
 
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
 <body>
@@ -26,27 +26,27 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <a href="<?php echo e(route('admin.dashboard')); ?>" class="<?php echo e(request()->routeIs('admin.dashboard') ? 'active' : ''); ?>">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'active' : '' }}">
+                <a href="<?php echo e(route('admin.products')); ?>" class="<?php echo e(request()->routeIs('admin.products*') ? 'active' : ''); ?>">
                     <i class="fas fa-box"></i>
                     <span>Sản phẩm</span>
                 </a>
 
-                <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'active' : '' }}">
+                <a href="<?php echo e(route('admin.orders')); ?>" class="<?php echo e(request()->routeIs('admin.orders*') ? 'active' : ''); ?>">
                     <i class="fas fa-shopping-cart"></i>
                     <span>Đơn hàng</span>
                 </a>
 
-                <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+                <a href="<?php echo e(route('admin.users')); ?>" class="<?php echo e(request()->routeIs('admin.users*') ? 'active' : ''); ?>">
                     <i class="fas fa-users"></i>
                     <span>Người dùng</span>
                 </a>
 
-                <a href="{{ route('home') }}" target="_blank">
+                <a href="<?php echo e(route('home')); ?>" target="_blank">
                     <i class="fas fa-external-link-alt"></i>
                     <span>Xem website</span>
                 </a>
@@ -54,11 +54,11 @@
 
             <div class="sidebar-footer">
                 <div class="user-info">
-                    <span>{{ Auth::user()->full_name }}</span>
-                    <small>{{ Auth::user()->email }}</small>
+                    <span><?php echo e(Auth::user()->full_name); ?></span>
+                    <small><?php echo e(Auth::user()->email); ?></small>
                 </div>
-                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                    @csrf
+                <form action="<?php echo e(route('logout')); ?>" method="POST" style="display: inline;">
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="logout-btn">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Đăng xuất</span>
@@ -70,23 +70,23 @@
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1>@yield('page-title', 'Dashboard')</h1>
+                <h1><?php echo $__env->yieldContent('page-title', 'Dashboard'); ?></h1>
                 <div class="header-actions">
                     <span class="current-time" id="currentTime"></span>
                 </div>
             </header>
 
             <div class="admin-content">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
             </div>
         </main>
     </div>
 
     <!-- Scripts -->
     <!-- THAY ĐỔI TẠI ĐÂY: Load JS thủ công -->
-    <script src="{{ asset('js/admin.js') }}"></script>
+    <script src="<?php echo e(asset('js/admin.js')); ?>"></script>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 
     <script>
         // Update current time
@@ -109,16 +109,16 @@
         // Global variables
         <?php $___laravel_user = $laravelUser ?? null; ?>
         window.Laravel = {
-            csrfToken: '{{ csrf_token() }}',
+            csrfToken: '<?php echo e(csrf_token()); ?>',
             user: <?php echo json_encode($___laravel_user, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP); ?>,
             routes: {
                 api: {
-                    products: '{{ url("api/admin/products") }}',
-                    orders: '{{ url("api/admin/orders") }}'
+                    products: '<?php echo e(url("api/admin/products")); ?>',
+                    orders: '<?php echo e(url("api/admin/orders")); ?>'
                 }
             }
         };
     </script>
 </body>
 
-</html>
+</html><?php /**PATH D:\Hoc_tap\Lap_Trinh_PHP\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/admin.blade.php ENDPATH**/ ?>

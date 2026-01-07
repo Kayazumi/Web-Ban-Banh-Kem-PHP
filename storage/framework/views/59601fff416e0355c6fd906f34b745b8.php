@@ -1,8 +1,6 @@
-@extends('layouts.admin')
+<?php $__env->startSection('page-title', 'Dashboard'); ?>
 
-@section('page-title', 'Dashboard')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="dashboard">
     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
         <div style="background:#fff;border-radius:8px;padding:10px 14px;display:flex;align-items:center;min-width:180px;box-shadow:0 1px 0 rgba(0,0,0,0.06);">
@@ -10,7 +8,7 @@
                 <i class="fas fa-dollar-sign" style="color:#1b805a"></i>
             </div>
             <div>
-                <div style="font-size:18px;font-weight:700">{{ number_format($totalRevenue,0,',','.') }} đ</div>
+                <div style="font-size:18px;font-weight:700"><?php echo e(number_format($totalRevenue,0,',','.')); ?> đ</div>
                 <div style="font-size:12px;color:#666;">Doanh thu</div>
             </div>
         </div>
@@ -20,7 +18,7 @@
                 <i class="fas fa-shopping-cart" style="color:#2f9f6d"></i>
             </div>
             <div>
-                <div style="font-size:18px;font-weight:700">{{ $totalOrders }}</div>
+                <div style="font-size:18px;font-weight:700"><?php echo e($totalOrders); ?></div>
                 <div style="font-size:12px;color:#666;">Đơn hàng</div>
             </div>
         </div>
@@ -30,7 +28,7 @@
                 <i class="fas fa-check-circle" style="color:#f0a83b"></i>
             </div>
             <div>
-                <div style="font-size:18px;font-weight:700">{{ $deliveredCount }}</div>
+                <div style="font-size:18px;font-weight:700"><?php echo e($deliveredCount); ?></div>
                 <div style="font-size:12px;color:#666;">Đã giao</div>
             </div>
         </div>
@@ -40,7 +38,7 @@
                 <i class="fas fa-user-plus" style="color:#7b4ce6"></i>
             </div>
             <div>
-                <div style="font-size:18px;font-weight:700">{{ $newCustomers }}</div>
+                <div style="font-size:18px;font-weight:700"><?php echo e($newCustomers); ?></div>
                 <div style="font-size:12px;color:#666;">Khách mới</div>
             </div>
         </div>
@@ -91,31 +89,31 @@
                 </tr>
             </thead>
             <tbody>
-            @php
+            <?php
                 $totalRev = $topProducts->sum('revenue') ?: 1;
-            @endphp
-            @foreach($topProducts as $p)
+            ?>
+            <?php $__currentLoopData = $topProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
-                    <td>{{ $p->name }}</td>
-                    <td>{{ $p->qty }}</td>
-                    <td>{{ number_format($p->revenue,0,',','.') }} đ</td>
-                    <td>{{ number_format(($p->revenue / $totalRev) * 100,2) }}%</td>
+                    <td><?php echo e($p->name); ?></td>
+                    <td><?php echo e($p->qty); ?></td>
+                    <td><?php echo e(number_format($p->revenue,0,',','.')); ?> đ</td>
+                    <td><?php echo e(number_format(($p->revenue / $totalRev) * 100,2)); ?>%</td>
                 </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 <tr>
                     <td style="font-weight:700">TỔNG CỘNG</td>
-                    <td>{{ $topProducts->sum('qty') }}</td>
-                    <td>{{ number_format($topProducts->sum('revenue'),0,',','.') }} đ</td>
+                    <td><?php echo e($topProducts->sum('qty')); ?></td>
+                    <td><?php echo e(number_format($topProducts->sum('revenue'),0,',','.')); ?> đ</td>
                     <td>100.00%</td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
-    <script src="{{ asset('js/chart.min.js') }}"></script>
+<?php $__env->startPush('scripts'); ?>
+    <script src="<?php echo e(asset('js/chart.min.js')); ?>"></script>
     <script>
         if (!window._dashboardChartsInitialized) {
         (function(){
@@ -230,4 +228,6 @@
         }
     }
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Hoc_tap\Lap_Trinh_PHP\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>
