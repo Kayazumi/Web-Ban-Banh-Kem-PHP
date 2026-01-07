@@ -75,33 +75,7 @@
         </div>
     </div>
 
-    <!-- Recent Products -->
-    <div class="dashboard-section">
-        <div class="section-header">
-            <h2>Sản phẩm gần đây</h2>
-            <a href="{{ route('admin.products') }}" class="btn btn-sm">Xem tất cả</a>
-        </div>
-
-        <div class="table-responsive">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Hình ảnh</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Tồn kho</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody id="recentProducts">
-                    <tr>
-                        <td colspan="6" class="text-center">Đang tải...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <!-- Recent Products removed per request -->
 </div>
 @endsection
 
@@ -110,18 +84,33 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadDashboardStats();
     loadRecentOrders();
-    loadRecentProducts();
 });
 
 async function loadDashboardStats() {
     try {
+        const token = localStorage.getItem('api_token');
+
         // Load orders count
-        const ordersResponse = await fetch('/api/admin/orders?limit=1');
+        const ordersResponse = await fetch('/api/admin/orders?limit=1', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const ordersData = await ordersResponse.json();
         document.getElementById('totalOrders').textContent = ordersData.total || 0;
 
         // Load products count
-        const productsResponse = await fetch('/api/admin/products?limit=1');
+        const productsResponse = await fetch('/api/admin/products?limit=1', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const productsData = await productsResponse.json();
         document.getElementById('totalProducts').textContent = productsData.total || 0;
 
@@ -136,7 +125,15 @@ async function loadDashboardStats() {
 
 async function loadRecentOrders() {
     try {
-        const response = await fetch('/api/admin/orders?limit=5');
+        const token = localStorage.getItem('api_token');
+        const response = await fetch('/api/admin/orders?limit=5', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const data = await response.json();
 
         const tbody = document.getElementById('recentOrders');
@@ -167,7 +164,15 @@ async function loadRecentOrders() {
 
 async function loadRecentProducts() {
     try {
-        const response = await fetch('/api/admin/products?limit=5');
+        const token = localStorage.getItem('api_token');
+        const response = await fetch('/api/admin/products?limit=5', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const data = await response.json();
 
         const tbody = document.getElementById('recentProducts');
@@ -198,6 +203,7 @@ async function loadRecentProducts() {
             '<tr><td colspan="6" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
     }
 }
+// Recent products removed from dashboard — function retained for backward compatibility if needed elsewhere.
 
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN', {

@@ -209,7 +209,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadOrders() {
     try {
-        const response = await fetch('/api/admin/orders');
+        const token = localStorage.getItem('api_token');
+        const response = await fetch('/api/admin/orders', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const data = await response.json();
 
         const tbody = document.getElementById('ordersTableBody');

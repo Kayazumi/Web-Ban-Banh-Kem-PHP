@@ -30,8 +30,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/register', 'register');
-    Route::post('/logout', 'logout')->middleware('auth');
-    Route::get('/user', 'user')->middleware('auth');
+    Route::post('/logout', 'logout')->middleware('auth:sanctum');
+    Route::get('/user', 'user')->middleware('auth:sanctum');
 });
 
 // Public API routes
@@ -64,7 +64,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin API routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     // Admin Product API
     Route::apiResource('/products', AdminProductController::class);
 

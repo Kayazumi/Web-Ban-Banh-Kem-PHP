@@ -230,7 +230,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadUsers() {
     try {
-        const response = await fetch('/api/admin/users');
+        const token = localStorage.getItem('api_token');
+        const response = await fetch('/api/admin/users', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const data = await response.json();
 
         const tbody = document.getElementById('usersTableBody');
@@ -292,11 +300,14 @@ async function toggleStatus(userId, currentStatus) {
     const newStatus = currentStatus === 'active' ? 'banned' : 'active';
 
     try {
+        const token = localStorage.getItem('api_token');
         const response = await fetch(`/api/admin/users/${userId}/status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': window.Laravel.csrfToken
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
             },
             body: JSON.stringify({
                 status: newStatus

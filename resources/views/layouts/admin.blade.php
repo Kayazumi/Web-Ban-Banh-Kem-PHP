@@ -9,7 +9,9 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    @vite(['resources/css/admin.css', 'resources/js/admin.js'])
+
+    <!-- THAY ĐỔI TẠI ĐÂY: Load CSS thủ công -->
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 
     @stack('styles')
 </head>
@@ -75,13 +77,15 @@
             </header>
 
             <div class="admin-content">
-                @yield('content')
+            @yield('content')
             </div>
         </main>
     </div>
 
     <!-- Scripts -->
-    @vite(['resources/js/admin.js'])
+    <!-- THAY ĐỔI TẠI ĐÂY: Load JS thủ công -->
+    <script src="{{ asset('js/admin.js') }}"></script>
+
     @stack('scripts')
 
     <script>
@@ -117,5 +121,3 @@
 </body>
 
 </html>
-
-

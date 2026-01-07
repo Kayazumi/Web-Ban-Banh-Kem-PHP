@@ -489,7 +489,15 @@ async function loadProducts(page = 1) {
             ...currentFilters
         });
 
-        const response = await fetch(`/api/admin/products?${params}`);
+        const token = localStorage.getItem('api_token');
+        const response = await fetch(`/api/admin/products?${params}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
         const data = await response.json();
 
         const tbody = document.getElementById('productsTableBody');

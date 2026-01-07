@@ -65,6 +65,10 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    // Lưu token vào localStorage nếu có
+                    if (data.data.token) {
+                        localStorage.setItem('api_token', data.data.token);
+                    }
                     window.location.href = data.data.redirect || '/';
                 } else {
                     alert(data.message || 'Đăng nhập thất bại');

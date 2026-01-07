@@ -30,6 +30,9 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            // Create Sanctum token for API access
+            $token = $user->createToken('api-token')->plainTextToken;
+
             $redirect = match ($user->role) {
                 // After admin login, land on product management page
                 'admin' => route('admin.products'),
@@ -40,7 +43,16 @@ class AuthController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Đăng nhập thành công!',
-                'data' => ['redirect' => $redirect]
+                'data' => [
+                    'redirect' => $redirect,
+                    'token' => $token,
+                    'user' => [
+                        'id' => $user->UserID,
+                        'username' => $user->username,
+                        'role' => $user->role,
+                        'full_name' => $user->full_name
+                    ]
+                ]
             ]);
         }
 
