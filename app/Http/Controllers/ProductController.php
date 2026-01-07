@@ -50,10 +50,25 @@ class ProductController extends Controller
 
         $products = $query->orderBy('created_at', 'desc')->paginate(12);
 
+        // Map products to API-friendly structure (include asset image URL)
+        $mappedProducts = collect($products->items())->map(function ($product) {
+            return [
+                'product_id' => $product->ProductID,
+                'product_name' => $product->product_name,
+                'image_url' => asset($product->image_url ?: 'images/placeholder.jpg'),
+                'price' => (float) $product->price,
+                'original_price' => $product->original_price ? (float) $product->original_price : null,
+                'is_featured' => (bool) $product->is_featured,
+                'is_new' => (bool) $product->is_new,
+                'short_intro' => $product->short_intro ?? null,
+                'description' => $product->description ?? null,
+            ];
+        })->toArray();
+
         return response()->json([
             'success' => true,
             'data' => [
-                'products' => $products->items(),
+                'products' => $mappedProducts,
                 'pagination' => [
                     'current_page' => $products->currentPage(),
                     'last_page' => $products->lastPage(),
@@ -83,10 +98,43 @@ class ProductController extends Controller
         // Increment view count
         $product->increment('views');
 
+        // Map product and images for API consumer
+        $mappedProduct = [
+            'product_id' => $product->ProductID,
+            'product_name' => $product->product_name,
+            'description' => $product->description,
+            'short_intro' => $product->short_intro,
+            'price' => (float) $product->price,
+            'original_price' => $product->original_price ? (float) $product->original_price : null,
+            'image_url' => asset($product->image_url ?: 'images/placeholder.jpg'),
+            'is_featured' => (bool) $product->is_featured,
+            'is_new' => (bool) $product->is_new,
+            'quantity' => $product->quantity,
+            'unit' => $product->unit,
+            'product_images' => collect($product->productImages)->map(function ($img) {
+                return [
+                    'image_id' => $img->ImageID ?? null,
+                    'image_url' => asset($img->image_url),
+                    'alt_text' => $img->alt_text ?? null,
+                    'is_primary' => (bool) ($img->is_primary ?? false),
+                ];
+            })->toArray(),
+            'reviews' => collect($product->reviews)->map(function ($r) {
+                return [
+                    'review_id' => $r->ReviewID ?? null,
+                    'user_id' => $r->user_id ?? null,
+                    'rating' => $r->rating ?? null,
+                    'title' => $r->title ?? null,
+                    'content' => $r->content ?? null,
+                    'created_at' => $r->created_at ?? null,
+                ];
+            })->toArray(),
+        ];
+
         return response()->json([
             'success' => true,
             'data' => [
-                'product' => $product
+                'product' => $mappedProduct
             ]
         ]);
     }

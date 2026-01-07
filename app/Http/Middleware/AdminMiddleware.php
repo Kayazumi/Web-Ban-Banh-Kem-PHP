@@ -29,7 +29,8 @@ class AdminMiddleware
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if ($user->isAdmin()) {
+        // Only allow access when user IS admin; block others
+        if (!$user->isAdmin()) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,

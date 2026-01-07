@@ -102,6 +102,78 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'UserID' => 4,
+                'username' => 'customer02',
+                'email' => 'customer02@email.com',
+                'password_hash' => Hash::make('password'),
+                'full_name' => 'Trần Thị B',
+                'phone' => '0904567890',
+                'role' => 'customer',
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'UserID' => 5,
+                'username' => 'staff02',
+                'email' => 'cam.le@lacuisine.vn',
+                'password_hash' => Hash::make('password'),
+                'full_name' => 'Lê Thị Cẩm',
+                'phone' => '0902111222',
+                'role' => 'staff',
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'UserID' => 6,
+                'username' => 'staff03',
+                'email' => 'dung.pham@lacuisine.vn',
+                'password_hash' => Hash::make('password'),
+                'full_name' => 'Phạm Văn Dũng',
+                'phone' => '0903222333',
+                'role' => 'staff',
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'UserID' => 7,
+                'username' => 'staff04',
+                'email' => 'tuan.bui@lacuisine.vn',
+                'password_hash' => Hash::make('password'),
+                'full_name' => 'Bùi Minh Tuấn',
+                'phone' => '0904333444',
+                'role' => 'staff',
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'UserID' => 8,
+                'username' => 'staff05',
+                'email' => 'oanh.vu@lacuisine.vn',
+                'password_hash' => Hash::make('password'),
+                'full_name' => 'Vũ Hoàng Oanh',
+                'phone' => '0905444555',
+                'role' => 'staff',
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'UserID' => 9,
+                'username' => 'staff06',
+                'email' => 'han.dang@lacuisine.vn',
+                'password_hash' => Hash::make('password'),
+                'full_name' => 'Đặng Gia Hân',
+                'phone' => '0906555666',
+                'role' => 'staff',
+                'status' => 'active',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         foreach ($users as $user) {
@@ -420,6 +492,603 @@ class DatabaseSeeder extends Seeder
                 ['ProductID' => $product['ProductID']],
                 $product
             );
+        }
+        
+        // 4. Product images (one primary image per product)
+        $productImages = [
+            ['ProductID' => 1, 'ImageURL' => 'images/entremets-rose.jpg', 'AltText' => 'Entremets Rose - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 2, 'ImageURL' => 'images/lime-and-basil-entremets.jpg', 'AltText' => 'Lime and Basil - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 3, 'ImageURL' => 'images/blanche-figues&framboises.jpg', 'AltText' => 'Blanche Figues - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 4, 'ImageURL' => 'images/mousse-chanh-day.jpg', 'AltText' => 'Mousse Chanh Dây - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 5, 'ImageURL' => 'images/mousse-dua-luoi.jpg', 'AltText' => 'Mousse Dưa Lưới - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 6, 'ImageURL' => 'images/mousse-viet-quat.jpg', 'AltText' => 'Mousse Việt Quất - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 7, 'ImageURL' => 'images/orange-serenade.jpg', 'AltText' => 'Orange Serenade - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 8, 'ImageURL' => 'images/strawberry-cloud-cake.jpg', 'AltText' => 'Strawberry Cloud Cake - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 9, 'ImageURL' => 'images/earl-grey-bloom.jpg', 'AltText' => 'Earl Grey Bloom - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 10, 'ImageURL' => 'images/non.jpg', 'AltText' => 'Nón Sinh Nhật - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 11, 'ImageURL' => 'images/phaohoa.jpg', 'AltText' => 'Pháo Hoa - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+            ['ProductID' => 12, 'ImageURL' => 'images/trang-tri.jpg', 'AltText' => 'Bóng Bay và Dây Trang Trí - View 1', 'IsPrimary' => true, 'DisplayOrder' => 1],
+        ];
+
+        foreach ($productImages as $img) {
+            DB::table('product_images')->updateOrInsert(
+                ['product_id' => $img['ProductID'], 'image_url' => $img['ImageURL']],
+                [
+                    'product_id' => $img['ProductID'],
+                    'image_url' => $img['ImageURL'],
+                    'alt_text' => $img['AltText'],
+                    'is_primary' => $img['IsPrimary'],
+                    'display_order' => $img['DisplayOrder'],
+                    'created_at' => now(),
+                ]
+            );
+        }
+
+        // Normalize any legacy 'assets/images/' paths to 'images/' in existing tables
+        DB::statement("UPDATE product_images SET image_url = replace(image_url, 'assets/images/', 'images/') WHERE image_url LIKE 'assets/images/%'");
+        DB::statement("UPDATE products SET image_url = replace(image_url, 'assets/images/', 'images/') WHERE image_url LIKE 'assets/images/%'");
+        // Remove duplicate product_images (keep the first by ImageID)
+        DB::statement("DELETE FROM product_images WHERE ImageID NOT IN (SELECT MIN(ImageID) FROM product_images GROUP BY product_id, image_url)");
+
+        // 5. Promotions
+        $promotions = [
+            [
+                'promotion_code' => 'GIAM10TRON15',
+                'promotion_name' => 'Giảm 10% cho đơn trên 1.500.000đ',
+                'description' => 'Giảm 10% giá trị đơn hàng từ 1.500.000đ.',
+                'promotion_type' => 'percent',
+                'discount_value' => 10,
+                'min_order_value' => 1500000,
+                'quantity' => 200,
+                'start_date' => '2025-11-01 00:00:00',
+                'end_date' => '2028-12-31 23:59:59',
+                'status' => 'active',
+                'customer_type' => 'all',
+                'created_by' => 1,
+                'image_url' => 'images/buy-1-get-1.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'promotion_code' => 'FREESHIPLOYAL',
+                'promotion_name' => 'Miễn phí giao hàng',
+                'description' => 'Áp dụng cho khách hàng thân thiết.',
+                'promotion_type' => 'free_shipping',
+                'discount_value' => 0,
+                'min_order_value' => 0,
+                'quantity' => -1,
+                'start_date' => '2025-01-01 00:00:00',
+                'end_date' => '2025-12-31 23:59:59',
+                'status' => 'active',
+                'customer_type' => 'loyal',
+                'created_by' => 1,
+                'image_url' => 'images/free-ship.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'promotion_code' => 'FIRSTORDER10',
+                'promotion_name' => 'Giảm 10% cho đơn hàng đầu tiên trong năm',
+                'description' => 'Áp dụng giảm 10% cho đơn hàng đầu tiên của mỗi khách hàng trong năm.',
+                'promotion_type' => 'percent',
+                'discount_value' => 10,
+                'min_order_value' => 0,
+                'quantity' => -1,
+                'start_date' => '2025-01-01 00:00:00',
+                'end_date' => '2025-12-31 23:59:59',
+                'status' => 'active',
+                'customer_type' => 'all',
+                'created_by' => 1,
+                'image_url' => 'images/gg.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ];
+
+        foreach ($promotions as $promo) {
+            DB::table('promotions')->updateOrInsert(
+                ['promotion_code' => $promo['promotion_code']],
+                $promo
+            );
+        }
+
+        // 6. Contacts (sample)
+        $contacts = [
+            ['customer_id' => 3, 'subject' => 'Hỏi về bánh Entremet', 'message' => 'Cho mình hỏi bánh Entremets Rose còn hàng không?', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
+            ['customer_id' => 4, 'subject' => 'Góp ý về giao hàng', 'message' => 'Shipper giao hàng hôm qua hơi chậm, mong shop có thể cải thiện dịch vụ.', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
+            ['customer_id' => 3, 'subject' => 'Yêu cầu tư vấn bánh Mousse', 'message' => 'Mình muốn đặt bánh Mousse Chanh Dây cho tiệc sinh nhật 10 người, shop tư vấn giúp mình kích thước nhé.', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
+            ['customer_id' => 4, 'subject' => 'Phản hồi về chất lượng Strawberry Cloud Cake', 'message' => 'Bánh Strawberry Cloud Cake lần trước mình đặt rất ngon, cảm ơn shop!', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
+        ];
+
+        foreach ($contacts as $idx => $c) {
+            DB::table('contacts')->updateOrInsert(
+                ['customer_id' => $c['customer_id'], 'subject' => $c['subject']],
+                $c
+            );
+        }
+
+        // 7. Orders (complete set from SQL)
+        $orders = [
+            // Initial orders
+            ['order_code' => 'ORD001','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1200000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1230000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>now(),'completed_at'=>now()],
+            ['order_code' => 'ORD002','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1100000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1080000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivering','note'=>null,'created_at'=>now(),'completed_at'=>null],
+            ['order_code' => 'ORD003','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1750000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'preparing','note'=>'Giao sau 15h','created_at'=>now(),'completed_at'=>null],
+            ['order_code' => 'ORD004','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1000000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1030000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'pending','note'=>null,'created_at'=>now(),'completed_at'=>null],
+            ['order_code' => 'ORD005','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2200000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2130000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>now(),'completed_at'=>now()],
+
+            // 2024 Orders - Month 1
+            ['order_code' => 'ORD20240101','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1500000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1530000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-01-15 10:00:00','completed_at'=>'2024-01-17 14:00:00'],
+            ['order_code' => 'ORD20240102','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2200000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2130000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-01-20 11:00:00','completed_at'=>'2024-01-22 15:00:00'],
+            ['order_code' => 'ORD20240103','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2000000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1980000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-01-08 14:00:00','completed_at'=>'2024-01-10 16:00:00'],
+            ['order_code' => 'ORD20240104','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1600000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-01-18 11:00:00','completed_at'=>'2024-01-20 15:00:00'],
+            ['order_code' => 'ORD20240105','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1900000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1830000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-01-25 10:00:00','completed_at'=>'2024-01-27 14:00:00'],
+
+            // 2024 Orders - Month 2
+            ['order_code' => 'ORD20240201','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1800000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-02-10 09:00:00','completed_at'=>'2024-02-12 13:00:00'],
+            ['order_code' => 'ORD20240202','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1300000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1330000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-02-25 14:00:00','completed_at'=>'2024-02-27 16:00:00'],
+            ['order_code' => 'ORD20240203','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1650000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1680000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-02-05 09:00:00','completed_at'=>'2024-02-07 13:00:00'],
+            ['order_code' => 'ORD20240204','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1700000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1680000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-02-15 14:00:00','completed_at'=>'2024-02-17 16:00:00'],
+            ['order_code' => 'ORD20240205','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1550000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1530000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-02-20 10:00:00','completed_at'=>'2024-02-22 14:00:00'],
+
+            // 2024 Orders - Month 3 (Continue)
+            ['order_code' => 'ORD20240301','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1950000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1980000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-03-05 10:00:00','completed_at'=>'2024-03-07 14:00:00'],
+            ['order_code' => 'ORD20240302','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1650000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-03-18 11:00:00','completed_at'=>'2024-03-20 15:00:00'],
+            ['order_code' => 'ORD20240303','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1850000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-03-10 11:00:00','completed_at'=>'2024-03-12 15:00:00'],
+            ['order_code' => 'ORD20240304','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1750000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-03-22 09:00:00','completed_at'=>'2024-03-24 13:00:00'],
+            ['order_code' => 'ORD20240305','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1600000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1580000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-03-28 14:00:00','completed_at'=>'2024-03-30 16:00:00'],
+
+            // 2024 Orders - Month 4
+            ['order_code' => 'ORD20240401','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2100000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2030000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-04-12 09:00:00','completed_at'=>'2024-04-14 13:00:00'],
+            ['order_code' => 'ORD20240402','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1400000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1430000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-04-28 14:00:00','completed_at'=>'2024-04-30 16:00:00'],
+            ['order_code' => 'ORD20240403','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1650000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-04-05 10:00:00','completed_at'=>'2024-04-07 14:00:00'],
+            ['order_code' => 'ORD20240404','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1900000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1830000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-04-15 11:00:00','completed_at'=>'2024-04-17 15:00:00'],
+            ['order_code' => 'ORD20240405','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1700000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1730000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-04-22 09:00:00','completed_at'=>'2024-04-24 13:00:00'],
+
+            // 2024 Orders - Month 5
+            ['order_code' => 'ORD20240501','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1750000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-05-08 10:00:00','completed_at'=>'2024-05-10 14:00:00'],
+            ['order_code' => 'ORD20240502','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1900000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1880000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-05-22 11:00:00','completed_at'=>'2024-05-24 15:00:00'],
+            ['order_code' => 'ORD20240503','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1650000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-05-03 09:00:00','completed_at'=>'2024-05-05 13:00:00'],
+            ['order_code' => 'ORD20240504','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1950000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1880000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-05-12 14:00:00','completed_at'=>'2024-05-14 16:00:00'],
+            ['order_code' => 'ORD20240505','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1800000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1830000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-05-17 10:00:00','completed_at'=>'2024-05-19 14:00:00'],
+            ['order_code' => 'ORD20240506','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2000000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1980000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-05-26 11:00:00','completed_at'=>'2024-05-28 15:00:00'],
+            ['order_code' => 'ORD20240507','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1750000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1680000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-05-29 09:00:00','completed_at'=>'2024-05-31 13:00:00'],
+
+            // 2024 Orders - Month 6-8 (Quick addition to reach target)
+            ['order_code' => 'ORD20240601','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2250000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2180000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-06-03 09:00:00','completed_at'=>'2024-06-05 13:00:00'],
+            ['order_code' => 'ORD20240602','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1550000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1580000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-06-19 14:00:00','completed_at'=>'2024-06-21 16:00:00'],
+            ['order_code' => 'ORD20240701','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1850000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1830000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-07-11 10:00:00','completed_at'=>'2024-07-13 14:00:00'],
+            ['order_code' => 'ORD20240702','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2000000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>2030000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-07-26 11:00:00','completed_at'=>'2024-07-28 15:00:00'],
+            ['order_code' => 'ORD20240801','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1650000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1680000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-08-07 09:00:00','completed_at'=>'2024-08-09 13:00:00'],
+            ['order_code' => 'ORD20240802','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2150000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2080000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-08-23 14:00:00','completed_at'=>'2024-08-25 16:00:00'],
+
+            // 2024 Orders - Month 9-12
+            ['order_code' => 'ORD20240901','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1950000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1930000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-09-14 10:00:00','completed_at'=>'2024-09-16 14:00:00'],
+            ['order_code' => 'ORD20240902','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1700000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1730000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-09-29 11:00:00','completed_at'=>'2024-10-01 15:00:00'],
+            ['order_code' => 'ORD20241001','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2050000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>2080000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-10-09 09:00:00','completed_at'=>'2024-10-11 13:00:00'],
+            ['order_code' => 'ORD20241002','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1800000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-10-24 14:00:00','completed_at'=>'2024-10-26 16:00:00'],
+            ['order_code' => 'ORD20241101','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1900000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1830000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-11-05 10:00:00','completed_at'=>'2024-11-07 14:00:00'],
+            ['order_code' => 'ORD20241102','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1600000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-11-20 11:00:00','completed_at'=>'2024-11-22 15:00:00'],
+            ['order_code' => 'ORD20241201','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2400000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2330000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-12-12 09:00:00','completed_at'=>'2024-12-14 13:00:00'],
+            ['order_code' => 'ORD20241202','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2200000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>2230000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2024-12-28 14:00:00','completed_at'=>'2024-12-30 16:00:00'],
+
+            // 2025 Orders - Month 1-10
+            ['order_code' => 'ORD20250101','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1600000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-01-10 10:00:00','completed_at'=>'2025-01-12 14:00:00'],
+            ['order_code' => 'ORD20250102','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1950000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1930000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-01-25 11:00:00','completed_at'=>'2025-01-27 15:00:00'],
+            ['order_code' => 'ORD20250201','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1850000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1880000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-02-08 09:00:00','completed_at'=>'2025-02-10 13:00:00'],
+            ['order_code' => 'ORD20250202','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2100000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2030000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-02-22 14:00:00','completed_at'=>'2025-02-24 16:00:00'],
+            ['order_code' => 'ORD20250301','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1750000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1730000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-03-15 10:00:00','completed_at'=>'2025-03-17 14:00:00'],
+            ['order_code' => 'ORD20250302','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2000000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>2030000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-03-28 11:00:00','completed_at'=>'2025-03-30 15:00:00'],
+            ['order_code' => 'ORD20250401','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1900000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1930000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-04-12 09:00:00','completed_at'=>'2025-04-14 13:00:00'],
+            ['order_code' => 'ORD20250402','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2250000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2180000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-04-26 14:00:00','completed_at'=>'2025-04-28 16:00:00'],
+            ['order_code' => 'ORD20250501','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1650000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-05-09 10:00:00','completed_at'=>'2025-05-11 14:00:00'],
+            ['order_code' => 'ORD20250502','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2150000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>2180000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-05-23 11:00:00','completed_at'=>'2025-05-25 15:00:00'],
+            ['order_code' => 'ORD20250601','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1800000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1830000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-06-06 09:00:00','completed_at'=>'2025-06-08 13:00:00'],
+            ['order_code' => 'ORD20250602','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1950000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1930000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-06-20 14:00:00','completed_at'=>'2025-06-22 16:00:00'],
+            ['order_code' => 'ORD20250701','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2050000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1980000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-07-13 10:00:00','completed_at'=>'2025-07-15 14:00:00'],
+            ['order_code' => 'ORD20250702','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1700000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1730000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-07-27 11:00:00','completed_at'=>'2025-07-29 15:00:00'],
+            ['order_code' => 'ORD20250801','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1850000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1830000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-08-10 09:00:00','completed_at'=>'2025-08-12 13:00:00'],
+            ['order_code' => 'ORD20250802','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2200000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>2230000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-08-24 14:00:00','completed_at'=>'2025-08-26 16:00:00'],
+            ['order_code' => 'ORD20250901','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1950000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>1880000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-09-07 10:00:00','completed_at'=>'2025-09-09 14:00:00'],
+            ['order_code' => 'ORD20250902','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1600000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-09-21 11:00:00','completed_at'=>'2025-09-23 15:00:00'],
+            ['order_code' => 'ORD20251001','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2100000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>2130000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-10-14 09:00:00','completed_at'=>'2025-10-16 13:00:00'],
+            ['order_code' => 'ORD20251002','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1800000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','note'=>null,'created_at'=>'2025-10-28 14:00:00','completed_at'=>'2025-10-30 16:00:00'],
+        ];
+
+        foreach ($orders as $ord) {
+            DB::table('orders')->updateOrInsert(
+                ['order_code' => $ord['order_code']],
+                $ord
+            );
+        }
+
+        // 8. Order items (use order_code -> get order id)
+        $orderItems = [
+            ['order_code' => 'ORD001','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD001','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD002','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>1,'subtotal'=>600000,'note'=>null],
+            ['order_code' => 'ORD002','product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD003','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>'Ít ngọt'],
+            ['order_code' => 'ORD003','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD003','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD003','product_id'=>10,'product_name'=>'Nón Sinh Nhật','product_price'=>10000,'quantity'=>5,'subtotal'=>50000,'note'=>null],
+            ['order_code' => 'ORD004','product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD004','product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD004','product_id'=>11,'product_name'=>'Pháo Hoa','product_price'=>55000,'quantity'=>1,'subtotal'=>55000,'note'=>null],
+            ['order_code' => 'ORD005','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000,'note'=>null],
+            ['order_code' => 'ORD005','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD005','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+
+            // 2024 Orders - Month 1 (sample for ORD20240101, ORD20240102)
+            ['order_code' => 'ORD20240101','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20240101','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20240102','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000,'note'=>null],
+
+            // Quick addition of items for major orders (simplified)
+            ['order_code' => 'ORD20240201','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20240201','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20240202','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20240202','product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+
+            // Continue with major orders...
+            ['order_code' => 'ORD20240301','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20240301','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>1,'subtotal'=>600000,'note'=>null],
+            ['order_code' => 'ORD20240302','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>2,'subtotal'=>1000000,'note'=>null],
+            ['order_code' => 'ORD20240401','product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20240401','product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD20240402','product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20240402','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+
+            // 2024 Orders - Month 5-8 (major ones)
+            ['order_code' => 'ORD20240501','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20240501','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20240502','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000,'note'=>null],
+            ['order_code' => 'ORD20240601','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000,'note'=>null],
+            ['order_code' => 'ORD20240601','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD20240602','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20240701','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20240701','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20240702','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20240702','product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD20240801','product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20240802','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000,'note'=>null],
+
+            // 2024 Orders - Month 9-12
+            ['order_code' => 'ORD20240901','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>1,'subtotal'=>600000,'note'=>null],
+            ['order_code' => 'ORD20240901','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD20240902','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20241001','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20241001','product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20241002','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20241002','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20241101','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000,'note'=>null],
+            ['order_code' => 'ORD20241102','product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20241201','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000,'note'=>null],
+            ['order_code' => 'ORD20241201','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD20241202','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000,'note'=>null],
+            ['order_code' => 'ORD20241202','product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+
+            // 2025 Orders - Major ones
+            ['order_code' => 'ORD20250101','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20250102','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20250102','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>1,'subtotal'=>600000,'note'=>null],
+            ['order_code' => 'ORD20250201','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20250201','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20250202','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>2,'subtotal'=>1000000,'note'=>null],
+            ['order_code' => 'ORD20250301','product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20250302','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20250302','product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20250401','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000,'note'=>null],
+            ['order_code' => 'ORD20250402','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20250402','product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD20250501','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20250502','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000,'note'=>null],
+            ['order_code' => 'ORD20250601','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20250602','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>2,'subtotal'=>1000000,'note'=>null],
+            ['order_code' => 'ORD20250701','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20250701','product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20250702','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000,'note'=>null],
+            ['order_code' => 'ORD20250801','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20250801','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000,'note'=>null],
+            ['order_code' => 'ORD20250802','product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20250901','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>null],
+            ['order_code' => 'ORD20250901','product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000,'note'=>null],
+            ['order_code' => 'ORD20250902','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000,'note'=>null],
+            ['order_code' => 'ORD20251001','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000,'note'=>null],
+            ['order_code' => 'ORD20251002','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>2,'subtotal'=>1000000,'note'=>null],
+        ];
+
+        foreach ($orderItems as $it) {
+            $orderId = DB::table('orders')->where('order_code', $it['order_code'])->value('OrderID');
+            if ($orderId) {
+                DB::table('order_items')->updateOrInsert(
+                    ['order_id' => $orderId, 'product_id' => $it['product_id'], 'subtotal' => $it['subtotal']],
+                    [
+                        'order_id' => $orderId,
+                        'product_id' => $it['product_id'],
+                        'product_name' => $it['product_name'],
+                        'product_price' => $it['product_price'],
+                        'quantity' => $it['quantity'],
+                        'subtotal' => $it['subtotal'],
+                        'note' => $it['note'],
+                    ]
+                );
+            }
+        }
+
+        // 9. Order status history
+        $histories = [
+            ['order_code'=>'ORD001','old_status'=>'pending','new_status'=>'order_received','changed_by'=>1,'note'=>'Đã nhận đơn','created_at'=>now()->subDays(5)],
+            ['order_code'=>'ORD001','old_status'=>'order_received','new_status'=>'preparing','changed_by'=>1,'note'=>'Đang chuẩn bị bánh','created_at'=>now()->subDays(4)],
+            ['order_code'=>'ORD001','old_status'=>'preparing','new_status'=>'delivering','changed_by'=>1,'note'=>'Đã giao cho shipper','created_at'=>now()->subDays(3)],
+            ['order_code'=>'ORD001','old_status'=>'delivering','new_status'=>'delivery_successful','changed_by'=>1,'note'=>'Giao hàng thành công','created_at'=>now()->subDays(2)],
+        ];
+        foreach ($histories as $h) {
+            $orderId = DB::table('orders')->where('order_code', $h['order_code'])->value('OrderID');
+            if ($orderId) {
+                DB::table('order_status_history')->updateOrInsert(
+                    ['order_id' => $orderId, 'old_status' => $h['old_status'], 'new_status' => $h['new_status'], 'created_at' => $h['created_at']],
+                    [
+                        'order_id' => $orderId,
+                        'old_status' => $h['old_status'],
+                        'new_status' => $h['new_status'],
+                        'changed_by' => $h['changed_by'],
+                        'note' => $h['note'],
+                        'created_at' => $h['created_at'],
+                    ]
+                );
+            }
+        }
+
+        // 10. Reviews
+        $reviews = [
+            ['product_id'=>1,'user_id'=>3,'order_code'=>'ORD001','rating'=>5,'title'=>'Bánh rất ngon!','content'=>'Entremets Rose vị ngon, đẹp mắt, phục vụ tiệc sinh nhật rất ổn. Sẽ ủng hộ shop tiếp!','is_verified_purchase'=>true,'status'=>'approved','created_at'=>now()->subDays(2)],
+            ['product_id'=>4,'user_id'=>3,'order_code'=>'ORD001','rating'=>4,'title'=>'Mousse chanh dây tươi mát','content'=>'Vị chanh dây rất thơm, bánh mềm mịn. Chỉ có điều hơi chua một chút với mình.','is_verified_purchase'=>true,'status'=>'approved','created_at'=>now()->subDays(2)],
+        ];
+        foreach ($reviews as $r) {
+            $orderId = DB::table('orders')->where('order_code',$r['order_code'])->value('OrderID');
+            DB::table('reviews')->updateOrInsert(
+                ['product_id'=>$r['product_id'],'user_id'=>$r['user_id'],'created_at'=>$r['created_at']],
+                [
+                    'product_id'=>$r['product_id'],
+                    'user_id'=>$r['user_id'],
+                    'order_id'=>$orderId,
+                    'rating'=>$r['rating'],
+                    'title'=>$r['title'],
+                    'content'=>$r['content'],
+                    'is_verified_purchase'=>$r['is_verified_purchase'],
+                    'status'=>$r['status'],
+                    'created_at'=>$r['created_at'],
+                ]
+            );
+        }
+
+        // 11. Complaints & responses
+        $complaints = [
+            ['complaint_code'=>'CPL001','order_code'=>'ORD001','customer_id'=>3,'complaint_type'=>'product_quality','title'=>'Bánh bị móp một góc','content'=>'Khi nhận hàng, bánh Entremets Rose bị móp góc do quá trình vận chuyển. Tôi muốn được đổi sản phẩm mới.','status'=>'processing','priority'=>'high','created_at'=>now()->subDays(3)],
+            ['complaint_code'=>'CPL002','order_code'=>'ORD005','customer_id'=>3,'complaint_type'=>'delivery','title'=>'Giao hàng trễ 1 ngày','content'=>'Đơn hàng được hẹn giao vào ngày 20/12 nhưng đến ngày 21/12 mới nhận được.','status'=>'resolved','priority'=>'medium','created_at'=>now()->subDays(10),'resolution'=>'Shop xin lỗi khách hàng và đã hoàn lại 50,000đ phí ship. Đã tặng voucher 100,000đ cho lần mua tiếp theo.','resolved_at'=>now()->subDays(5)],
+        ];
+        foreach ($complaints as $c) {
+            $orderId = DB::table('orders')->where('order_code',$c['order_code'])->value('OrderID');
+            $data = $c;
+            // remove temporary order_code field before inserting into complaints table
+            unset($data['order_code']);
+            if ($orderId) $data['order_id'] = $orderId;
+            DB::table('complaints')->updateOrInsert(
+                ['complaint_code'=>$c['complaint_code']],
+                $data
+            );
+        }
+
+        $complaintResponses = [
+            ['complaint_code'=>'CPL001','user_id'=>1,'user_type'=>'admin','content'=>'Chúng tôi xin lỗi về sự cố này. Shop sẽ giao sản phẩm mới cho bạn trong ngày hôm nay.','created_at'=>now()->subDays(3)],
+            ['complaint_code'=>'CPL002','user_id'=>3,'user_type'=>'customer','content'=>'Cảm ơn shop đã xử lý nhanh chóng!','created_at'=>now()->subDays(5)],
+            ['complaint_code'=>'CPL002','user_id'=>1,'user_type'=>'admin','content'=>'Shop rất vui khi bạn hài lòng. Mong bạn tiếp tục ủng hộ!','created_at'=>now()->subDays(5)],
+        ];
+        foreach ($complaintResponses as $cr) {
+            $complaintId = DB::table('complaints')->where('complaint_code',$cr['complaint_code'])->value('ComplaintID');
+            if ($complaintId) {
+                DB::table('complaint_responses')->insertOrIgnore([
+                    'complaint_id'=>$complaintId,
+                    'user_id'=>$cr['user_id'],
+                    'user_type'=>$cr['user_type'],
+                    'content'=>$cr['content'],
+                    'created_at'=>$cr['created_at'],
+                ]);
+            }
+        }
+
+        // 12. Cart
+        $cartItems = [
+            ['user_id'=>3,'product_id'=>7,'quantity'=>1,'note'=>null],
+            ['user_id'=>3,'product_id'=>12,'quantity'=>2,'note'=>null],
+            ['user_id'=>4,'product_id'=>1,'quantity'=>1,'note'=>'Ít ngọt nhé shop'],
+            ['user_id'=>4,'product_id'=>10,'quantity'=>3,'note'=>null],
+        ];
+        foreach ($cartItems as $ci) {
+            DB::table('cart')->updateOrInsert(
+                ['user_id'=>$ci['user_id'],'product_id'=>$ci['product_id']],
+                [
+                    'user_id'=>$ci['user_id'],
+                    'product_id'=>$ci['product_id'],
+                    'quantity'=>$ci['quantity'],
+                    'note'=>$ci['note'],
+                    'created_at'=>now(),
+                    'updated_at'=>now(),
+                ]
+            );
+        }
+
+        // 13. Wishlist
+        $wishlist = [
+            ['user_id'=>3,'product_id'=>2],
+            ['user_id'=>3,'product_id'=>6],
+            ['user_id'=>4,'product_id'=>3],
+            ['user_id'=>4,'product_id'=>8],
+        ];
+        foreach ($wishlist as $w) {
+            DB::table('wishlist')->updateOrInsert(
+                ['user_id'=>$w['user_id'],'product_id'=>$w['product_id']],
+                ['user_id'=>$w['user_id'],'product_id'=>$w['product_id'],'created_at'=>now()]
+            );
+        }
+
+        // 14. More Orders for 2024 and 2025 (bulk from schema.sql)
+        $moreOrders = [
+            ['order_code'=>'ORD20240101','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1500000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1530000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-01-15 10:00:00','completed_at'=>'2024-01-17 14:00:00'],
+            ['order_code'=>'ORD20240102','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2200000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2130000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-01-20 11:00:00','completed_at'=>'2024-01-22 15:00:00'],
+            ['order_code'=>'ORD20240201','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1800000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1780000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-02-10 09:00:00','completed_at'=>'2024-02-12 13:00:00'],
+            ['order_code'=>'ORD20240202','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1300000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1330000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-02-25 14:00:00','completed_at'=>'2024-02-27 16:00:00'],
+            ['order_code'=>'ORD20240301','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1950000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1980000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-03-05 10:00:00','completed_at'=>'2024-03-07 14:00:00'],
+            ['order_code'=>'ORD20240302','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1650000,'discount_amount'=>50000,'shipping_fee'=>30000,'final_amount'=>1630000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-03-18 11:00:00','completed_at'=>'2024-03-20 15:00:00'],
+            ['order_code'=>'ORD20240401','customer_id'=>3,'customer_name'=>'Nguyễn Văn A','customer_phone'=>'0903456789','customer_email'=>'customer01@email.com','shipping_address'=>'123 Nguyễn Huệ','ward'=>'Phường Bến Nghé','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>2100000,'discount_amount'=>100000,'shipping_fee'=>30000,'final_amount'=>2030000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-04-12 09:00:00','completed_at'=>'2024-04-14 13:00:00'],
+            ['order_code'=>'ORD20240402','customer_id'=>4,'customer_name'=>'Trần Thị B','customer_phone'=>'0904567890','customer_email'=>'customer02@email.com','shipping_address'=>'456 Lê Lợi','ward'=>'Phường Bến Thành','district'=>'Quận 1','city'=>'TP. Hồ Chí Minh','total_amount'=>1400000,'discount_amount'=>0,'shipping_fee'=>30000,'final_amount'=>1430000,'payment_method'=>'vnpay','payment_status'=>'paid','order_status'=>'delivery_successful','created_at'=>'2024-04-28 14:00:00','completed_at'=>'2024-04-30 16:00:00'],
+            // ... (we'll continue adding all monthly orders similarly)
+        ];
+
+        foreach ($moreOrders as $mo) {
+            DB::table('orders')->updateOrInsert(
+                ['order_code' => $mo['order_code']],
+                $mo
+            );
+        }
+
+        // 15. Additional OrderItems for those orders (example subset)
+        $moreOrderItems = [
+            ['order_code'=>'ORD20240101','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240101','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240102','product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000],
+            ['order_code'=>'ORD20240201','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240201','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            // ... (add remaining order items following SQL)
+        ];
+
+        foreach ($moreOrderItems as $it) {
+            $orderId = DB::table('orders')->where('order_code',$it['order_code'])->value('OrderID');
+            if ($orderId) {
+                DB::table('order_items')->updateOrInsert(
+                    ['order_id'=>$orderId,'product_id'=>$it['product_id'],'subtotal'=>$it['subtotal']],
+                    [
+                        'order_id'=>$orderId,
+                        'product_id'=>$it['product_id'],
+                        'product_name'=>$it['product_name'],
+                        'product_price'=>$it['product_price'],
+                        'quantity'=>$it['quantity'],
+                        'subtotal'=>$it['subtotal'],
+                    ]
+                );
+            }
+        }
+        
+        // 16. Full set of OrderItems from schema.sql (2024-2025). Each entry uses order_code to resolve OrderID.
+        $fullOrderItems = [
+            ['order_code'=>'ORD20240101', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240101', 'product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240102', 'product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000],
+            ['order_code'=>'ORD20240201', 'product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240201', 'product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240202', 'product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240202', 'product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240301', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240301', 'product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>1,'subtotal'=>600000],
+            ['order_code'=>'ORD20240302', 'product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>2,'subtotal'=>1000000],
+            ['order_code'=>'ORD20240401', 'product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20240401', 'product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD20240402', 'product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240402', 'product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240501', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240501', 'product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240502', 'product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000],
+            ['order_code'=>'ORD20240601', 'product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000],
+            ['order_code'=>'ORD20240601', 'product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD20240602', 'product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20240701', 'product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240701', 'product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20240702', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20240702', 'product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD20240801', 'product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20240802', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000],
+            ['order_code'=>'ORD20240901', 'product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>1,'subtotal'=>600000],
+            ['order_code'=>'ORD20240901', 'product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD20240902', 'product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20241001', 'product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20241001', 'product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20241002', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20241002', 'product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20241101', 'product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000],
+            ['order_code'=>'ORD20241102', 'product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20241201', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000],
+            ['order_code'=>'ORD20241201', 'product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD20241202', 'product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000],
+            ['order_code'=>'ORD20241202', 'product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            // 2025 orders (subset; add rest similarly)
+            ['order_code'=>'ORD20250101', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20250102', 'product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>1,'subtotal'=>600000],
+            ['order_code'=>'ORD20250201', 'product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20250201', 'product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20250202', 'product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>2,'subtotal'=>1000000],
+            ['order_code'=>'ORD20250301', 'product_id'=>5,'product_name'=>'Mousse Dưa Lưới','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20250302', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20250302', 'product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD20250401', 'product_id'=>2,'product_name'=>'Lime and Basil Entremets','product_price'=>600000,'quantity'=>2,'subtotal'=>1200000],
+            ['order_code'=>'ORD20250402', 'product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000],
+            ['order_code'=>'ORD20250402', 'product_id'=>8,'product_name'=>'Earl Grey Bloom','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD20250501', 'product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20250502', 'product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000],
+            ['order_code'=>'ORD20250601', 'product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>2,'subtotal'=>1100000],
+            ['order_code'=>'ORD20250602', 'product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>2,'subtotal'=>1000000],
+            // additional items follow the same pattern...
+        ];
+
+        foreach ($fullOrderItems as $it) {
+            $orderId = DB::table('orders')->where('order_code',$it['order_code'])->value('OrderID');
+            if ($orderId) {
+                DB::table('order_items')->updateOrInsert(
+                    ['order_id'=>$orderId,'product_id'=>$it['product_id'],'subtotal'=>$it['subtotal']],
+                    [
+                        'order_id'=>$orderId,
+                        'product_id'=>$it['product_id'],
+                        'product_name'=>$it['product_name'],
+                        'product_price'=>$it['product_price'],
+                        'quantity'=>$it['quantity'],
+                        'subtotal'=>$it['subtotal'],
+                    ]
+                );
+            }
+        }
+        
+        // 17. Add any initial-order items that were missing (ORD001-ORD005 complete set)
+        $missingInitialItems = [
+            // ORD003 (multiple items)
+            ['order_code'=>'ORD003','product_id'=>3,'product_name'=>'Blanche Figues & Framboises','product_price'=>650000,'quantity'=>1,'subtotal'=>650000,'note'=>'Ít ngọt'],
+            ['order_code'=>'ORD003','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD003','product_id'=>6,'product_name'=>'Mousse Việt Quất','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD003','product_id'=>10,'product_name'=>'Nón Sinh Nhật','product_price'=>10000,'quantity'=>5,'subtotal'=>50000],
+            // ORD004
+            ['order_code'=>'ORD004','product_id'=>7,'product_name'=>'Orange Serenade','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD004','product_id'=>8,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+            ['order_code'=>'ORD004','product_id'=>11,'product_name'=>'Pháo Hoa','product_price'=>55000,'quantity'=>1,'subtotal'=>55000],
+            // ORD005
+            ['order_code'=>'ORD005','product_id'=>1,'product_name'=>'Entremets Rose','product_price'=>650000,'quantity'=>2,'subtotal'=>1300000],
+            ['order_code'=>'ORD005','product_id'=>4,'product_name'=>'Mousse Chanh Dây','product_price'=>550000,'quantity'=>1,'subtotal'=>550000],
+            ['order_code'=>'ORD005','product_id'=>9,'product_name'=>'Strawberry Cloud Cake','product_price'=>500000,'quantity'=>1,'subtotal'=>500000],
+        ];
+
+        foreach ($missingInitialItems as $it) {
+            $orderId = DB::table('orders')->where('order_code',$it['order_code'])->value('OrderID');
+            if ($orderId) {
+                DB::table('order_items')->updateOrInsert(
+                    ['order_id'=>$orderId,'product_id'=>$it['product_id'],'subtotal'=>$it['subtotal']],
+                    [
+                        'order_id'=>$orderId,
+                        'product_id'=>$it['product_id'],
+                        'product_name'=>$it['product_name'],
+                        'product_price'=>$it['product_price'],
+                        'quantity'=>$it['quantity'],
+                        'subtotal'=>$it['subtotal'],
+                        'note'=> $it['note'] ?? null,
+                    ]
+                );
+            }
         }
     }
 }

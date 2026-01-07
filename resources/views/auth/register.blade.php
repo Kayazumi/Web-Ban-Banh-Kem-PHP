@@ -109,33 +109,33 @@
                     <label for="first_name">Họ</label>
                     <input type="text" id="first_name" name="first_name" required>
                 </div>
-                <div class="form-group">
+            <div class="form-group">
                     <label for="last_name">Tên</label>
                     <input type="text" id="last_name" name="last_name" required>
-                </div>
+            </div>
 
                 <div class="form-group full">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
 
-                <div class="form-group">
-                    <label for="phone">Số điện thoại</label>
-                    <input type="tel" id="phone" name="phone">
-                </div>
-                <div class="form-group">
+            <div class="form-group">
+                <label for="phone">Số điện thoại</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+            <div class="form-group">
                     <label for="username">Tên đăng nhập</label>
                     <input type="text" id="username" name="username" required>
-                </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="password_confirmation">Xác nhận mật khẩu</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required>
-                </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="password_confirmation">Xác nhận mật khẩu</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required>
+            </div>
 
                 <div class="form-group full">
                     <label for="address">Địa chỉ</label>
@@ -144,7 +144,7 @@
             </div>
 
             <div style="margin-top:12px;">
-                <button type="submit" class="btn btn-primary btn-full">Đăng ký</button>
+            <button type="submit" class="btn btn-primary btn-full">Đăng ký</button>
             </div>
         </form>
 
@@ -192,10 +192,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show modal success and redirect to login
                 showModal(data.message || 'Tài khoản của bạn đã được tạo!', function() {
                     if (data.data && data.data.redirect) {
-                        window.location.href = data.data.redirect;
-                    } else {
+                    window.location.href = data.data.redirect;
+                } else {
                         window.location.href = '/login';
-                    }
+                }
                 });
             } else {
                 // Show validation errors in modal

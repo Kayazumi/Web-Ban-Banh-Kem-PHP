@@ -31,7 +31,8 @@ class AuthController extends Controller
             $user = Auth::user();
 
             $redirect = match ($user->role) {
-                'admin' => route('admin.dashboard'),
+                // After admin login, land on product management page
+                'admin' => route('admin.products'),
                 'staff' => route('staff.profile'),
                 default => route('home'),
             };
