@@ -47,21 +47,6 @@ class User extends Authenticatable
         return $this->password_hash;
     }
 
-    /**
-     * Get the name of the unique identifier for the user.
-     */
-    public function getAuthIdentifierName()
-    {
-        return 'UserID';
-    }
-
-    /**
-     * Get the unique identifier for the user.
-     */
-    public function getAuthIdentifier()
-    {
-        return $this->{$this->getAuthIdentifierName()};
-    }
 
     /**
      * Get the attributes that should be cast.

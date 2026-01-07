@@ -213,7 +213,7 @@ function displayProducts(products) {
         <div class="swiper-slide">
             <div class="product-card">
                 <div class="product-image">
-                    <img src="${product.image_url || '/images/placeholder.jpg'}" 
+                    <img src="${product.image_url || '/images/placeholder.jpg'}"
                          alt="${product.product_name}"
                          onerror="this.src='/images/placeholder.jpg'">
                     ${product.is_featured ? '<span class="badge featured">Nổi bật</span>' : ''}

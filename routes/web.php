@@ -8,9 +8,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\DB;
 
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // 2. AUTHENTICATION - Cho khách chưa đăng nhập
 Route::middleware('guest')->group(function () {
@@ -30,14 +28,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
 
-// 4. ROUTE DÀNH CHO NHÂN VIÊN (STAFF)
-Route::middleware(['auth', 'staff'])->prefix('staff')->name('staff.')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::put('/api/profile', [ProfileController::class, 'update']);
-    Route::post('/api/password', [ProfileController::class, 'changePassword']);
-});
-
-// 5. ROUTE DÀNH CHO ADMIN
+// 4. ROUTE DÀNH CHO ADMIN
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
@@ -88,7 +79,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     })->name('reports');
 });
 
-// 6. ROUTE CHUNG CHO NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (CUSTOMER / USER THƯỜNG)
+// 5. ROUTE CHUNG CHO NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (CUSTOMER / USER THƯỜNG)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         return view('profile');
@@ -102,5 +93,3 @@ Route::middleware('auth')->group(function () {
         return view('orders.index');
     })->name('orders.index');
 });
-
-Route::get('/', [HomeController::class, 'index'])->name('home');

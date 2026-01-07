@@ -4,24 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - La Cuisine Ngọt</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'La Cuisine Ngọt - Nhân viên')</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Inspiration&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- CSS -->
+
+    <!-- CSS chung toàn app -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    
+
+    <!-- CSS dành riêng cho khu vực tài khoản / nhân viên -->
+    <link rel="stylesheet" href="{{ asset('css/account.css') }}">
+
+    <!-- Stack cho các page con thêm CSS riêng (ví dụ orders.css, complaints.css...) -->
     @stack('styles')
 </head>
 
-<body class="staff-profile-page">
+<body class="account-page">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -30,10 +34,25 @@
             </div>
 
             <ul class="nav-menu">
-                <li><a href="#" class="nav-menu-link">SẢN PHẨM</a></li>
-                <li><a href="#" class="nav-menu-link">KHUYẾN MÃI</a></li>
-                <li><a href="#" class="nav-menu-link">LIÊN HỆ</a></li>
-            </ul>
+    <li>
+        <a href="{{ route('staff.orders.index') }}" 
+           class="nav-menu-link {{ request()->routeIs('staff.orders.*') ? 'active' : '' }}">
+            ĐƠN HÀNG
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ route('staff.complaints.index') }}" class="nav-menu-link">
+            KHIẾU NẠI
+        </a>
+    </li>
+
+    <li>
+        <a href="#" class="nav-menu-link">
+            LIÊN HỆ
+        </a>
+    </li>
+</ul>
 
             <div class="nav-right">
                 <!-- User Dropdown -->

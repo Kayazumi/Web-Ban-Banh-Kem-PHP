@@ -8,13 +8,19 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function index()
-    {
-        // Lấy tất cả sản phẩm đang active, sắp xếp theo display order hoặc mới nhất
-        $products = Product::where('is_active', true)->get();
+{
+    // Gọi thẳng method featured() đã có sẵn trong ProductController
+    $productController = new ProductController();
+    $response = $productController->featured();
+    $data = $response->getData(true); // true để lấy array thay vì object
 
-        // Hoặc chỉ lấy sản phẩm nổi bật trước
-        // $products = Product::where('is_featured', true)->where('is_active', true)->get();
+    $featuredProducts = $data['data']['products'] ?? [];
 
-        return view('home', compact('products'));
-    }
+    // Nếu bạn muốn lấy thêm danh mục để hiển thị menu
+    $categoriesResponse = $productController->categories();
+    $categoriesData = $categoriesResponse->getData(true);
+    $categories = $categoriesData['data']['categories'] ?? [];
+
+    return view('home', compact('featuredProducts', 'categories'));
+}
 }

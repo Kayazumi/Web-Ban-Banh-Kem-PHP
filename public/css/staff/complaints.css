@@ -1,0 +1,372 @@
+/* ====================== CONTAINER CHÍNH ====================== */
+.staff-complaints-container {
+    max-width: 1400px; /* Rộng hơn để bảng kéo dài sát mép */
+    margin: 0 auto;
+    padding: 40px 30px;
+    background: #EDDECD;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.page-title {
+    color: #395542;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-align: left;
+}
+
+/* ====================== HEADER: SEARCH & FILTER ====================== */
+.complaints-header {
+    background: #F8F5F2;
+    padding: 30px;
+    border-radius: 20px 20px 0 0;
+    border-bottom: 1px solid #D9D9D9;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+#complaint-search {
+    width: 100%;
+    padding: 16px 50px;
+    border: 1px solid #D9D9D9;
+    border-radius: 30px;
+    font-style: italic;
+    font-size: 1rem;
+    background: white;
+}
+
+.search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.filter-checkboxes {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #395542;
+    font-weight: 500;
+}
+
+/* ====================== BẢNG DANH SÁCH ====================== */
+.complaints-table-wrapper {
+    background: white;
+    padding: 20px;
+    border-radius: 0 0 20px 20px;
+    overflow-x: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+#complaints-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+    min-width: 1100px;
+}
+
+#complaints-table th {
+    padding: 18px 12px;
+    border-bottom: 2px solid #F0F0F0;
+    color: #333;
+    font-size: 0.95rem;
+    text-align: left;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+#complaints-table td {
+    padding: 18px 12px;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 0.95rem;
+    vertical-align: middle; /* Căn giữa dọc nội dung với tiêu đề */
+    text-align: left;
+}
+
+/* Căn giữa cho cột TRẠNG THÁI và XỬ LÝ */
+#complaints-table th:nth-child(6),
+#complaints-table td:nth-child(6),
+#complaints-table th:nth-child(7),
+#complaints-table td:nth-child(7) {
+    text-align: center;
+}
+
+/* Cột NỘI DUNG: cho xuống dòng tự nhiên */
+#complaints-table td:nth-child(4) {
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.5;
+    max-width: 300px;
+}
+
+/* Điều chỉnh độ rộng cột để cân đối và sát nhau */
+#complaints-table th:nth-child(1), #complaints-table td:nth-child(1) { width: 10%; }  /* MÃ KN */
+#complaints-table th:nth-child(2), #complaints-table td:nth-child(2) { width: 12%; }  /* MÃ ĐH */
+#complaints-table th:nth-child(3), #complaints-table td:nth-child(3) { width: 17%; }  /* KHÁCH HÀNG */
+#complaints-table th:nth-child(4), #complaints-table td:nth-child(4) { width: 28%; }  /* NỘI DUNG */
+#complaints-table th:nth-child(5), #complaints-table td:nth-child(5) { width: 15%; }  /* NGÀY PHẢN ÁNH */
+#complaints-table th:nth-child(6), #complaints-table td:nth-child(6) { width: 12%; }  /* TRẠNG THÁI */
+#complaints-table th:nth-child(7), #complaints-table td:nth-child(7) { width: 6%; }   /* XỬ LÝ */
+
+/* Badge trạng thái */
+.badge-status {
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 110px;
+}
+
+.status-pending { background: #FFF3CD; color: #856404; }
+.status-processing { background: #D1ECF1; color: #0C5460; }
+.status-resolved { background: #D4EDDA; color: #155724; }
+
+/* Icon xử lý - làm nổi bật hơn */
+#complaints-table td:nth-child(7) {
+    cursor: pointer;
+}
+
+#complaints-table td:nth-child(7) i {
+    font-size: 1.3rem;
+    color: #395542;
+    transition: color 0.2s;
+}
+
+#complaints-table td:nth-child(7):hover i {
+    color: #2e4438;
+}
+
+/* ====================== MODAL CHI TIẾT ====================== */
+.complaint-detail-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.complaint-detail-modal.show {
+    display: flex;
+}
+
+.modal-content {
+    width: 900px;
+    max-width: 95%;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    border-radius: 16px;
+    background: #FFFFFF;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    padding: 24px 30px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    color: #395542;
+    font-weight: 700;
+    margin: 0;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-modal:hover {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 30px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #395542;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #D9D9D9;
+    border-radius: 10px;
+    background: #FFFFFF;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #395542;
+    box-shadow: 0 0 0 3px rgba(57, 85, 66, 0.1);
+}
+
+.input-readonly {
+    background: #F5F5F5 !important;
+    color: #6C757D;
+    cursor: not-allowed;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.response-container {
+    grid-column: 1 / -1;
+    padding: 0 30px 20px;
+}
+
+.response-container textarea {
+    min-height: 160px;
+    border-radius: 12px;
+}
+
+.modal-footer {
+    padding: 20px 30px 30px;
+    text-align: right;
+    border-top: 1px solid #EEEEEE;
+    background: #FAFAFA;
+    border-radius: 0 0 16px 16px;
+}
+
+.btn-save {
+    background: #395542;
+    color: white;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.btn-save:hover {
+    background: #2e4438;
+}
+
+/* ====================== RESPONSIVE ====================== */
+@media (max-width: 1200px) {
+    .staff-complaints-container {
+        max-width: 1100px;
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 900px) {
+    .staff-complaints-container {
+        padding: 24px 15px;
+    }
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px;
+    }
+    .response-container {
+        padding: 0 24px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-checkboxes {
+        gap: 15px;
+        justify-content: center;
+    }
+    #complaints-table th,
+    #complaints-table td {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+    }
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.btn-outline-modal {
+    background: transparent;
+    color: #395542;
+    border: 2px solid #395542;
+    padding: 14px 32px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    min-width: 200px;
+    transition: all 0.3s;
+}
+
+.btn-outline-modal:hover {
+    background: #395542;
+    color: white;
+}
+
+.btn-save-modal {
+    background: #395542;
+    color: white;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    min-width: 200px;
+    transition: all 0.3s;
+}
+
+.btn-save-modal:hover {
+    background: #2e4438;
+}

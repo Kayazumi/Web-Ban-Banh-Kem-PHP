@@ -3,7 +3,7 @@
 @section('title', 'Hồ sơ Nhân viên')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+<link rel="stylesheet" href="{{ asset('css/account.css') }}">
 @endpush
 
 @section('content')

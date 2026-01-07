@@ -4,36 +4,36 @@
    =================================== */
 
 /* --- BODY & NỀN CHUNG CHO TRANG STAFF --- */
-body.staff-profile-page {
+body.account-page {
     background-color: #EDDECD !important;
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
 }
 
 /* --- NAVBAR STAFF - ĐẸP RIÊNG, SANG TRỌNG --- */
-body.staff-profile-page .navbar {
+body.account-page .navbar {
     background: linear-gradient(135deg, #3e5641, #4a7c59) !important;
     padding: 1rem 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-body.staff-profile-page .nav-container {
+body.account-page .nav-container {
     max-width: 1400px;
     padding: 0 40px;
 }
 
-body.staff-profile-page .nav-logo a {
+body.account-page .nav-logo a {
     font-family: 'Inspiration', cursive;
     font-size: 2.8rem !important;
     color: white !important;
     letter-spacing: 1.5px;
 }
 
-body.staff-profile-page .nav-menu {
+body.account-page .nav-menu {
     gap: 3rem;
 }
 
-body.staff-profile-page .nav-menu-link {
+body.account-page .nav-menu-link {
     color: white !important;
     font-weight: 600;
     font-size: 1rem;
@@ -44,11 +44,11 @@ body.staff-profile-page .nav-menu-link {
     transition: color 0.3s ease;
 }
 
-body.staff-profile-page .nav-menu-link:hover {
+body.account-page .nav-menu-link:hover {
     color: #EDDECD !important;
 }
 
-body.staff-profile-page .nav-menu-link::after {
+body.account-page .nav-menu-link::after {
     content: '';
     position: absolute;
     bottom: 0;
@@ -60,7 +60,7 @@ body.staff-profile-page .nav-menu-link::after {
     transform: translateX(-50%);
 }
 
-body.staff-profile-page .nav-menu-link:hover::after {
+body.account-page .nav-menu-link:hover::after {
     width: 100%;
 }
 
@@ -412,15 +412,15 @@ body.staff-profile-page .nav-menu-link:hover::after {
 }
 
 @media (max-width: 768px) {
-    body.staff-profile-page .nav-container {
+    body.account-page .nav-container {
         padding: 0 20px;
     }
 
-    body.staff-profile-page .nav-logo a {
+    body.account-page .nav-logo a {
         font-size: 2rem !important;
     }
 
-    body.staff-profile-page .nav-menu {
+    body.account-page .nav-menu {
         gap: 1.5rem;
     }
 
