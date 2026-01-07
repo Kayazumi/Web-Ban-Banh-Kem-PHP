@@ -146,29 +146,28 @@
 
         // Logout function
         function logout() {
-            if (!confirm('Bạn có chắc muốn đăng xuất?')) return;
+    if (!confirm('Bạn có chắc muốn đăng xuất?')) return;
 
-            fetch('{{ route("logout") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/login';
-                } else {
-                    alert('Đăng xuất thất bại. Vui lòng thử lại.');
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi đăng xuất:', error);
-                alert('Không thể đăng xuất. Vui lòng thử lại!');
-            });
+    // Cách lấy token chắc chắn nhất
+    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    fetch('{{ route("logout") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': token,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         }
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.location.href = '/login';
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Lỗi đăng xuất, thử tải lại trang (F5) rồi đăng xuất lại nhé!');
+    });
+}
     </script>
 
     @stack('scripts')
