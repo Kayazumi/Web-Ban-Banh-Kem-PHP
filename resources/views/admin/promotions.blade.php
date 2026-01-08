@@ -4,8 +4,6 @@
 
 @section('content')
 <div class="admin-content">
-    <h2 class="page-heading">QUẢN LÝ KHUYẾN MÃI</h2>
-    
     <!-- Form tạo khuyến mãi mới -->
     <div class="promo-form-card">
         <h3 class="form-title">Tạo khuyến mãi mới</h3>
