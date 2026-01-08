@@ -25,9 +25,11 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
+
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $request->session()->regenerate();
 
+            /** @var \App\Models\User $user */
             $user = Auth::user();
 
             // Create Sanctum token for API access

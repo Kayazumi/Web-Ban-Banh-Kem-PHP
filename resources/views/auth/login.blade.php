@@ -17,9 +17,13 @@
             <input type="text" id="username" name="username" required autocomplete="username">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="position: relative;">
             <label for="password">Mật khẩu</label>
-            <input type="password" id="password" name="password" required autocomplete="current-password">
+            <div class="password-wrapper" style="position: relative;">
+                <input type="password" id="password" name="password" required autocomplete="current-password" style="padding-right: 45px;">
+                <i class="fas fa-eye" id="togglePassword" 
+                   style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
+            </div>
         </div>
 
         <button type="submit" class="btn-submit">Đăng nhập</button>
@@ -35,20 +39,32 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
         const submitBtn = loginForm.querySelector('.btn-submit');
 
+        // Logic 1: Hiển thị/Ẩn mật khẩu bằng icon
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Logic 2: Xử lý đăng nhập AJAX
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Hiệu ứng loading
             submitBtn.classList.add('loading');
             submitBtn.textContent = 'Đang đăng nhập...';
 
-            const csrfToken = document.querySelector('input[name="_token"]').value;
+            // Lấy CSRF Token an toàn từ thẻ meta hoặc input
+            const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : document.querySelector('input[name="_token"]').value;
 
             const formData = {
                 username: document.getElementById('username').value.trim(),
-                password: document.getElementById('password').value
+                password: passwordInput.value
             };
 
             try {
@@ -65,7 +81,6 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Lưu token vào localStorage nếu có
                     if (data.data.token) {
                         localStorage.setItem('api_token', data.data.token);
                     }
