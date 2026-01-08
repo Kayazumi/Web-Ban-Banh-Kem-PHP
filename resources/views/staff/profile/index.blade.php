@@ -56,12 +56,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Email (Không thể sửa)</label>
-                    <input 
-                        type="email" 
-                        value="{{ Auth::user()->email }}" 
-                        readonly>
-                </div>
+    <label for="email">Email (do cửa hàng cấp)</label>
+    <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" 
+           readonly disabled style="background: #e9ecef; cursor: not-allowed;">
+    <small style="color: #6c757d; font-size: 0.85rem;">
+        <i class="fas fa-info-circle"></i> Email không thể thay đổi
+    </small>
+</div>
 
                 <div class="form-group">
                     <label for="addressInput">Địa chỉ</label>

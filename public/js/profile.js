@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(this);
 
             try {
-                const response = await fetch('/api/profile/update', {
+                const response = await fetch('/staff/api/profile/update', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(this);
 
             try {
-                const response = await fetch('/api/profile/change-password', {
+                const response = await fetch('/staff/api/profile/change-password', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
