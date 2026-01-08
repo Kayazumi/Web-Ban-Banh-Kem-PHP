@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Giỏ hàng - La Cuisine Ngọt'); ?>
 
-@section('title', 'Giỏ hàng - La Cuisine Ngọt')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -20,9 +18,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 .container {
     max-width: 1200px;
@@ -144,9 +142,9 @@
     text-align: center;
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadCart();
@@ -279,6 +277,8 @@ function formatPrice(price) {
     }).format(price);
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
 
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/cart.blade.php ENDPATH**/ ?>

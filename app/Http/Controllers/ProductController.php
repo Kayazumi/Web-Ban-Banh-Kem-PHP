@@ -100,10 +100,15 @@ class ProductController extends Controller
 
         // Map product and images for API consumer
         $mappedProduct = [
+            'ProductID' => $product->ProductID,
             'product_id' => $product->ProductID,
             'product_name' => $product->product_name,
             'description' => $product->description,
             'short_intro' => $product->short_intro,
+            'short_paragraph' => $product->short_paragraph,
+            'structure' => $product->structure,
+            'usage' => $product->usage,
+            'bonus' => $product->bonus,
             'price' => (float) $product->price,
             'original_price' => $product->original_price ? (float) $product->original_price : null,
             'image_url' => asset($product->image_url ?: 'images/placeholder.jpg'),
@@ -111,6 +116,9 @@ class ProductController extends Controller
             'is_new' => (bool) $product->is_new,
             'quantity' => $product->quantity,
             'unit' => $product->unit,
+            'status' => $product->status,
+            'shelf_life' => $product->shelf_life,
+            'category_name' => $product->category ? $product->category->category_name : null,
             'product_images' => collect($product->productImages)->map(function ($img) {
                 return [
                     'image_id' => $img->ImageID ?? null,
@@ -127,6 +135,9 @@ class ProductController extends Controller
                     'title' => $r->title ?? null,
                     'content' => $r->content ?? null,
                     'created_at' => $r->created_at ?? null,
+                    'user' => $r->user ? [
+                        'full_name' => $r->user->full_name ?? 'Người dùng ẩn danh'
+                    ] : null,
                 ];
             })->toArray(),
         ];

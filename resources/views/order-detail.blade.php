@@ -12,7 +12,7 @@
                 </a>
             </div>
 
-            <div id="orderDetailContent">
+            <div id="orderDetailContent" data-order-id="{{ $orderId ?? '' }}">
                 <!-- Order detail will be loaded via AJAX -->
                 <div class="text-center">
                     <div class="spinner-border" role="status">
@@ -43,7 +43,7 @@
 }
 
 .order-header {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
     padding: 2rem;
 }
@@ -154,7 +154,7 @@
 }
 
 .order-item-price {
-    color: #8B4513;
+    color: #c4a574;
     font-weight: bold;
 }
 
@@ -172,11 +172,11 @@
 }
 
 .summary-row.total {
-    border-top: 2px solid #8B4513;
+    border-top: 2px solid #c4a574;
     padding-top: 1rem;
     font-size: 1.1rem;
     font-weight: bold;
-    color: #8B4513;
+    color: #c4a574;
 }
 
 .delivery-info,
@@ -206,12 +206,12 @@
 }
 
 .btn-primary {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #654321;
+    background: #c4a574;
 }
 
 .btn-secondary {
@@ -232,8 +232,11 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const orderId = { $orderId };
-    loadOrderDetail(orderId);
+    const orderDetailElement = document.getElementById('orderDetailContent');
+    const orderId = orderDetailElement ? orderDetailElement.dataset.orderId : null;
+    if (orderId) {
+        loadOrderDetail(orderId);
+    }
 });
 
 async function loadOrderDetail(orderId) {
@@ -437,3 +440,4 @@ function formatDate(dateString) {
 }
 </script>
 @endpush
+

@@ -54,7 +54,7 @@
 }
 
 .card-header {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
     border-radius: 10px 10px 0 0 !important;
     border: none;
@@ -81,12 +81,12 @@
 }
 
 .btn-primary {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #654321;
+    background: c4a574;
 }
 
 .btn-secondary {

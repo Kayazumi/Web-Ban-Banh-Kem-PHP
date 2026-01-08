@@ -96,7 +96,7 @@
 
 .form-control:focus {
     outline: none;
-    border-color: #8B4513;
+    border-color: #c4a574;
 }
 
 .btn {
@@ -109,12 +109,12 @@
 }
 
 .btn-primary {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #654321;
+    background: #c4a574;
 }
 
 .btn-secondary {
@@ -184,7 +184,11 @@
 }
 
 .badge-featured {
+<<<<<<< Updated upstream
     background: #b08d55; /* Gold/brown color from image */
+=======
+    background: #324F29;
+>>>>>>> Stashed changes
 }
 
 .badge-new {
@@ -237,9 +241,15 @@
 }
 
 .current-price {
+<<<<<<< Updated upstream
     font-size: 1.4rem;
     font-weight: 700;
     color: #b08d55; /* Gold/brown color */
+=======
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #c4a574;
+>>>>>>> Stashed changes
 }
 
 .product-actions {
@@ -264,8 +274,19 @@
     text-decoration: none;
 }
 
+<<<<<<< Updated upstream
 .btn-detail:hover {
     background: #a88b5e;
+=======
+.btn-outline {
+    background: transparent;
+    border: 1px solid #c4a574;
+    color: #c4a574;
+}
+
+.btn-outline:hover {
+    background: #c4a574;
+>>>>>>> Stashed changes
     color: white;
 }
 
@@ -296,9 +317,9 @@
 }
 
 .pagination .active span {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
-    border-color: #8B4513;
+    border-color: #c4a574;
 }
 
 .pagination a:hover {
@@ -314,7 +335,7 @@
     width: 3rem;
     height: 3rem;
     border: 0.25em solid #f3f3f3;
-    border-top: 0.25em solid #8B4513;
+    border-top: 0.25em solid #c4a574;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
@@ -575,3 +596,5 @@ function formatPrice(price) {
 }
 </script>
 @endpush
+
+

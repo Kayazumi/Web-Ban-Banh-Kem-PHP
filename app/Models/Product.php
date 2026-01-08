@@ -49,6 +49,8 @@ class Product extends Model
         'is_featured' => 'boolean',
         'is_new' => 'boolean',
         'is_active' => 'boolean',
+        'ingredients' => 'array', // THÊM: Cast ingredients thành array (JSON) để dễ dùng trong view (ví dụ: THÔNG TIN PHẨM)
+        'allergens' => 'array',   // THÊM: Tương tự nếu cần, cho allergens
     ];
 
     // Relationships

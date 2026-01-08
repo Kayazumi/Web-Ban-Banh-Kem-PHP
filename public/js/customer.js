@@ -149,7 +149,7 @@ window.showNotification = function (message, type = 'success') {
         padding: 1rem 1.5rem;
         border-radius: 5px;
         color: white;
-        background: ${type === 'success' ? '#28a745' : '#dc3545'};
+        background: ${type === 'success' ? '#324F29' : '#dc3545'};
         z-index: 9999;
         transition: opacity 0.3s;
     `;

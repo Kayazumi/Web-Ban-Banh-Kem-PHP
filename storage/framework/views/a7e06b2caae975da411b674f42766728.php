@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Chi tiết sản phẩm - La Cuisine Ngọt'); ?>
 
-@section('title', 'Chi tiết sản phẩm - La Cuisine Ngọt')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -18,9 +16,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 .container {
     max-width: 1200px;
@@ -554,9 +552,9 @@
     }
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const productId =  <?php echo $productId; ?>;
@@ -715,7 +713,7 @@ async function loadProductDetail(productId) {
                 <div class="text-center">
                     <h3>Không tìm thấy sản phẩm</h3>
                     <p>Sản phẩm không tồn tại hoặc đã bị xóa.</p>
-                    <a href="{{ route('products.index') }}" class="btn btn-primary">Quay lại</a>
+                    <a href="<?php echo e(route('products.index')); ?>" class="btn btn-primary">Quay lại</a>
                 </div>
             `;
         }
@@ -724,7 +722,7 @@ async function loadProductDetail(productId) {
         document.getElementById('productDetailContent').innerHTML = `
             <div class="text-center">
                 <p>Có lỗi xảy ra khi tải chi tiết sản phẩm. Vui lòng thử lại.</p>
-                <button onclick="loadProductDetail({{ $productId }})" class="btn btn-primary">Thử lại</button>
+                <button onclick="loadProductDetail(<?php echo e($productId); ?>)" class="btn btn-primary">Thử lại</button>
             </div>
         `;
     }
@@ -849,4 +847,6 @@ async function buyNow(productId) {
     }
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/product-detail.blade.php ENDPATH**/ ?>

@@ -30,7 +30,7 @@
 .hero-content h1 {
     font-family: 'Inspiration', cursive;
     font-size: 4rem;
-    color: #364D3C;
+    color: #324F29;
     margin-bottom: 1rem;
     line-height: 1.2;
 }
@@ -82,7 +82,7 @@
     font-family: 'Inspiration', cursive;
     font-size: 3rem;
     text-align: center;
-    color: #364D3C;
+    color: #324F29;
     margin-bottom: 3rem;
 }
 
@@ -109,7 +109,8 @@
 
 .product-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 20px 40px rgba(50, 79, 41, 0.2);
+    background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
 }
 
 .product-image {
@@ -123,11 +124,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .product-card:hover .product-image img {
-    transform: scale(1.1);
+    transform: scale(1.08);
 }
 
 .badge {
@@ -145,7 +146,7 @@
 }
 
 .badge.featured {
-    background: linear-gradient(135deg, #c4a574 0%, #a88d5f 100%);
+    background: linear-gradient(135deg, #324F29 0%, #324F29 100%);
 }
 
 .badge.new {
@@ -164,9 +165,14 @@
 .product-name {
     font-size: 1.15rem;
     font-weight: 600;
-    color: #333;
+    color: #324F29;
     margin-bottom: 12px;
     line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+.product-card:hover .product-name {
+    color: #1f3810;
 }
 
 .product-price {
@@ -238,12 +244,12 @@
 
 .swiper-container-wrapper .custom-swiper-button i {
     font-size: 18px;
-    color: #8b6f47;
+    color: #324F29;
     transition: color 0.3s ease;
 }
 
 .swiper-container-wrapper .custom-swiper-button:hover {
-    background: #d4af37 !important;
+    background: #324F29 !important;
     transform: translateY(-50%) scale(1.1) !important;
     box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4) !important;
 }
@@ -262,7 +268,7 @@
 
 /* Swiper Pagination */
 .swiper-pagination-bullet {
-    background: #c4a574;
+    background: #324F29;
     opacity: 0.5;
 }
 
@@ -271,7 +277,50 @@
 }
 
 /* ========================================================================
-   5. PROMOTIONS SECTION
+   5. CATEGORY SECTIONS
+   ======================================================================== */
+.category-section {
+    padding: 4rem 0;
+    scroll-margin-top: 100px;
+}
+
+.category-section.bg-white {
+    background-color: #ffffff;
+}
+
+.category-section.bg-light {
+    background-color: #ebedee;
+}
+
+.category-title {
+    font-family: 'Inspiration', cursive;
+    font-size: 3rem;
+    color: #324F29 !important;
+    margin-bottom: 1rem;
+}
+
+.category-description {
+    font-size: 1.1rem;
+    color: #324F29 !important;
+    max-width: 900px;
+    margin: 0 auto 2rem;
+    line-height: 1.8;
+}
+
+.category-section .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 100px;
+    position: relative;
+}
+
+.categorySwiper {
+    width: 100%;
+    overflow: visible;
+}
+
+/* ========================================================================
+   6. PROMOTIONS SECTION
    ======================================================================== */
 .promotions-section {
     padding: 4rem 0;
@@ -310,7 +359,7 @@
 
 .promotion-content h3 {
     font-size: 1.3rem;
-    color: #364D3C;
+    color: #324F29;
     margin-bottom: 0.5rem;
 }
 
@@ -343,7 +392,7 @@
 .about-text h2 {
     font-family: 'Inspiration', cursive;
     font-size: 2.5rem;
-    color: #364D3C;
+    color: #324F29;
     margin-bottom: 1.5rem;
 }
 
@@ -393,13 +442,13 @@
 
 .contact-item i {
     font-size: 1.5rem;
-    color: #c4a574;
+    color: #324F29;
     margin-top: 0.25rem;
 }
 
 .contact-item h4 {
     font-size: 1.1rem;
-    color: #364D3C;
+    color: #324F29;
     margin-bottom: 0.25rem;
 }
 
@@ -416,7 +465,7 @@
 
 .contact-form h3 {
     font-size: 1.5rem;
-    color: #364D3C;
+    color: #324F29;
     margin-bottom: 1.5rem;
 }
 
@@ -444,7 +493,7 @@
 .auth-form h2 {
     text-align: center;
     margin-bottom: 2rem;
-    color: #364D3C;
+    color: #324F29;
     font-size: 2rem;
 }
 
@@ -454,14 +503,14 @@
 }
 
 .auth-links a {
-    color: #c4a574;
+    color: #324F29;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .auth-links a:hover {
-    color: #a88d5f;
+    color: #324F29;
 }
 
 /* ========================================================================
@@ -480,11 +529,11 @@
     .products-section .container {
         padding: 0 70px;
     }
-    
+
     .swiper-container-wrapper .swiper-button-prev.custom-swiper-button {
         left: -55px !important;
     }
-    
+
     .swiper-container-wrapper .swiper-button-next.custom-swiper-button {
         right: -55px !important;
     }
@@ -495,29 +544,29 @@
     .featuredProductsSwiper {
         overflow: hidden;
     }
-    
+
     .products-section .container {
         padding: 0 20px;
     }
-    
+
     .swiper-container-wrapper {
         padding: 40px 0;
     }
-    
+
     .swiper-container-wrapper .swiper-button-prev.custom-swiper-button {
         left: 10px !important;
     }
-    
+
     .swiper-container-wrapper .swiper-button-next.custom-swiper-button {
         right: 10px !important;
     }
-    
+
     .swiper-container-wrapper .custom-swiper-button {
         width: 40px !important;
         height: 40px !important;
         background: rgba(253, 249, 242, 0.95) !important;
     }
-    
+
     .swiper-container-wrapper .custom-swiper-button i {
         font-size: 16px !important;
     }
@@ -528,43 +577,43 @@
     .hero-content h1 {
         font-size: 2.5rem;
     }
-    
+
     .hero-subtitle {
         font-size: 1.2rem;
     }
-    
+
     .hero-description {
         font-size: 1rem;
     }
-    
+
     .section-title {
         font-size: 2rem;
     }
-    
+
     .product-card {
         height: 460px;
     }
-    
+
     .product-name {
         font-size: 1.05rem;
     }
-    
+
     .current-price {
         font-size: 1.15rem;
     }
-    
+
     .hero .container {
         gap: 2rem;
     }
-    
+
     .about-content {
         gap: 2rem;
     }
-    
+
     .contact-content {
         gap: 2rem;
     }
-    
+
     .promotions-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -576,32 +625,32 @@
     .hero-content h1 {
         font-size: 2rem;
     }
-    
+
     .section-title {
         font-size: 1.75rem;
     }
-    
+
     .product-card {
         height: auto;
     }
-    
+
     .product-image {
         height: 220px;
     }
-    
+
     .swiper-container-wrapper .custom-swiper-button {
         width: 35px !important;
         height: 35px !important;
     }
-    
+
     .swiper-container-wrapper .custom-swiper-button i {
         font-size: 14px !important;
     }
-    
+
     .swiper-container-wrapper .swiper-button-prev.custom-swiper-button {
         left: 5px !important;
     }
-    
+
     .swiper-container-wrapper .swiper-button-next.custom-swiper-button {
         right: 5px !important;
     }
@@ -634,3 +683,77 @@
 .position-relative {
     position: relative;
 }
+
+/* ========================================================================
+   BUTTON STYLES
+   ======================================================================== */
+.btn-primary {
+    background-color: #c4a574 !important;
+    border-color: #c4a574 !important;
+    color: white !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary:hover {
+    background-color: #b89560 !important;
+    border-color: #b89560 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(196, 165, 116, 0.4) !important;
+}
+
+.btn-primary:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 8px rgba(196, 165, 116, 0.3) !important;
+}
+/* Button Outline Styles */
+.btn-outline {
+    background: transparent !important;
+    border: 2px solid #c4a574 !important;
+    color: #c4a574 !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.btn-outline:hover {
+    background: #c4a574 !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(196, 165, 116, 0.4) !important;
+}
+
+.btn-outline:active {
+    transform: translateY(0) !important;
+}
+
+/* General Button Styles */
+.btn {
+    cursor: pointer;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease !important;
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+

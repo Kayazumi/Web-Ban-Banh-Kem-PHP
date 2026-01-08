@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'La Cuisine Ngọt - Bánh Kem Cao Cấp')</title>
-    <meta name="description" content="@yield('description', 'La Cuisine Ngọt - Thương hiệu bánh kem cao cấp hàng đầu Việt Nam')">
+    <title><?php echo $__env->yieldContent('title', 'La Cuisine Ngọt - Bánh Kem Cao Cấp'); ?></title>
+    <meta name="description" content="<?php echo $__env->yieldContent('description', 'La Cuisine Ngọt - Thương hiệu bánh kem cao cấp hàng đầu Việt Nam'); ?>">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2921/2921822.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -17,13 +17,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- các meta, title, css chung -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/customer.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/customer.css')); ?>">
 
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 
     <style>
     /* Global centered modal used for confirmations/alerts */
@@ -121,13 +121,13 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="{{ route('home') }}">La Cuisine Ngọt</a>
+                <a href="<?php echo e(route('home')); ?>">La Cuisine Ngọt</a>
             </div>
 
             <ul class="nav-menu">
-                <li><a href="{{ route('home') }}#products" class="nav-menu-link">SẢN PHẨM</a></li>
-                <li><a href="{{ route('home') }}#khuyenmai" class="nav-menu-link">KHUYẾN MÃI</a></li>
-                <li><a href="{{ route('home') }}#contact" class="nav-menu-link">LIÊN HỆ</a></li>
+                <li><a href="<?php echo e(route('home')); ?>#products" class="nav-menu-link">SẢN PHẨM</a></li>
+                <li><a href="<?php echo e(route('home')); ?>#khuyenmai" class="nav-menu-link">KHUYẾN MÃI</a></li>
+                <li><a href="<?php echo e(route('home')); ?>#contact" class="nav-menu-link">LIÊN HỆ</a></li>
 
                 <li>
                     <a href="#" class="nav-search">
@@ -135,34 +135,34 @@
                     </a>
                 </li>
 
-                @auth
+                <?php if(auth()->guard()->check()): ?>
                 <li>
-                    <a href="{{ route('cart') }}" class="nav-cart" style="padding: 0 10px;">
+                    <a href="<?php echo e(route('cart')); ?>" class="nav-cart" style="padding: 0 10px;">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-count" id="cartCount">0</span>
                     </a>
                 </li>
-                @endauth
+                <?php endif; ?>
 
                 <li class="nav-user">
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                         <div class="user-menu">
-                            <span>Xin chào, {{ Auth::user()->full_name }}</span>
+                            <span>Xin chào, <?php echo e(Auth::user()->full_name); ?></span>
                             <ul>
-                                <li><a href="{{ route('profile') }}">Thông tin tài khoản</a></li>
-                                <li><a href="{{ route('orders.index') }}">Đơn hàng của tôi</a></li>
-                                @if(Auth::user()->isAdmin())
-                                <li><a href="{{ route('admin.dashboard') }}">Quản trị</a></li>
-                                @endif
+                                <li><a href="<?php echo e(route('profile')); ?>">Thông tin tài khoản</a></li>
+                                <li><a href="<?php echo e(route('orders.index')); ?>">Đơn hàng của tôi</a></li>
+                                <?php if(Auth::user()->isAdmin()): ?>
+                                <li><a href="<?php echo e(route('admin.dashboard')); ?>">Quản trị</a></li>
+                                <?php endif; ?>
                                 <li><button id="logoutBtn" onclick="logout()">Đăng xuất</button></li>
                             </ul>
                         </div>
-                @else
+                <?php else: ?>
                         <div class="auth-actions">
-                            <a href="{{ route('login') }}" class="nav-login-1">ĐĂNG NHẬP</a>
-                            <a href="{{ route('register') }}" class="nav-login-2">ĐĂNG KÝ</a>
+                            <a href="<?php echo e(route('login')); ?>" class="nav-login-1">ĐĂNG NHẬP</a>
+                            <a href="<?php echo e(route('register')); ?>" class="nav-login-2">ĐĂNG KÝ</a>
                         </div>
-                    @endauth
+                    <?php endif; ?>
                 </li>
             </ul>
         </div>
@@ -220,7 +220,7 @@
 
     <!-- Main Content -->
     <main>
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- Footer -->
@@ -239,9 +239,9 @@
             <div class="footer-section">
                 <h4>Liên kết</h4>
                 <ul>
-                    <li><a href="{{ route('home') }}#products">Sản phẩm</a></li>
-                    <li><a href="{{ route('home') }}#khuyenmai">Khuyến mãi</a></li>
-                    <li><a href="{{ route('home') }}#contact">Liên hệ</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>#products">Sản phẩm</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>#khuyenmai">Khuyến mãi</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>#contact">Liên hệ</a></li>
                 </ul>
             </div>
 
@@ -262,14 +262,14 @@
 
     <script>
         window.Laravel = {
-            csrfToken: '{{ csrf_token() }}',
-            isLoggedIn: {{ auth()->check() ? 'true' : 'false' }},
-            user: {!! auth()->check() ? json_encode(auth()->user()->only(['UserID', 'full_name', 'role'])) : 'null' !!},
+            csrfToken: '<?php echo e(csrf_token()); ?>',
+            isLoggedIn: <?php echo e(auth()->check() ? 'true' : 'false'); ?>,
+            user: <?php echo auth()->check() ? json_encode(auth()->user()->only(['UserID', 'full_name', 'role'])) : 'null'; ?>,
             routes: {
-                logout: '{{ route("logout") }}',
-                cart: '{{ url("api/cart") }}',
-                products: '{{ url("api/products") }}',
-                orders: '{{ url("api/orders") }}'
+                logout: '<?php echo e(route("logout")); ?>',
+                cart: '<?php echo e(url("api/cart")); ?>',
+                products: '<?php echo e(url("api/products")); ?>',
+                orders: '<?php echo e(url("api/orders")); ?>'
             }
         };
 
@@ -283,7 +283,7 @@
         function handleSearch() {
             const query = document.getElementById('searchInput').value;
             if(query.trim()) {
-                window.location.href = '{{ route("products.index") }}?search=' + encodeURIComponent(query);
+                window.location.href = '<?php echo e(route("products.index")); ?>?search=' + encodeURIComponent(query);
             }
         }
 
@@ -338,7 +338,7 @@
     });
     </script>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
     <!-- Global modal HTML -->
     <div id="globalModalOverlay" class="global-modal-overlay" aria-hidden="true">
         <div class="global-modal" role="dialog" aria-modal="true" aria-labelledby="globalModalTitle">
@@ -423,4 +423,4 @@
     })();
     </script>
 </body>
-</html>
+</html><?php /**PATH C:\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/app.blade.php ENDPATH**/ ?>

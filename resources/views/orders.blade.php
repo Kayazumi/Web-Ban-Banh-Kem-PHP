@@ -53,7 +53,7 @@
 }
 
 .order-code {
-    color: #8B4513;
+    color: #c4a574;
     font-weight: bold;
 }
 
@@ -128,7 +128,7 @@
 }
 
 .order-item-price {
-    color: #8B4513;
+    color: #c4a574;
     font-weight: bold;
 }
 
@@ -143,7 +143,7 @@
 .order-total {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #8B4513;
+    color: #c4a574;
 }
 
 .btn {
@@ -158,12 +158,12 @@
 }
 
 .btn-primary {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #654321;
+    background: #c4a574;
 }
 
 .btn-secondary {
@@ -177,12 +177,12 @@
 
 .btn-outline {
     background: transparent;
-    border: 1px solid #8B4513;
-    color: #8B4513;
+    border: 1px solid #c4a574;
+    color: #c4a574;
 }
 
 .btn-outline:hover {
-    background: #8B4513;
+    background: #c4a574;
     color: white;
 }
 
@@ -348,3 +348,5 @@ function formatDate(dateString) {
 }
 </script>
 @endpush
+
+

@@ -1,12 +1,10 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'La Cuisine Ngọt - Bánh Kem Cao Cấp'); ?>
 
-@section('title', 'La Cuisine Ngọt - Bánh Kem Cao Cấp')
+<?php $__env->startPush('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('css/customer.css')); ?>">
+<?php $__env->stopPush(); ?>
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/customer.css') }}">
-@endpush
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Hero Section -->
 <section id="home" class="hero">
     <div class="container">
@@ -24,7 +22,7 @@
             </div>
         </div>
         <div class="hero-image">
-            <img src="{{ asset('images/chaomung1.jpg') }}" alt="Bánh kem cao cấp">
+            <img src="<?php echo e(asset('images/chaomung1.jpg')); ?>" alt="Bánh kem cao cấp">
         </div>
     </div>
 </section>
@@ -165,21 +163,21 @@
         <h2 class="section-title">Khuyến mãi hấp dẫn</h2>
         <div class="promotions-grid">
             <div class="promotion-card">
-                <img src="{{ asset('images/buy-1-get-1.jpg') }}" alt="Mua 1 tặng 1">
+                <img src="<?php echo e(asset('images/buy-1-get-1.jpg')); ?>" alt="Mua 1 tặng 1">
                 <div class="promotion-content">
                     <h3>Mua 1 tặng 1</h3>
                     <p>Áp dụng cho các loại bánh entremet</p>
                 </div>
             </div>
             <div class="promotion-card">
-                <img src="{{ asset('images/free-ship.jpg') }}" alt="Miễn phí giao hàng">
+                <img src="<?php echo e(asset('images/free-ship.jpg')); ?>" alt="Miễn phí giao hàng">
                 <div class="promotion-content">
                     <h3>Miễn phí giao hàng</h3>
                     <p>Đơn hàng từ 500.000đ</p>
                 </div>
             </div>
             <div class="promotion-card">
-                <img src="{{ asset('images/gg.jpg') }}" alt="Giảm giá">
+                <img src="<?php echo e(asset('images/gg.jpg')); ?>" alt="Giảm giá">
                 <div class="promotion-content">
                     <h3>Giảm 10%</h3>
                     <p>Cho khách hàng thân thiết</p>
@@ -206,7 +204,7 @@
                 </p>
             </div>
             <div class="about-image">
-                <img src="{{ asset('images/tamnhin.jpg') }}" alt="Tầm nhìn La Cuisine Ngọt">
+                <img src="<?php echo e(asset('images/tamnhin.jpg')); ?>" alt="Tầm nhìn La Cuisine Ngọt">
             </div>
         </div>
     </div>
@@ -244,7 +242,7 @@
             <div class="contact-form">
                 <h3>Gửi tin nhắn</h3>
                 <form id="contactForm">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Họ tên" required>
                     </div>
@@ -263,10 +261,10 @@
         </div>
     </div>
 </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 // Load sản phẩm nổi bật khi trang sẵn sàng
 document.addEventListener('DOMContentLoaded', function() {
@@ -498,4 +496,6 @@ function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/home.blade.php ENDPATH**/ ?>

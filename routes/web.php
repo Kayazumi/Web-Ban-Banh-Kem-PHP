@@ -10,9 +10,17 @@ use Illuminate\Support\Facades\DB;
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/products', [HomeController::class, 'products'])->name('products');
 
-// 2. AUTHENTICATION - Cho khách chưa đăng nhập
+// 2. PRODUCTS - Public routes for everyone
+Route::get('/products', function () {
+    return view('products.index');
+})->name('products.index');
+
+Route::get('/products/{id}', function ($id) {
+    return view('product-detail', ['productId' => $id]);
+})->name('products.show');
+
+// 3. AUTHENTICATION - Cho khách chưa đăng nhập
 Route::middleware('guest')->group(function () {
     // Hiển thị form đăng nhập
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -25,12 +33,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-// 3. Đăng xuất - Dành cho người đã đăng nhập
+// 4. Đăng xuất - Dành cho người đã đăng nhập
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
 
-// 4. ROUTE DÀNH CHO ADMIN
+// 5. ROUTE DÀNH CHO ADMIN
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         // summary metrics
@@ -106,7 +114,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Reports removed
 });
 
-// 5. ROUTE CHUNG CHO NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (CUSTOMER / USER THƯỜNG)
+// 6. ROUTE CHUNG CHO NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (CUSTOMER / USER THƯỜNG)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         return view('profile');

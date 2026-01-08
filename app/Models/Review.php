@@ -33,6 +33,14 @@ class Review extends Model
         'replied_at' => 'datetime',
     ];
 
+    /**
+     * Scope to get only approved reviews
+     */
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id', 'ProductID');

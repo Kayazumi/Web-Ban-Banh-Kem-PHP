@@ -26,7 +26,7 @@ body {
 
 /* === NAVBAR (Thanh điều hướng xanh đậm) === */
 .navbar {
-    background-color: #364D3C;
+    background-color: #324F29;
     /* Màu xanh lá đậm */
     position: fixed;
     top: 0;
@@ -226,7 +226,7 @@ body {
     border: none !important;
     background: transparent;
     font-size: 1rem;
-    color: #364D3C !important;
+    color: #324F29 !important;
     /* Đảm bảo màu chữ xanh đậm */
     outline: none;
 }
@@ -271,7 +271,7 @@ body {
     margin-bottom: 10px;
     font-weight: 600;
     font-size: 0.95rem;
-    color: #364D3C !important;
+    color: #324F29 !important;
     /* Ép màu chữ xanh đậm, không để bị trắng */
     text-align: left;
 }
@@ -291,7 +291,7 @@ body {
 .filter-content button {
     width: 100%;
     padding: 12px;
-    background: #364D3C;
+    background: #324F29;
     color: white !important;
     border: none;
     border-radius: 8px;
@@ -414,7 +414,7 @@ body {
 
 /* === FOOTER === */
 .footer {
-    background-color: #364D3C;
+    background-color: #324F29;
     color: #ffffff;
     padding: 3rem 0 1rem;
     margin-top: 4rem;
