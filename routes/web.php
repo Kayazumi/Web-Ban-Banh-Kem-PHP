@@ -8,7 +8,9 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\DB;
 
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
+// 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/products', [HomeController::class, 'products'])->name('products');
 
 // 2. AUTHENTICATION - Cho khách chưa đăng nhập
 Route::middleware('guest')->group(function () {

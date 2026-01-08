@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Sản phẩm - La Cuisine Ngọt'); ?>
 
-@section('title', 'Sản phẩm - La Cuisine Ngọt')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -54,9 +52,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 .container {
     max-width: 1200px;
@@ -341,9 +339,9 @@
     }
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 let currentPage = 1;
 let currentFilters = {};
@@ -574,4 +572,6 @@ function formatPrice(price) {
     }).format(price);
 }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\xampp01\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/products.blade.php ENDPATH**/ ?>
