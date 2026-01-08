@@ -1,0 +1,109 @@
+/* Layout chung */
+.account-page-wrapper {
+    background-color: #e8e1d5;
+    padding: 60px 20px;
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+}
+
+.account-card {
+    background: #fff;
+    width: 100%;
+    max-width: 750px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Tab Navigation */
+.account-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 35px;
+}
+
+.nav-item {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #f0f0f0;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-item.active {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.logout-btn:hover { background: #ffebeb; color: #dc3545; }
+
+/* Tab Content Logic */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Styles */
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; }
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.save-btn {
+    background: #3d5641;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.save-btn:disabled { background: #8da191; cursor: not-allowed; }
+
+/* Custom Alert Styles (Khớp với JS của bạn) */
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.custom-alert.show { transform: translateX(0); }
+.alert-success { background-color: #28a745; }
+.alert-error { background-color: #dc3545; }
+
+.alert-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
