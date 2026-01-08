@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'La Cuisine Ngọt - Nhân viên')</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title><?php echo $__env->yieldContent('title', 'La Cuisine Ngọt - Nhân viên'); ?></title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,13 +16,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- CSS chung toàn app -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
 
     <!-- CSS dành riêng cho khu vực tài khoản / nhân viên -->
-    <link rel="stylesheet" href="{{ asset('css/account.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/account.css')); ?>">
 
     <!-- Stack cho các page con thêm CSS riêng (ví dụ orders.css, complaints.css...) -->
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
 <body class="account-page">
@@ -30,25 +30,25 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="{{ route('home') }}">La Cuisine Ngọt</a>
+                <a href="<?php echo e(route('home')); ?>">La Cuisine Ngọt</a>
             </div>
 
             <ul class="nav-menu">
     <li>
-        <a href="{{ route('staff.orders.index') }}" 
-           class="nav-menu-link {{ request()->routeIs('staff.orders.*') ? 'active' : '' }}">
+        <a href="<?php echo e(route('staff.orders.index')); ?>" 
+           class="nav-menu-link <?php echo e(request()->routeIs('staff.orders.*') ? 'active' : ''); ?>">
             ĐƠN HÀNG
         </a>
     </li>
 
     <li>
-        <a href="{{ route('staff.complaints.index') }}" class="nav-menu-link">
+        <a href="<?php echo e(route('staff.complaints.index')); ?>" class="nav-menu-link">
             KHIẾU NẠI
         </a>
     </li>
 
     <li>
-        <a href="{{ route('staff.contacts.index') }}" class="nav-menu-link">
+        <a href="<?php echo e(route('staff.contacts.index')); ?>" class="nav-menu-link">
             LIÊN HỆ
         </a>
     </li>
@@ -59,7 +59,7 @@
                 <div class="nav-user-dropdown">
                     <button class="user-dropdown-toggle" id="userDropdownToggle">
                         <i class="fas fa-user-circle"></i>
-                        <span class="user-name">{{ Auth::user()->full_name }}</span>
+                        <span class="user-name"><?php echo e(Auth::user()->full_name); ?></span>
                         <i class="fas fa-chevron-down chevron-icon"></i>
                     </button>
 
@@ -68,8 +68,8 @@
                             <div class="dropdown-user-info">
                                 <i class="fas fa-user-circle user-avatar"></i>
                                 <div class="user-details">
-                                    <strong>{{ Auth::user()->full_name }}</strong>
-                                    <span class="user-role">{{ Auth::user()->role === 'admin' ? 'Quản trị viên' : 'Nhân viên' }}</span>
+                                    <strong><?php echo e(Auth::user()->full_name); ?></strong>
+                                    <span class="user-role"><?php echo e(Auth::user()->role === 'admin' ? 'Quản trị viên' : 'Nhân viên'); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -78,19 +78,19 @@
 
                         <ul class="dropdown-items">
                             <li>
-                                <a href="{{ route('staff.profile') }}" class="dropdown-item">
+                                <a href="<?php echo e(route('staff.profile')); ?>" class="dropdown-item">
                                     <i class="fas fa-id-card"></i>
                                     <span>Hồ sơ của tôi</span>
                                 </a>
                             </li>
-                            @if(Auth::user()->role === 'admin')
+                            <?php if(Auth::user()->role === 'admin'): ?>
                             <li>
-                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                                <a href="<?php echo e(route('admin.dashboard')); ?>" class="dropdown-item">
                                     <i class="fas fa-tachometer-alt"></i>
                                     <span>Quản trị</span>
                                 </a>
                             </li>
-                            @endif
+                            <?php endif; ?>
                         </ul>
 
                         <div class="dropdown-divider"></div>
@@ -111,7 +111,7 @@
 
     <!-- Main Content -->
     <main>
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- Scripts -->
@@ -151,7 +151,7 @@
     // Cách lấy token chắc chắn nhất
     const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-    fetch('{{ route("logout") }}', {
+    fetch('<?php echo e(route("logout")); ?>', {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': token,
@@ -170,7 +170,7 @@
 }
     </script>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
-</html>
+</html><?php /**PATH D:\ProgramFilesD\DevApps\XAM_PP\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/staff.blade.php ENDPATH**/ ?>

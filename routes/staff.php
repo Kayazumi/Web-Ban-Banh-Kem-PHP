@@ -29,4 +29,11 @@ Route::prefix('api')->group(function () {
     Route::post('/complaints/{id}/respond', [App\Http\Controllers\Staff\StaffComplaintController::class, 'apiUpdate']);
 });
 
+Route::get('/contacts', [App\Http\Controllers\Staff\ContactController::class, 'index'])->name('contacts.index');
+
+Route::prefix('api')->group(function () {
+    Route::get('/contacts', [App\Http\Controllers\Staff\ContactController::class, 'apiIndex']);
+    Route::get('/contacts/{id}', [App\Http\Controllers\Staff\ContactController::class, 'apiShow']);
+    Route::put('/contacts/{id}/status', [App\Http\Controllers\Staff\ContactController::class, 'apiUpdateStatus']);
+});
 });
