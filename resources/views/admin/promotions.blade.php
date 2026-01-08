@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="admin-content">
-    <h2>Quản lý khuyến mãi</h2>
     <div class="card" style="padding:16px;margin-bottom:18px;">
         <form id="promoForm">
             <div style="display:flex;gap:12px;flex-wrap:wrap">

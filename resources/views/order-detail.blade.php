@@ -232,7 +232,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const orderId = {{ $orderId }};
+    const orderId = { $orderId };
     loadOrderDetail(orderId);
 });
 

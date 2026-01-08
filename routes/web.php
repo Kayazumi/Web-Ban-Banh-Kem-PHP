@@ -37,25 +37,22 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         $deliveredCount = DB::table('orders')->where('order_status', 'delivery_successful')->count();
         $newCustomers = DB::table('users')->where('role', 'customer')->count();
 
-        // monthly revenue for current year (computed in PHP for DB compatibility)
-        // choose default year: latest year that has orders, otherwise current year
-        $yearRow = DB::table('orders')
-            ->selectRaw("MAX(strftime('%Y', created_at)) as max_year")
+        // Determine default year/month in a DB-agnostic way:
+        // Option B: get latest created_at and parse with Carbon (works for MySQL/SQLite)
+        $latestCreatedAt = DB::table('orders')
             ->whereNotNull('created_at')
-            ->first();
-        $defaultYear = $yearRow && $yearRow->max_year ? (int)$yearRow->max_year : (int)date('Y');
+            ->orderBy('created_at', 'desc')
+            ->value('created_at');
+
+        $defaultYear = $latestCreatedAt ? (int)\Carbon\Carbon::parse($latestCreatedAt)->format('Y') : (int)date('Y');
+        $defaultMonth = $latestCreatedAt ? (int)\Carbon\Carbon::parse($latestCreatedAt)->format('n') : 1;
 
         $ordersForMonthly = DB::table('orders')
             ->select('created_at','final_amount')
             ->whereNotNull('created_at')
             ->whereYear('created_at', $defaultYear)
             ->get();
-        // choose default month: latest month with orders in defaultYear, otherwise 1
-        $monthRow = DB::table('orders')
-            ->selectRaw("MAX(strftime('%m', created_at)) as max_month")
-            ->whereYear('created_at', $defaultYear)
-            ->first();
-        $defaultMonth = $monthRow && $monthRow->max_month ? (int)$monthRow->max_month : 1;
+
         $monthly = [];
         foreach ($ordersForMonthly as $o) {
             try {

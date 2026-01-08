@@ -200,9 +200,12 @@ class OrderController extends Controller
             ? "strftime('%Y-%m', created_at)"
             : "DATE_FORMAT(created_at, '%Y-%m')";
 
+        $startOfYear = \Carbon\Carbon::create($year, 1, 1)->startOfYear()->toDateTimeString();
+        $endOfYear = \Carbon\Carbon::create($year, 12, 31)->endOfYear()->toDateTimeString();
+
         $rows = DB::table('orders')
             ->selectRaw("$dateExpr as month, SUM(final_amount) as revenue")
-            ->whereYear('created_at', $year)
+            ->whereBetween('created_at', [$startOfYear, $endOfYear])
             ->groupBy('month')
             ->orderBy('month')
             ->get();
