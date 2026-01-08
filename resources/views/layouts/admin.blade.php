@@ -46,6 +46,11 @@
                     <span>Người dùng</span>
                 </a>
 
+                <a href="{{ route('admin.promotions') }}" class="{{ request()->routeIs('admin.promotions*') ? 'active' : '' }}">
+                    <i class="fas fa-tags"></i>
+                    <span>Khuyến mãi</span>
+                </a>
+
                 <a href="{{ route('home') }}" target="_blank">
                     <i class="fas fa-external-link-alt"></i>
                     <span>Xem website</span>

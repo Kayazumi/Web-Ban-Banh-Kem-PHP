@@ -76,6 +76,8 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // Reports API for dashboard charts
     Route::get('/reports/monthly', [AdminOrderController::class, 'monthlyRevenue']);
     Route::get('/reports/products', [AdminOrderController::class, 'productBreakdown']);
+    // Admin Promotion API
+    Route::apiResource('/promotions', \App\Http\Controllers\Admin\PromotionController::class);
 
     // Admin User API
     Route::apiResource('/users', AdminUserController::class);

@@ -36,9 +36,20 @@ class ProductController extends Controller
         $products = $query->orderBy('created_at', 'desc')
                           ->paginate(15);
 
+        $items = collect($products->items())->map(function($p) {
+            // ensure consistent JSON shape expected by frontend
+            return array_merge(
+                is_array($p) ? $p : $p->toArray(),
+                [
+                    'category_name' => isset($p->category) && $p->category ? ($p->category->category_name ?? null) : null,
+                    'category_id' => isset($p->category) && $p->category ? ($p->category->CategoryID ?? null) : ($p->category_id ?? null),
+                ]
+            );
+        })->all();
+
         return response()->json([
             'success' => true,
-            'data' => $products->items(),
+            'data' => $items,
             'pagination' => [
                 'current_page' => $products->currentPage(),
                 'last_page' => $products->lastPage(),

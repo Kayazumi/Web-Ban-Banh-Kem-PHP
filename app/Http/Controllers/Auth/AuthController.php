@@ -34,8 +34,8 @@ class AuthController extends Controller
             $token = $user->createToken('api-token')->plainTextToken;
 
             $redirect = match ($user->role) {
-                // After admin login, land on product management page
-                'admin' => route('admin.products'),
+                // After admin login, land on dashboard
+                'admin' => route('admin.dashboard'),
                 'staff' => route('staff.profile'),
                 default => route('home'),
             };

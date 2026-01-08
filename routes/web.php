@@ -37,8 +37,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         $deliveredCount = DB::table('orders')->where('order_status', 'delivery_successful')->count();
         $newCustomers = DB::table('users')->where('role', 'customer')->count();
 
-        // monthly revenue for latest 12 months (computed in PHP for DB compatibility)
-        $ordersForMonthly = DB::table('orders')->select('created_at','final_amount')->whereNotNull('created_at')->get();
+        // monthly revenue for current year (computed in PHP for DB compatibility)
+        // choose default year: latest year that has orders, otherwise current year
+        $yearRow = DB::table('orders')
+            ->selectRaw("MAX(strftime('%Y', created_at)) as max_year")
+            ->whereNotNull('created_at')
+            ->first();
+        $defaultYear = $yearRow && $yearRow->max_year ? (int)$yearRow->max_year : (int)date('Y');
+
+        $ordersForMonthly = DB::table('orders')
+            ->select('created_at','final_amount')
+            ->whereNotNull('created_at')
+            ->whereYear('created_at', $defaultYear)
+            ->get();
+        // choose default month: latest month with orders in defaultYear, otherwise 1
+        $monthRow = DB::table('orders')
+            ->selectRaw("MAX(strftime('%m', created_at)) as max_month")
+            ->whereYear('created_at', $defaultYear)
+            ->first();
+        $defaultMonth = $monthRow && $monthRow->max_month ? (int)$monthRow->max_month : 1;
         $monthly = [];
         foreach ($ordersForMonthly as $o) {
             try {
@@ -62,12 +79,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             ->get();
 
         $laravelUser = Auth::user();
-        return view('admin.dashboard', compact('totalRevenue','totalOrders','deliveredCount','newCustomers','monthly','topProducts','laravelUser'));
+        return view('admin.dashboard', compact('totalRevenue','totalOrders','deliveredCount','newCustomers','monthly','topProducts','laravelUser','defaultYear','defaultMonth'));
     })->name('dashboard');
 
     // Reports endpoints (session-authenticated) for dashboard charts
     Route::get('/reports/monthly', [\App\Http\Controllers\Admin\OrderController::class, 'monthlyRevenue']);
     Route::get('/reports/products', [\App\Http\Controllers\Admin\OrderController::class, 'productBreakdown']);
+    // Admin promotions page (web)
+    Route::get('/promotions', function () {
+        return view('admin.promotions');
+    })->middleware(['auth','admin'])->name('promotions');
 
     Route::get('/users', function () {
         return view('admin.users');

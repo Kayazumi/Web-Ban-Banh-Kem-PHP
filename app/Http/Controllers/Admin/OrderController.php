@@ -188,16 +188,29 @@ class OrderController extends Controller
     {
         $year = (int) $request->get('year', date('Y'));
 
+        // initialize result with 12 months for the year, default 0
+        $result = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $key = sprintf('%04d-%02d', $year, $m);
+            $result[$key] = 0.0;
+        }
+
+        $driver = DB::connection()->getDriverName();
+        $dateExpr = ($driver === 'sqlite')
+            ? "strftime('%Y-%m', created_at)"
+            : "DATE_FORMAT(created_at, '%Y-%m')";
+
         $rows = DB::table('orders')
-            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, SUM(final_amount) as revenue")
+            ->selectRaw("$dateExpr as month, SUM(final_amount) as revenue")
             ->whereYear('created_at', $year)
             ->groupBy('month')
             ->orderBy('month')
             ->get();
 
-        $result = [];
         foreach ($rows as $r) {
-            $result[$r->month] = (float) $r->revenue;
+            if (isset($result[$r->month])) {
+                $result[$r->month] = (float) $r->revenue;
+            }
         }
 
         return response()->json(['success' => true, 'data' => ['monthly' => $result]]);

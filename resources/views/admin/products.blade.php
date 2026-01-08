@@ -5,7 +5,6 @@
 @section('content')
 <div class="admin-content">
     <div class="content-header">
-        <h2>Quản lý sản phẩm</h2>
         <button class="btn btn-primary" onclick="showAddProductModal()">
             <i class="fas fa-plus"></i> Thêm sản phẩm mới
         </button>
@@ -85,7 +84,7 @@
 
                     <div class="form-group">
                         <label for="categoryId">Danh mục *</label>
-                        <select id="categoryId" name="categoryId" required>
+                        <select id="categoryId" name="category_id" required>
                             <option value="">Chọn danh mục</option>
                         </select>
                     </div>

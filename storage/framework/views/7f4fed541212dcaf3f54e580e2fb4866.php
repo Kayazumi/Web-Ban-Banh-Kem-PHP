@@ -46,6 +46,11 @@
                     <span>Người dùng</span>
                 </a>
 
+                <a href="<?php echo e(route('admin.promotions')); ?>" class="<?php echo e(request()->routeIs('admin.promotions*') ? 'active' : ''); ?>">
+                    <i class="fas fa-tags"></i>
+                    <span>Khuyến mãi</span>
+                </a>
+
                 <a href="<?php echo e(route('home')); ?>" target="_blank">
                     <i class="fas fa-external-link-alt"></i>
                     <span>Xem website</span>

@@ -3,7 +3,6 @@
 <?php $__env->startSection('content'); ?>
 <div class="admin-content">
     <div class="content-header">
-        <h2>Quản lý người dùng</h2>
     </div>
 
     <!-- Filters -->
@@ -57,6 +56,62 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+<!-- Edit User Modal -->
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="userModalTitle">Chỉnh sửa người dùng</h3>
+            <button class="close-btn" onclick="closeUserModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="userForm">
+                <input type="hidden" id="editUserId" name="editUserId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editFullName">Họ tên *</label>
+                        <input type="text" id="editFullName" name="full_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRole">Loại tài khoản *</label>
+                        <select id="editRole" name="role" required>
+                            <option value="customer">Khách hàng</option>
+                            <option value="staff">Nhân viên</option>
+                            <option value="admin">Quản trị viên</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPhone">Số điện thoại *</label>
+                        <input type="text" id="editPhone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email *</label>
+                        <input type="email" id="editEmail" name="email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editStatus">Trạng thái</label>
+                        <select id="editStatus" name="status">
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Không hoạt động</option>
+                            <option value="banned">Đã khóa</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAddress">Địa chỉ</label>
+                        <input type="text" id="editAddress" name="address">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Hủy</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 <?php $__env->stopSection(); ?>
@@ -212,9 +267,46 @@
 </style>
 <?php $__env->stopPush(); ?>
 
+<?php $__env->startPush('styles'); ?>
+<style>
+/* Modal Styles (shared) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+    background-color: white;
+    margin: 3% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.modal-header {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-body {
+    padding: 1rem;
+}
+</style>
+<?php $__env->stopPush(); ?>
+
 <?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    window.currentUsersFilters = {};
     loadUsers();
 
     // Filters
@@ -224,12 +316,54 @@ document.addEventListener('DOMContentLoaded', function() {
             applyFilters();
         }
     });
+
+    // handle user form submit
+    document.getElementById('userForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+        const id = document.getElementById('editUserId').value;
+        const payload = {
+            full_name: document.getElementById('editFullName').value,
+            role: document.getElementById('editRole').value,
+            phone: document.getElementById('editPhone').value,
+            email: document.getElementById('editEmail').value,
+            status: document.getElementById('editStatus').value,
+            address: document.getElementById('editAddress').value
+        };
+        try {
+            const token = localStorage.getItem('api_token');
+            const csrf = window.Laravel && window.Laravel.csrfToken ? window.Laravel.csrfToken : (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
+            const headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            if (csrf) headers['X-CSRF-TOKEN'] = csrf;
+            const res = await fetch(`/api/admin/users/${id}`, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Cập nhật người dùng thành công');
+                closeUserModal();
+                loadUsers();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Có lỗi xảy ra');
+        }
+    });
 });
 
 async function loadUsers() {
     try {
+        const params = new URLSearchParams(window.currentUsersFilters || {});
         const token = localStorage.getItem('api_token');
-        const response = await fetch('/api/admin/users', {
+        const response = await fetch(`/api/admin/users?${params.toString()}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -282,13 +416,44 @@ async function loadUsers() {
 }
 
 function applyFilters() {
-    // Filter functionality would be implemented here
+    const role = document.getElementById('roleFilter').value;
+    const status = document.getElementById('statusFilter').value;
+    const search = document.getElementById('searchInput').value.trim();
+    window.currentUsersFilters = {};
+    if (role) window.currentUsersFilters.role = role;
+    if (status) window.currentUsersFilters.status = status;
+    if (search) window.currentUsersFilters.search = search;
     loadUsers();
 }
 
 async function editUser(userId) {
-    // Edit user functionality would be implemented here
-    alert('Tính năng chỉnh sửa người dùng sẽ được phát triển');
+        try {
+            const token = localStorage.getItem('api_token');
+            const headers = { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const res = await fetch(`/api/admin/users/${userId}`, { headers });
+            const data = await res.json();
+        if (!data.success) {
+            alert('Không thể tải người dùng');
+            return;
+        }
+        const user = data.data.user;
+        document.getElementById('editUserId').value = user.UserID;
+        document.getElementById('editFullName').value = user.full_name || '';
+        document.getElementById('editRole').value = user.role || 'customer';
+        document.getElementById('editPhone').value = user.phone || '';
+        document.getElementById('editEmail').value = user.email || '';
+        document.getElementById('editStatus').value = user.status || 'active';
+        document.getElementById('editAddress').value = user.address || '';
+        document.getElementById('userModal').style.display = 'block';
+    } catch (err) {
+        console.error(err);
+        alert('Lỗi tải người dùng');
+    }
+}
+
+function closeUserModal() {
+    document.getElementById('userModal').style.display = 'none';
 }
 
 async function toggleStatus(userId, currentStatus) {
@@ -299,14 +464,17 @@ async function toggleStatus(userId, currentStatus) {
 
     try {
         const token = localStorage.getItem('api_token');
+        const csrf = window.Laravel && window.Laravel.csrfToken ? window.Laravel.csrfToken : (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
+        const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        if (csrf) headers['X-CSRF-TOKEN'] = csrf;
         const response = await fetch(`/api/admin/users/${userId}/status`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
+            headers,
             body: JSON.stringify({
                 status: newStatus
             })
@@ -347,6 +515,13 @@ function getStatusText(status) {
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('vi-VN');
 }
+// close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('userModal');
+    if (modal && event.target === modal) {
+        closeUserModal();
+    }
+};
 </script>
 <?php $__env->stopPush(); ?>
 
