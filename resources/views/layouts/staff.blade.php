@@ -48,7 +48,7 @@
     </li>
 
     <li>
-        <a href="#" class="nav-menu-link">
+        <a href="{{ route('staff.contacts.index') }}" class="nav-menu-link">
             LIÊN HỆ
         </a>
     </li>

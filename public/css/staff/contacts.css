@@ -1,10 +1,10 @@
 /* ========================================================================
-   QUẢN LÝ ĐƠN HÀNG - NHÂN VIÊN
-   Giao diện theo thiết kế mới với bảng đầy đủ và modal chi tiết
+   QUẢN LÝ LIÊN HỆ - NHÂN VIÊN
+   Giao diện tương tự Orders để dễ tham khảo
    ======================================================================== */
 
 /* Container chính */
-.staff-orders-container {
+.staff-contacts-container {
     max-width: 100%;
     margin: 0 auto;
     padding: 40px;
@@ -12,7 +12,7 @@
     min-height: 100vh;
 }
 
-.staff-orders-container h1 {
+.staff-contacts-container h1 {
     font-size: 1.75rem;
     color: #395542;
     font-weight: 600;
@@ -24,19 +24,12 @@
 /* ========================================================================
    PHẦN SEARCH & FILTER
    ======================================================================== */
-.orders-header {
+.contacts-header {
     background: white;
     padding: 25px 30px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     margin-bottom: 25px;
-}
-
-.orders-header h2 {
-    font-size: 1.3rem;
-    color: #2c3e50;
-    margin-bottom: 20px;
-    font-weight: 600;
 }
 
 .search-box {
@@ -100,32 +93,32 @@
 }
 
 /* ========================================================================
-   BẢNG ĐƠN HÀNG
+   BẢNG LIÊN HỆ
    ======================================================================== */
-.orders-table-wrapper {
+.contacts-table-wrapper {
     background: white;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     overflow: hidden;
 }
 
-.orders-table-container {
+.contacts-table-container {
     overflow-x: auto;
 }
 
-#orders-table {
+#contacts-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1200px;
+    min-width: 1000px;
 }
 
 /* Header bảng */
-#orders-table thead {
+#contacts-table thead {
     background: #395542;
     color: white;
 }
 
-#orders-table thead th {
+#contacts-table thead th {
     padding: 15px 12px;
     text-align: left;
     font-weight: 600;
@@ -136,192 +129,59 @@
 }
 
 /* Body bảng */
-#orders-table tbody tr {
+#contacts-table tbody tr {
     border-bottom: 1px solid #f0f0f0;
     transition: background 0.2s ease;
 }
 
-#orders-table tbody tr:hover {
+#contacts-table tbody tr:hover {
     background: #f8f9fa;
 }
 
-#orders-table tbody td {
+#contacts-table tbody td {
     padding: 15px 12px;
     font-size: 0.9rem;
     color: #2c3e50;
     vertical-align: middle;
 }
 
-/* Cột mã đơn hàng */
-.order-code {
+/* Cột mã liên hệ */
+.contact-code {
     font-weight: 600;
     color: #395542;
     font-family: 'Courier New', monospace;
 }
 
-/* ========================================================================
-   DROPDOWN TRẠNG THÁI - FIXED
-   ======================================================================== */
-.status-select-wrapper {
-    position: relative;
-    width: 100%;
-    min-width: 180px;
-}
-
-/* Ẩn select mặc định hoàn toàn */
-.status-select-clean {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 2;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-/* Container hiển thị trạng thái */
-.status-display {
-    position: relative;
-    padding: 10px 36px 10px 14px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.88rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.status-display:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    transform: translateY(-1px);
-}
-
-/* Text trạng thái */
-.status-text {
-    pointer-events: none;
+/* Tiêu đề liên hệ */
+.contact-subject {
+    font-weight: 500;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* Mũi tên custom - DUY NHẤT */
-.dropdown-arrow {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.75rem;
-    pointer-events: none;
-    transition: transform 0.3s ease;
+/* ========================================================================
+   TRẠNG THÁI
+   ======================================================================== */
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
-.status-select-clean:focus ~ .dropdown-arrow {
-    transform: translateY(-50%) rotate(180deg);
-}
-
-/* Màu sắc theo trạng thái */
-.status-display.pending {
+.status-badge.pending {
     background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
     color: #c2410c;
-    border-color: #fed7aa;
+    border: 1px solid #fed7aa;
 }
 
-.status-display.order_received {
-    background: linear-gradient(135deg, #d1fae5 0%, #bbf7d0 100%);
-    color: #065f46;
-    border-color: #a7f3d0;
-}
-
-.status-display.preparing {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    color: #1e40af;
-    border-color: #93c5fd;
-}
-
-.status-display.delivering {
-    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-    color: #4338ca;
-    border-color: #a5b4fc;
-}
-
-.status-display.delivery_successful {
+.status-badge.responded {
     background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
     color: #065f46;
-    border-color: #6ee7b7;
-}
-
-.status-display.delivery_failed,
-.status-display.cancelled {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    color: #991b1b;
-    border-color: #fca5a5;
-}
-
-/* ========================================================================
-   DROPDOWN OPTIONS STYLING
-   ======================================================================== */
-.status-select-clean option {
-    padding: 12px 16px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    background: #ffffff;
-    color: #2c3e50;
-}
-
-/* ========================================================================
-   GHI CHÚ
-   ======================================================================== */
-.note-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.note-input {
-    flex: 1;
-    padding: 8px 10px;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-}
-
-.note-input:focus {
-    outline: none;
-    border-color: #395542;
-}
-
-.note-input::placeholder {
-    color: #aaa;
-    font-style: italic;
-}
-
-.save-note-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: #395542;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.save-note-btn:hover {
-    background: #2d4434;
-    transform: scale(1.05);
-}
-
-.save-note-btn i {
-    font-size: 0.9rem;
+    border: 1px solid #6ee7b7;
 }
 
 /* ========================================================================
@@ -352,7 +212,7 @@
 }
 
 /* ========================================================================
-   PHÂN TRANG - DESIGNED
+   PHÂN TRANG
    ======================================================================== */
 .pagination-controls {
     display: flex;
@@ -412,7 +272,6 @@
     font-size: 0.9rem;
 }
 
-/* Ô nhảy trang */
 .page-jump {
     display: flex;
     align-items: center;
@@ -439,9 +298,9 @@
 }
 
 /* ========================================================================
-   MODAL CHI TIẾT ĐƠN HÀNG
+   MODAL CHI TIẾT LIÊN HỆ
    ======================================================================== */
-.order-detail-modal {
+.contact-detail-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -454,7 +313,7 @@
     padding: 40px 20px;
 }
 
-.order-detail-modal.show {
+.contact-detail-modal.show {
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -568,53 +427,68 @@
     font-size: 1.1rem;
 }
 
-/* Status badge trong modal */
-.status-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.status-badge.pending { background: #fff3cd; color: #856404; }
-.status-badge.order_received { background: #d4edda; color: #155724; }
-.status-badge.preparing { background: #d1ecf1; color: #0c5460; }
-.status-badge.delivering { background: #cce5ff; color: #004085; }
-.status-badge.delivery_successful { background: #d4edda; color: #155724; }
-.status-badge.delivery_failed,
-.status-badge.cancelled { background: #f8d7da; color: #721c24; }
-
-/* Products list trong modal */
-.products-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.product-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.product-item:last-child {
-    border-bottom: none;
-}
-
-.product-name {
-    font-weight: 500;
+/* Nội dung tin nhắn */
+.message-content {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #395542;
+    line-height: 1.8;
     color: #2c3e50;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-.product-quantity {
-    color: #666;
-    margin-left: 10px;
+/* Modal Footer */
+.modal-footer {
+    padding: 20px 25px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
 }
 
-.product-price {
+.btn-mark-responded {
+    padding: 12px 24px;
+    background: #395542;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
     font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-mark-responded:hover {
+    background: #2d4434;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(57, 85, 66, 0.3);
+}
+
+.btn-mark-responded:disabled {
+    background: #999;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    padding: 12px 24px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    border-color: #395542;
     color: #395542;
 }
 
@@ -641,19 +515,19 @@
     100% { transform: rotate(360deg); }
 }
 
-.no-orders {
+.no-contacts {
     text-align: center;
     padding: 60px 20px;
     color: #999;
 }
 
-.no-orders i {
+.no-contacts i {
     font-size: 3rem;
     margin-bottom: 15px;
     color: #ccc;
 }
 
-.no-orders p {
+.no-contacts p {
     font-size: 1.1rem;
     margin: 0;
 }
@@ -661,18 +535,12 @@
 /* ========================================================================
    RESPONSIVE
    ======================================================================== */
-@media (max-width: 1400px) {
-    #orders-table {
-        min-width: 1100px;
-    }
-}
-
 @media (max-width: 992px) {
-    .staff-orders-container {
+    .staff-contacts-container {
         padding: 20px;
     }
 
-    .orders-header {
+    .contacts-header {
         padding: 20px;
     }
 
@@ -696,12 +564,8 @@
 }
 
 @media (max-width: 768px) {
-    .staff-orders-container h1 {
+    .staff-contacts-container h1 {
         font-size: 1.5rem;
-    }
-
-    .orders-header h2 {
-        font-size: 1.1rem;
     }
 
     #search-input {
@@ -713,8 +577,8 @@
         gap: 8px;
     }
 
-    #orders-table {
-        min-width: 1000px;
+    #contacts-table {
+        min-width: 900px;
     }
 
     .modal-header {
