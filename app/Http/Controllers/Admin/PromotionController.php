@@ -4,24 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Promotion;
 use Illuminate\Support\Facades\Validator;
 
 class PromotionController extends Controller
 {
     public function index(Request $request)
     {
-        $q = DB::table('promotions')->orderByDesc('created_at');
+        $query = Promotion::orderByDesc('created_at');
         $status = $request->get('status');
-        if ($status) $q->where('status', $status);
-        $items = $q->get();
+        if ($status) $query->where('status', $status);
+        $items = $query->get();
         return response()->json(['success' => true, 'data' => ['promotions' => $items]]);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'required|string|max:100|unique:promotions,code',
+            'code' => 'required|string|max:100|unique:promotions,promotion_code',
             'title' => 'required|string|max:255',
             'type' => 'required|string',
             'value' => 'required',
@@ -32,41 +32,79 @@ class PromotionController extends Controller
             'image_url' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
+        
         if ($validator->fails()) {
-            return response()->json(['success' => false, 'message' => 'Invalid data', 'errors' => $validator->errors()], 400);
+            return response()->json([
+                'success' => false, 
+                'message' => 'Invalid data', 
+                'errors' => $validator->errors()
+            ], 400);
         }
-        $id = DB::table('promotions')->insertGetId(array_merge($request->only([
-            'code','title','type','value','start_date','end_date','quantity','min_order','image_url','description'
-        ]), ['status' => $request->get('status','active') ,'created_at' => now(), 'updated_at' => now()]));
-        $promo = DB::table('promotions')->where('id', $id)->first();
+        
+        // Map request fields to database columns
+        $promo = Promotion::create([
+            'promotion_code' => $request->code,
+            'promotion_name' => $request->title,
+            'description' => $request->description ?? $request->title,
+            'promotion_type' => $request->type === 'percent' ? 'percentage' : ($request->type === 'fixed' ? 'fixed_amount' : 'free_shipping'),
+            'discount_value' => $request->value,
+            'min_order_value' => $request->min_order,
+            'quantity' => $request->quantity ?? 0,
+            'used_count' => 0,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'status' => $request->get('status', 'active'),
+            'image_url' => $request->image_url,
+        ]);
+        
         return response()->json(['success' => true, 'data' => ['promotion' => $promo]], 201);
     }
 
     public function show($id)
     {
-        $p = DB::table('promotions')->where('id', $id)->first();
-        if (!$p) return response()->json(['success'=>false,'message'=>'Not found'],404);
-        return response()->json(['success'=>true,'data'=>['promotion'=>$p]]);
+        $promo = Promotion::find($id);
+        if (!$promo) {
+            return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        }
+        return response()->json(['success' => true, 'data' => ['promotion' => $promo]]);
     }
 
     public function update(Request $request, $id)
     {
-        $p = DB::table('promotions')->where('id', $id)->first();
-        if (!$p) return response()->json(['success'=>false,'message'=>'Not found'],404);
-        $data = $request->only(['title','type','value','start_date','end_date','quantity','min_order','image_url','description','status']);
-        $data['updated_at'] = now();
-        DB::table('promotions')->where('id', $id)->update($data);
-        $p2 = DB::table('promotions')->where('id', $id)->first();
-        return response()->json(['success'=>true,'data'=>['promotion'=>$p2]]);
+        $promo = Promotion::find($id);
+        if (!$promo) {
+            return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        }
+        
+        $updateData = [];
+        
+        if ($request->has('title')) $updateData['promotion_name'] = $request->title;
+        if ($request->has('code')) $updateData['promotion_code'] = $request->code;
+        if ($request->has('description')) $updateData['description'] = $request->description;
+        if ($request->has('type')) {
+            $updateData['promotion_type'] = $request->type === 'percent' ? 'percentage' : ($request->type === 'fixed' ? 'fixed_amount' : 'free_shipping');
+        }
+        if ($request->has('value')) $updateData['discount_value'] = $request->value;
+        if ($request->has('min_order')) $updateData['min_order_value'] = $request->min_order;
+        if ($request->has('quantity')) $updateData['quantity'] = $request->quantity;
+        if ($request->has('start_date')) $updateData['start_date'] = $request->start_date;
+        if ($request->has('end_date')) $updateData['end_date'] = $request->end_date;
+        if ($request->has('status')) $updateData['status'] = $request->status;
+        if ($request->has('image_url')) $updateData['image_url'] = $request->image_url;
+        
+        $promo->update($updateData);
+        $promo->refresh();
+        
+        return response()->json(['success' => true, 'data' => ['promotion' => $promo]]);
     }
 
     public function destroy($id)
     {
-        $p = DB::table('promotions')->where('id', $id)->first();
-        if (!$p) return response()->json(['success'=>false,'message'=>'Not found'],404);
-        DB::table('promotions')->where('id', $id)->delete();
-        return response()->json(['success'=>true]);
+        $promo = Promotion::find($id);
+        if (!$promo) {
+            return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        }
+        $promo->delete();
+        return response()->json(['success' => true]);
     }
 }
-
-
