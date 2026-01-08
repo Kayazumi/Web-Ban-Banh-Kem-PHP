@@ -1,9 +1,11 @@
-@extends('layouts.admin')
 
-@section('page-title','Quản lý khuyến mãi')
 
-@section('content')
+<?php $__env->startSection('page-title','Quản lý khuyến mãi'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="admin-content">
+    <h2 class="page-heading">QUẢN LÝ KHUYẾN MÃI</h2>
+    
     <!-- Form tạo khuyến mãi mới -->
     <div class="promo-form-card">
         <h3 class="form-title">Tạo khuyến mãi mới</h3>
@@ -104,9 +106,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 .page-heading {
     font-size: 20px;
@@ -502,9 +504,9 @@
     }
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 let currentFilter = 'all';
 let allPromotions = [];
@@ -779,4 +781,6 @@ document.getElementById('promoDetailModal').addEventListener('click', function(e
     }
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Hoc_tap\Lap_Trinh_PHP\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/admin/promotions.blade.php ENDPATH**/ ?>
