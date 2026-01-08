@@ -26,6 +26,7 @@ class StaffOrderController extends Controller
     {
         try {
             $query = Order::with('customer')
+            ->where('payment_status', 'paid')
                 ->orderBy('created_at', 'desc');
 
             // Filter theo trạng thái
