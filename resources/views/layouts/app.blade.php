@@ -121,7 +121,15 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="{{ route('home') }}">La Cuisine Ngọt</a>
+                @php
+                    $logoLink = route('home');
+                    if(auth()->check()) {
+                        $role = auth()->user()->role;
+                        if($role === 'staff' && Route::has('staff.profile')) $logoLink = route('staff.profile');
+                        elseif($role === 'admin') $logoLink = route('admin.dashboard');
+                    }
+                @endphp
+                <a href="{{ $logoLink }}">La Cuisine Ngọt</a>
             </div>
 
             <ul class="nav-menu">

@@ -30,7 +30,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="<?php echo e(route('home')); ?>">La Cuisine Ngọt</a>
+                <a href="<?php echo e(route('staff.profile')); ?>">La Cuisine Ngọt</a>
             </div>
 
             <ul class="nav-menu">
@@ -173,4 +173,4 @@
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
-</html><?php /**PATH C:\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/staff.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\ProgramFilesD\DevApps\XAM_PP\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/staff.blade.php ENDPATH**/ ?>

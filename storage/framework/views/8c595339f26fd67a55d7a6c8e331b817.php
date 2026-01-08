@@ -60,6 +60,103 @@
     </div>
 </section>
 
+<!-- Category Sections -->
+<!-- Entremet Section -->
+<section class="category-section bg-white py-5">
+    <div class="container">
+        <h2 class="category-title text-center mb-3">Entremet</h2>
+        <p class="category-description text-center mb-5">Đây là bánh kem siêu Pháp cao cấp, kết hợp hài hòa giữa mousse, thạch trái cây và lớp bánh mềm. Mỗi chiếc bánh là một tác phẩm tinh tế, mang đến trải nghiệm vị giác đa tầng độc đáo — sốc, chưa hết, thoáng nhẹ và quyến rũ.</p>
+        
+        <div class="swiper-container-wrapper">
+            <div class="swiper categorySwiper entremetSwiper">
+                <div class="swiper-wrapper" data-category="entremet">
+                    <div class="swiper-slide text-center">
+                        <p class="text-muted">Đang tải sản phẩm...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-prev custom-swiper-button">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="swiper-button-next custom-swiper-button">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mousse Section -->
+<section class="category-section bg-light py-5">
+    <div class="container">
+        <h2 class="category-title text-center mb-3">Mousse</h2>
+        <p class="category-description text-center mb-5">Bánh mang đến trải nghiệm mềm mịn, mát lạnh với hương vị từ trái cây tươi, socola hay matcha. Không cần nướng, mỗi chiếc bánh là sự kết hợp tinh tế giữa kem tươi và hương liệu, vừa nhẹ, hấp dẫn ngay từ miếng đầu tiên.</p>
+        
+        <div class="swiper-container-wrapper">
+            <div class="swiper categorySwiper mousseSwiper">
+                <div class="swiper-wrapper" data-category="mousse">
+                    <div class="swiper-slide text-center">
+                        <p class="text-muted">Đang tải sản phẩm...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-prev custom-swiper-button">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="swiper-button-next custom-swiper-button">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Traditional Cake Section -->
+<section class="category-section bg-white py-5">
+    <div class="container">
+        <h2 class="category-title text-center mb-3">Bánh Kem Truyền Thống</h2>
+        <p class="category-description text-center mb-5">Bánh kem quen thuộc với lớp bánh bông lan mềm mịn, kết hợp kem tươi béo ngậy và trang trí đa dạng. Phù hợp cho mọi dịp lễ, sinh nhật hay kỷ niệm, mang đến hương vị ấm áp và thân quen.</p>
+        
+        <div class="swiper-container-wrapper">
+            <div class="swiper categorySwiper traditionalSwiper">
+                <div class="swiper-wrapper" data-category="traditional">
+                    <div class="swiper-slide text-center">
+                        <p class="text-muted">Đang tải sản phẩm...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-prev custom-swiper-button">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="swiper-button-next custom-swiper-button">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Accessories Section -->
+<section class="category-section bg-light py-5">
+    <div class="container">
+        <h2 class="category-title text-center mb-3">Phụ Kiện</h2>
+        <p class="category-description text-center mb-5">Các sản phẩm bổ sung hoàn hảo cho bánh kem của bạn, từ nến sinh nhật, hộp đựng, đến các vật trang trí độc đáo. Giúp chiếc bánh thêm phần ấn tượng và đáng nhớ.</p>
+        
+        <div class="swiper-container-wrapper">
+            <div class="swiper categorySwiper accessoriesSwiper">
+                <div class="swiper-wrapper" data-category="accessories">
+                    <div class="swiper-slide text-center">
+                        <p class="text-muted">Đang tải sản phẩm...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-button-prev custom-swiper-button">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="swiper-button-next custom-swiper-button">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Promotions Section -->
 <section id="khuyenmai" class="promotions-section">
     <div class="container">
@@ -172,6 +269,7 @@
 // Load sản phẩm nổi bật khi trang sẵn sàng
 document.addEventListener('DOMContentLoaded', function() {
     loadFeaturedProducts();
+    loadCategoryProducts();
 
     // Smooth scroll cho các link #
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -200,6 +298,32 @@ async function loadFeaturedProducts() {
     } catch (error) {
         console.error('Lỗi tải sản phẩm:', error);
         showEmptyMessage('Không thể tải sản phẩm. Vui lòng thử lại sau.');
+    }
+}
+
+async function loadCategoryProducts() {
+    const categories = [
+        { name: 'Entremet', selector: '.entremetSwiper .swiper-wrapper', swiperName: 'entremet' },
+        { name: 'Mousse', selector: '.mousseSwiper .swiper-wrapper', swiperName: 'mousse' },
+        { name: 'Truyền thống', selector: '.traditionalSwiper .swiper-wrapper', swiperName: 'traditional' },
+        { name: 'Phụ kiện', selector: '.accessoriesSwiper .swiper-wrapper', swiperName: 'accessories' }
+    ];
+
+    for (const category of categories) {
+        try {
+            const response = await fetch(`/api/products?category=${category.name}`);
+            const data = await response.json();
+
+            if (data.success && data.data.products.length > 0) {
+                const products = data.data.products.slice(0, 6);
+                displayCategoryProducts(products, category.selector, category.swiperName);
+            } else {
+                showCategoryEmptyMessage(category.selector, 'Chưa có sản phẩm trong danh mục này.');
+            }
+        } catch (error) {
+            console.error(`Lỗi tải sản phẩm ${category.name}:`, error);
+            showCategoryEmptyMessage(category.selector, 'Không thể tải sản phẩm. Vui lòng thử lại sau.');
+        }
     }
 }
 
@@ -233,6 +357,38 @@ function displayProducts(products) {
 
     // Đợi DOM cập nhật xong rồi khởi tạo Swiper
     setTimeout(initFeaturedSwiper, 100);
+}
+
+function displayCategoryProducts(products, selector, categoryName) {
+    const wrapper = document.querySelector(selector);
+    if (!wrapper) return;
+
+    wrapper.innerHTML = products.map(product => `
+        <div class="swiper-slide">
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="${product.image_url || '/images/placeholder.jpg'}"
+                         alt="${product.product_name}"
+                         onerror="this.src='/images/placeholder.jpg'">
+                    ${product.is_featured ? '<span class="badge featured">Nổi bật</span>' : ''}
+                    ${product.is_new ? '<span class="badge new">Mới</span>' : ''}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.product_name}</h3>
+                    <div class="product-price">
+                        ${product.original_price && product.original_price > product.price 
+                            ? `<span class="original-price">${formatPrice(product.original_price)}</span>` 
+                            : ''}
+                        <span class="current-price">${formatPrice(product.price)}</span>
+                    </div>
+                    <a href="/products/${product.product_id}" class="btn btn-primary">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Khởi tạo Swiper cho category
+    setTimeout(() => initCategorySwiper(categoryName), 100);
 }
 
 function initFeaturedSwiper() {
@@ -273,8 +429,64 @@ function initFeaturedSwiper() {
     });
 }
 
+function initCategorySwiper(categoryName) {
+    const swiperClass = `.${categoryName}Swiper`;
+    const swiperElement = document.querySelector(swiperClass);
+    
+    if (!swiperElement) return;
+
+    // Destroy existing swiper if any
+    if (window[`${categoryName}Swiper`]) {
+        window[`${categoryName}Swiper`].destroy(true, true);
+    }
+
+    // Get the navigation buttons for this specific swiper
+    const swiperWrapper = swiperElement.closest('.swiper-container-wrapper');
+    const prevButton = swiperWrapper.querySelector('.swiper-button-prev');
+    const nextButton = swiperWrapper.querySelector('.swiper-button-next');
+
+    window[`${categoryName}Swiper`] = new Swiper(swiperClass, {
+        loop: true,
+        autoplay: {
+            delay: 4500,
+            disableOnInteraction: false,
+        },
+        speed: 800,
+        spaceBetween: 30,
+        slidesPerView: 3,
+        centeredSlides: false,
+
+        navigation: {
+            nextEl: nextButton,
+            prevEl: prevButton,
+        },
+
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
+                spaceBetween: 10
+            },
+            768: {
+                slidesPerView: 2,
+                spaceBetween: 20
+            },
+            992: {
+                slidesPerView: 3,
+                spaceBetween: 30
+            }
+        }
+    });
+}
+
 function showEmptyMessage(msg) {
     const wrapper = document.querySelector('#featuredProducts');
+    if (wrapper) {
+        wrapper.innerHTML = `<div class="swiper-slide"><div style="text-align:center; padding:4rem 0; color:#666;">${msg}</div></div>`;
+    }
+}
+
+function showCategoryEmptyMessage(selector, msg) {
+    const wrapper = document.querySelector(selector);
     if (wrapper) {
         wrapper.innerHTML = `<div class="swiper-slide"><div style="text-align:center; padding:4rem 0; color:#666;">${msg}</div></div>`;
     }
@@ -286,4 +498,4 @@ function formatPrice(price) {
 </script>
 <?php $__env->stopPush(); ?>
 
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Hoc_tap\Lap_Trinh_PHP\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/home.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\ProgramFilesD\DevApps\XAM_PP\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/home.blade.php ENDPATH**/ ?>

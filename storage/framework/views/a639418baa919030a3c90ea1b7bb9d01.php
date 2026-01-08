@@ -121,7 +121,15 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="<?php echo e(route('home')); ?>">La Cuisine Ngọt</a>
+                <?php
+                    $logoLink = route('home');
+                    if(auth()->check()) {
+                        $role = auth()->user()->role;
+                        if($role === 'staff' && Route::has('staff.profile')) $logoLink = route('staff.profile');
+                        elseif($role === 'admin') $logoLink = route('admin.dashboard');
+                    }
+                ?>
+                <a href="<?php echo e($logoLink); ?>">La Cuisine Ngọt</a>
             </div>
 
             <ul class="nav-menu">
@@ -283,7 +291,7 @@
         function handleSearch() {
             const query = document.getElementById('searchInput').value;
             if(query.trim()) {
-                window.location.href = '<?php echo e(route("products")); ?>?search=' + encodeURIComponent(query);
+                window.location.href = '<?php echo e(route("products.index")); ?>?search=' + encodeURIComponent(query);
             }
         }
 
@@ -423,4 +431,4 @@
     })();
     </script>
 </body>
-</html><?php /**PATH D:\Hoc_tap\Lap_Trinh_PHP\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\ProgramFilesD\DevApps\XAM_PP\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/app.blade.php ENDPATH**/ ?>

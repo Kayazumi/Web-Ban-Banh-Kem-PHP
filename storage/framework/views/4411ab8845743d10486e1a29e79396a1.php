@@ -79,4 +79,4 @@
 <?php $__env->startPush('scripts'); ?>
     <script src="<?php echo e(asset('js/staff/contacts.js')); ?>"></script>
 <?php $__env->stopPush(); ?>
-<?php echo $__env->make('layouts.staff', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/staff/contacts/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.staff', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\ProgramFilesD\DevApps\XAM_PP\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/staff/contacts/index.blade.php ENDPATH**/ ?>

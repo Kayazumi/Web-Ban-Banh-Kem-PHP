@@ -30,7 +30,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="{{ route('home') }}">La Cuisine Ngọt</a>
+                <a href="{{ route('staff.profile') }}">La Cuisine Ngọt</a>
             </div>
 
             <ul class="nav-menu">
