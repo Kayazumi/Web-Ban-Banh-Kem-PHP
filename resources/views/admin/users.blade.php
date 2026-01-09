@@ -58,6 +58,18 @@
                 </tr>
             </tbody>
         </table>
+        
+        <!-- Pagination -->
+        <div id="usersPagination" class="pagination-container" style="display: none;">
+            <div class="pagination-info">
+                <span id="usersShowingText"></span>
+            </div>
+            <div class="pagination-controls">
+                <button id="usersPrevPage" class="pagination-btn">‹</button>
+                <div id="usersPageNumbers" class="page-numbers"></div>
+                <button id="usersNextPage" class="pagination-btn">›</button>
+            </div>
+        </div>
     </div>
 </div>
 <!-- Edit User Modal -->
@@ -266,6 +278,69 @@
 .text-center {
     text-align: center;
 }
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+}
+
+.pagination-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.pagination-btn,
+.page-btn {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled),
+.page-btn:hover:not(.active) {
+    background: #f0f0f0;
+    border-color: #999;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+.page-btn.ellipsis {
+    border: none;
+    background: none;
+    cursor: default;
+    pointer-events: none;
+}
 </style>
 @endpush
 
@@ -361,9 +436,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-async function loadUsers() {
+async function loadUsers(page = 1) {
     try {
         const params = new URLSearchParams(window.currentUsersFilters || {});
+        params.set('page', page);
         const token = localStorage.getItem('api_token');
         const response = await fetch(`/api/admin/users?${params.toString()}`, {
             method: 'GET',
@@ -407,14 +483,98 @@ async function loadUsers() {
                     </td>
                 </tr>
             `).join('');
+            
+            // Render pagination
+            if (data.pagination) {
+                renderUsersPagination(data.pagination);
+            }
         } else {
             tbody.innerHTML = '<tr><td colspan="8" class="text-center">Không có người dùng nào</td></tr>';
+            document.getElementById('usersPagination').style.display = 'none';
         }
     } catch (error) {
         console.error('Error loading users:', error);
         document.getElementById('usersTableBody').innerHTML =
             '<tr><td colspan="8" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        document.getElementById('usersPagination').style.display = 'none';
     }
+}
+
+function renderUsersPagination(pagination) {
+    const { current_page, last_page, per_page, total } = pagination;
+    
+    // Show pagination container
+    const paginationContainer = document.getElementById('usersPagination');
+    paginationContainer.style.display = 'flex';
+    
+    // Update showing text
+    const start = (current_page - 1) * per_page + 1;
+    const end = Math.min(current_page * per_page, total);
+    document.getElementById('usersShowingText').textContent = 
+        `Hiển thị ${start} - ${end} của ${total} người dùng`;
+    
+    // Update prev/next buttons
+    const prevBtn = document.getElementById('usersPrevPage');
+    const nextBtn = document.getElementById('usersNextPage');
+    
+    prevBtn.disabled = current_page === 1;
+    nextBtn.disabled = current_page === last_page;
+    
+    prevBtn.onclick = () => {
+        if (current_page > 1) loadUsers(current_page - 1);
+    };
+    nextBtn.onclick = () => {
+        if (current_page < last_page) loadUsers(current_page + 1);
+    };
+    
+    // Render page numbers
+    const pageNumbersContainer = document.getElementById('usersPageNumbers');
+    pageNumbersContainer.innerHTML = '';
+    
+    const maxVisiblePages = 7;
+    let startPage = Math.max(1, current_page - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(last_page, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    // Always show first page
+    if (startPage > 1) {
+        pageNumbersContainer.appendChild(createUserPageButton(1, current_page));
+        if (startPage > 2) {
+            const ellipsis = document.createElement('button');
+            ellipsis.className = 'page-btn ellipsis';
+            ellipsis.textContent = '...';
+            pageNumbersContainer.appendChild(ellipsis);
+        }
+    }
+    
+    // Show page range
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbersContainer.appendChild(createUserPageButton(i, current_page));
+    }
+    
+    // Always show last page
+    if (endPage < last_page) {
+        if (endPage < last_page - 1) {
+            const ellipsis = document.createElement('button');
+            ellipsis.className = 'page-btn ellipsis';
+            ellipsis.textContent = '...';
+            pageNumbersContainer.appendChild(ellipsis);
+        }
+        pageNumbersContainer.appendChild(createUserPageButton(last_page, current_page));
+    }
+}
+
+function createUserPageButton(pageNum, currentPage) {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn' + (pageNum === currentPage ? ' active' : '');
+    btn.textContent = pageNum;
+    if (pageNum !== currentPage) {
+        btn.onclick = () => loadUsers(pageNum);
+    }
+    return btn;
 }
 
 function applyFilters() {

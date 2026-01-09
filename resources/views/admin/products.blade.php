@@ -127,7 +127,15 @@
                     <div class="form-group">
                         <label for="imageUrl">URL hình ảnh</label>
                         <input type="url" id="imageUrl" name="imageUrl" placeholder="https://...">
+                        <small style="color: #666; display: block; margin-top: 0.25rem;">Hoặc tải ảnh lên từ máy:</small>
+                        <input type="file" id="imageFile" name="imageFile" accept="image/*" style="margin-top: 0.5rem;">
                     </div>
+                </div>
+
+                <!-- Image Preview -->
+                <div id="imagePreview" class="form-group" style="display: none;">
+                    <label>Xem trước hình ảnh</label>
+                    <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 4px; border: 1px solid #ddd;">
                 </div>
 
                 <div class="form-group">
@@ -444,6 +452,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission
     document.getElementById('productForm').addEventListener('submit', handleProductSubmit);
 
+    // Image preview handlers
+    document.getElementById('imageFile').addEventListener('change', handleImageFileChange);
+    document.getElementById('imageUrl').addEventListener('input', handleImageUrlChange);
+
     // Filters
     document.getElementById('applyFilters').addEventListener('click', applyFilters);
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
@@ -562,10 +574,43 @@ function applyFilters() {
     loadProducts(1);
 }
 
+function handleImageFileChange(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Clear URL input when file is selected
+        document.getElementById('imageUrl').value = '';
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('previewImg').src = event.target.result;
+            document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+}
+
+function handleImageUrlChange(e) {
+    const url = e.target.value.trim();
+    if (url) {
+        // Clear file input when URL is entered
+        document.getElementById('imageFile').value = '';
+        
+        // Show preview
+        document.getElementById('previewImg').src = url;
+        document.getElementById('imagePreview').style.display = 'block';
+    } else {
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+}
+
 function showAddProductModal() {
     document.getElementById('modalTitle').textContent = 'Thêm sản phẩm mới';
     document.getElementById('productForm').reset();
     document.getElementById('productId').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
     document.getElementById('productModal').style.display = 'block';
 }
 
@@ -591,6 +636,14 @@ function editProduct(productId) {
                 document.getElementById('isNew').checked = product.is_new;
                 document.getElementById('isActive').checked = product.is_active;
 
+                // Show image preview if exists
+                if (product.image_url) {
+                    document.getElementById('previewImg').src = product.image_url;
+                    document.getElementById('imagePreview').style.display = 'block';
+                } else {
+                    document.getElementById('imagePreview').style.display = 'none';
+                }
+
                 document.getElementById('productModal').style.display = 'block';
             }
         })
@@ -605,14 +658,28 @@ async function handleProductSubmit(e) {
 
     const formData = new FormData(e.target);
     const productId = formData.get('productId');
+    const imageFile = formData.get('imageFile');
 
     // Convert FormData to JSON
     const data = {};
     for (let [key, value] of formData.entries()) {
         if (key === 'isFeatured' || key === 'isNew' || key === 'isActive') {
             data[key] = value === 'on';
-        } else if (key !== 'productId') {
+        } else if (key !== 'productId' && key !== 'imageFile') {
             data[key] = value;
+        }
+    }
+
+    // Handle image upload
+    if (imageFile && imageFile.size > 0) {
+        try {
+            // Convert image to base64
+            const base64 = await fileToBase64(imageFile);
+            data.imageUrl = base64;
+        } catch (err) {
+            console.error('Error converting image:', err);
+            alert('Lỗi khi xử lý hình ảnh');
+            return;
         }
     }
 
@@ -642,6 +709,15 @@ async function handleProductSubmit(e) {
         console.error('Error saving product:', error);
         alert('Có lỗi xảy ra');
     }
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
 }
 
 async function deleteProduct(productId) {

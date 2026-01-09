@@ -51,6 +51,18 @@
                 </tr>
             </tbody>
         </table>
+        
+        <!-- Pagination -->
+        <div id="ordersPagination" class="pagination-container" style="display: none;">
+            <div class="pagination-info">
+                <span id="ordersShowingText"></span>
+            </div>
+            <div class="pagination-controls">
+                <button id="ordersPrevPage" class="pagination-btn">‹</button>
+                <div id="ordersPageNumbers" class="page-numbers"></div>
+                <button id="ordersNextPage" class="pagination-btn">›</button>
+            </div>
+        </div>
     </div>
 </div>
     <!-- Order Detail Modal -->
@@ -214,6 +226,69 @@
 .text-center {
     text-align: center;
 }
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+}
+
+.pagination-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.pagination-btn,
+.page-btn {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled),
+.page-btn:hover:not(.active) {
+    background: #f0f0f0;
+    border-color: #999;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.page-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
+}
+
+.page-btn.ellipsis {
+    border: none;
+    background: none;
+    cursor: default;
+    pointer-events: none;
+}
 </style>
 @endpush
 
@@ -302,9 +377,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-async function loadOrders() {
+async function loadOrders(page = 1) {
     try {
         const params = new URLSearchParams(window.currentOrdersFilters || {});
+        params.set('page', page);
         const token = localStorage.getItem('api_token');
         const response = await fetch(`/api/admin/orders?${params.toString()}`, {
             method: 'GET',
@@ -336,14 +412,98 @@ async function loadOrders() {
                     </td>
                 </tr>
             `).join('');
+            
+            // Render pagination
+            if (data.pagination) {
+                renderOrdersPagination(data.pagination);
+            }
         } else {
             tbody.innerHTML = '<tr><td colspan="7" class="text-center">Không có đơn hàng nào</td></tr>';
+            document.getElementById('ordersPagination').style.display = 'none';
         }
     } catch (error) {
         console.error('Error loading orders:', error);
         document.getElementById('ordersTableBody').innerHTML =
             '<tr><td colspan="7" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        document.getElementById('ordersPagination').style.display = 'none';
     }
+}
+
+function renderOrdersPagination(pagination) {
+    const { current_page, last_page, per_page, total } = pagination;
+    
+    // Show pagination container
+    const paginationContainer = document.getElementById('ordersPagination');
+    paginationContainer.style.display = 'flex';
+    
+    // Update showing text
+    const start = (current_page - 1) * per_page + 1;
+    const end = Math.min(current_page * per_page, total);
+    document.getElementById('ordersShowingText').textContent = 
+        `Hiển thị ${start} - ${end} của ${total} đơn hàng`;
+    
+    // Update prev/next buttons
+    const prevBtn = document.getElementById('ordersPrevPage');
+    const nextBtn = document.getElementById('ordersNextPage');
+    
+    prevBtn.disabled = current_page === 1;
+    nextBtn.disabled = current_page === last_page;
+    
+    prevBtn.onclick = () => {
+        if (current_page > 1) loadOrders(current_page - 1);
+    };
+    nextBtn.onclick = () => {
+        if (current_page < last_page) loadOrders(current_page + 1);
+    };
+    
+    // Render page numbers
+    const pageNumbersContainer = document.getElementById('ordersPageNumbers');
+    pageNumbersContainer.innerHTML = '';
+    
+    const maxVisiblePages = 7;
+    let startPage = Math.max(1, current_page - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(last_page, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    // Always show first page
+    if (startPage > 1) {
+        pageNumbersContainer.appendChild(createPageButton(1, current_page));
+        if (startPage > 2) {
+            const ellipsis = document.createElement('button');
+            ellipsis.className = 'page-btn ellipsis';
+            ellipsis.textContent = '...';
+            pageNumbersContainer.appendChild(ellipsis);
+        }
+    }
+    
+    // Show page range
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbersContainer.appendChild(createPageButton(i, current_page));
+    }
+    
+    // Always show last page
+    if (endPage < last_page) {
+        if (endPage < last_page - 1) {
+            const ellipsis = document.createElement('button');
+            ellipsis.className = 'page-btn ellipsis';
+            ellipsis.textContent = '...';
+            pageNumbersContainer.appendChild(ellipsis);
+        }
+        pageNumbersContainer.appendChild(createPageButton(last_page, current_page));
+    }
+}
+
+function createPageButton(pageNum, currentPage) {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn' + (pageNum === currentPage ? ' active' : '');
+    btn.textContent = pageNum;
+    if (pageNum !== currentPage) {
+        btn.onclick = () => loadOrders(pageNum);
+    }
+    return btn;
 }
 
 function applyFilters() {

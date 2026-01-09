@@ -60,8 +60,16 @@
             <div class="form-row">
                 <div class="form-group full-width">
                     <label>URL hình ảnh</label>
-                    <input name="image_url" placeholder="VD: assets/images/promo.jpg">
+                    <input id="promoImageUrl" name="image_url" placeholder="VD: assets/images/promo.jpg">
+                    <small style="color: #666; display: block; margin-top: 0.25rem;">Hoặc tải ảnh lên từ máy:</small>
+                    <input type="file" id="promoImageFile" name="imageFile" accept="image/*" style="margin-top: 0.5rem;">
                 </div>
+            </div>
+            
+            <!-- Image Preview -->
+            <div id="promoImagePreview" class="form-group" style="display: none;">
+                <label>Xem trước hình ảnh</label>
+                <img id="promoPreviewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;">
             </div>
             
             <div class="form-actions">
@@ -620,11 +628,33 @@ function filterPromos(filter) {
 document.addEventListener('DOMContentLoaded', function(){
     loadPromotions();
     
+    // Image preview handlers
+    document.getElementById('promoImageFile').addEventListener('change', handlePromoImageFileChange);
+    document.getElementById('promoImageUrl').addEventListener('input', handlePromoImageUrlChange);
+    
     document.getElementById('promoForm').addEventListener('submit', async function(e){
         e.preventDefault();
         const form = new FormData(e.target);
+        const imageFile = form.get('imageFile');
         const body = {};
-        form.forEach((v,k) => body[k]=v);
+        
+        form.forEach((v,k) => {
+            if (k !== 'imageFile') {
+                body[k] = v;
+            }
+        });
+        
+        // Handle image upload
+        if (imageFile && imageFile.size > 0) {
+            try {
+                const base64 = await fileToBase64(imageFile);
+                body.image_url = base64;
+            } catch (err) {
+                console.error('Error converting image:', err);
+                alert('Lỗi khi xử lý hình ảnh');
+                return;
+            }
+        }
         
         // Set default description from title
         if (!body.description) {
@@ -645,6 +675,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 alert('Tạo khuyến mãi thành công!');
                 loadPromotions();
                 e.target.reset();
+                document.getElementById('promoImagePreview').style.display = 'none';
             } else {
                 alert('Lỗi: ' + (data.message || 'Không thể tạo khuyến mãi'));
             }
@@ -654,6 +685,43 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     });
 });
+
+function handlePromoImageFileChange(e) {
+    const file = e.target.files[0];
+    if (file) {
+        document.getElementById('promoImageUrl').value = '';
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('promoPreviewImg').src = event.target.result;
+            document.getElementById('promoImagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        document.getElementById('promoImagePreview').style.display = 'none';
+    }
+}
+
+function handlePromoImageUrlChange(e) {
+    const url = e.target.value.trim();
+    if (url) {
+        document.getElementById('promoImageFile').value = '';
+        
+        document.getElementById('promoPreviewImg').src = url;
+        document.getElementById('promoImagePreview').style.display = 'block';
+    } else {
+        document.getElementById('promoImagePreview').style.display = 'none';
+    }
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
 
 let currentPromoId = null;
 
