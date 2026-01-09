@@ -98,13 +98,29 @@
                         
                         <div class="form-group mb-4">
                             <label class="form-label fw-bold">Mã khuyến mãi</label>
-                            <select name="promotion_code" class="form-select">
+                            <select name="promotion_code" id="promotionSelect" class="form-select">
                                 <option value="">--Chọn mã khuyến mãi--</option>
+                                @foreach($promotions as $promo)
+                                    <option value="{{ $promo->promotion_code }}" 
+                                            data-type="{{ $promo->promotion_type }}"
+                                            data-value="{{ $promo->discount_value }}"
+                                            data-min="{{ $promo->min_order_value }}"
+                                            data-max="{{ $promo->max_discount ?? 0 }}">
+                                        {{ $promo->promotion_name }}
+                                        @if($promo->promotion_type === 'percent')
+                                            (-{{ $promo->discount_value }}%)
+                                        @elseif($promo->promotion_type === 'fixed_amount')
+                                            (-{{ number_format($promo->discount_value, 0, ',', '.') }}₫)
+                                        @elseif($promo->promotion_type === 'free_shipping')
+                                            (Miễn phí ship)
+                                        @endif
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         
-                        <div class="total-section d-flex justify-content-between align-items-end mt-4 border-top pt-3">
-                            <div class="price-breakdown flex-grow-1 pe-3">
+                        <div class="total-section mt-4 border-top pt-3">
+                            <div class="price-breakdown">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-secondary">Tạm tính</span>
                                     <span class="fw-bold">{{ number_format($subtotal, 0, ',', '.') }} ₫</span>
@@ -117,13 +133,17 @@
                                     <span class="text-secondary">Phí vận chuyển</span>
                                     <span class="fw-bold">Miễn phí</span>
                                 </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-secondary">Giảm giá</span>
+                                    <span class="fw-bold text-danger discount-amount">0 ₫</span>
+                                </div>
                                 <div class="d-flex justify-content-between mt-3">
                                     <span class="fw-bold fs-5 text-dark">Tổng tiền</span>
-                                    <span class="fw-bold fs-5 text-success">{{ number_format($total, 0, ',', '.') }} ₫</span>
+                                    <span class="fw-bold fs-5 text-success total-amount">{{ number_format($total, 0, ',', '.') }} ₫</span>
                                 </div>
                             </div>
                             
-                            <div class="action-area">
+                            <div class="text-center mt-4">
                                 <button type="submit" class="btn btn-checkout">Thanh toán</button>
                             </div>
                         </div>
@@ -154,7 +174,7 @@
 .column-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #555;
+    color: #324F29;
     margin-bottom: 25px;
     text-align: center;
 }
@@ -241,6 +261,58 @@
     // Format: YYYY-MM-DDTHH:mm
     const minDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
     document.querySelector('input[name="delivery_time"]').min = minDateTime;
+
+    // Store original values
+    /* eslint-disable */
+    const originalSubtotal = {{ $subtotal }};
+    const originalVat = {{ $vat }};
+    /* eslint-enable */
+
+    // Listen for promotion selection
+    document.getElementById('promotionSelect')?.addEventListener('change', calculateTotal);
+
+    function calculateTotal() {
+        const select = document.getElementById('promotionSelect');
+        const selectedOption = select.options[select.selectedIndex];
+        
+        let discount = 0;
+        let discountText = '0 ₫';
+        
+        if (selectedOption.value) {
+            const type = selectedOption.dataset.type;
+            const value = parseFloat(selectedOption.dataset.value);
+            const minOrder = parseFloat(selectedOption.dataset.min || 0);
+            const maxDiscount = parseFloat(selectedOption.dataset.max || 0);
+            
+            // Check minimum order value
+            if (originalSubtotal < minOrder) {
+                alert(`Đơn hàng tối thiểu ${minOrder.toLocaleString('vi-VN')}₫ để sử dụng mã này`);
+                select.value = '';
+                return;
+            }
+            
+            // Calculate discount based on type
+            if (type === 'percent') {
+                discount = originalSubtotal * (value / 100);
+                if (maxDiscount > 0) {
+                    discount = Math.min(discount, maxDiscount);
+                }
+            } else if (type === 'fixed_amount') {
+                discount = value;
+            } else if (type === 'free_shipping') {
+                // Free shipping doesn't affect total in this implementation
+                discount = 0;
+            }
+            
+            discountText = discount.toLocaleString('vi-VN') + ' ₫';
+        }
+        
+        const total = originalSubtotal + originalVat - discount;
+        
+        // Update display
+        document.querySelector('.discount-amount').textContent = discountText;
+        document.querySelector('.total-amount').textContent = total.toLocaleString('vi-VN') + ' ₫';
+    }
 
     document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
         e.preventDefault();

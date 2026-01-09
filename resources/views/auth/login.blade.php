@@ -62,9 +62,13 @@
             const tokenMeta = document.querySelector('meta[name="csrf-token"]');
             const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : document.querySelector('input[name="_token"]').value;
 
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectUrl = urlParams.get('redirect');
+
             const formData = {
                 username: document.getElementById('username').value.trim(),
-                password: passwordInput.value
+                password: passwordInput.value,
+                redirect_url: redirectUrl // Pass redirect URL to backend
             };
 
             try {

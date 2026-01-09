@@ -35,11 +35,20 @@ class AuthController extends Controller
             // Create Sanctum token for API access
             $token = $user->createToken('api-token')->plainTextToken;
 
+            // Check if there's an intended redirect URL (for customers only)
+            $intendedUrl = $request->input('redirect_url');
+            
+            // Security: Only allow relative URLs to prevent open redirect
+            if ($intendedUrl && !preg_match('/^\/[^\/]/', $intendedUrl)) {
+                // Invalid URL format, ignore it
+                $intendedUrl = null;
+            }
+
             $redirect = match ($user->role) {
                 // After admin login, land on dashboard
                 'admin' => route('admin.dashboard'),
                 'staff' => route('staff.profile'),
-                default => route('home'),
+                default => $intendedUrl ?: route('home'), // Use intended URL or home
             };
 
             return response()->json([

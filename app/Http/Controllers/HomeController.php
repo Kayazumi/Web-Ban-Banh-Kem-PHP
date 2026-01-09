@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Promotion;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -55,7 +56,7 @@ class HomeController extends Controller
                 ];
                 $subtotal += $product->price * $quantity;
             }
-        } 
+        }
         // Case 2: Checkout from Cart
         else {
             $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
@@ -76,6 +77,22 @@ class HomeController extends Controller
         $vat = $subtotal * 0.08;
         $total = $subtotal + $vat;
 
-        return view('orders', compact('items', 'subtotal', 'vat', 'total'));
+        // Fetch active promotions
+        $promotions = Promotion::where('status', 'active')
+            ->where(function($query) {
+                $query->whereNull('start_date')
+                      ->orWhere('start_date', '<=', now());
+            })
+            ->where(function($query) {
+                $query->whereNull('end_date')
+                      ->orWhere('end_date', '>=', now());
+            })
+            ->where(function($query) {
+                $query->where('quantity', -1)
+                      ->orWhereRaw('quantity > used_count');
+            })
+            ->get();
+
+        return view('orders', compact('items', 'subtotal', 'vat', 'total', 'promotions'));
     }
 }
