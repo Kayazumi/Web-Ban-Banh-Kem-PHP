@@ -7,20 +7,149 @@
     <div class="row">
         <div class="col-12">
             <div class="mb-4">
-                <a href="{{ route('orders.index') }}" class="btn btn-secondary">
+                <a href="{{ route('order.history') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Quay lại danh sách đơn hàng
                 </a>
             </div>
 
-            <div id="orderDetailContent" data-order-id="{{ $orderId ?? '' }}">
-                <!-- Order detail will be loaded via AJAX -->
-                <div class="text-center">
-                    <div class="spinner-border" role="status">
-                        <span class="sr-only">Đang tải...</span>
+            @if(isset($order))
+                <div class="order-detail-card">
+                    <div class="order-header">
+                        <h1 class="order-title">Đơn hàng #{{ $order->order_code }}</h1>
+                        <div class="order-meta">
+                            <div class="order-meta-item">
+                                <strong>Ngày đặt</strong>
+                                {{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y') }}
+                            </div>
+                            <div class="order-meta-item">
+                                <strong>Trạng thái</strong>
+                                @php
+                                    $statusClasses = [
+                                        'pending' => 'bg-warning text-dark',
+                                        'order_received' => 'bg-info text-white',
+                                        'preparing' => 'bg-secondary text-white',
+                                        'delivering' => 'bg-primary text-white',
+                                        'delivery_successful' => 'bg-success text-white',
+                                        'delivery_failed' => 'bg-danger text-white',
+                                        'cancelled' => 'bg-danger text-white'
+                                    ];
+                                    $statusText = [
+                                        'pending' => 'Chờ xác nhận',
+                                        'order_received' => 'Đã nhận đơn',
+                                        'preparing' => 'Đang chuẩn bị',
+                                        'delivering' => 'Đang giao hàng',
+                                        'delivery_successful' => 'Giao thành công',
+                                        'delivery_failed' => 'Giao thất bại',
+                                        'cancelled' => 'Đã hủy'
+                                    ];
+                                @endphp
+                                <span class="badge {{ $statusClasses[$order->order_status] ?? 'bg-secondary' }}" style="font-size: 0.9em;">
+                                    {{ $statusText[$order->order_status] ?? $order->order_status }}
+                                </span>
+                            </div>
+                            <div class="order-meta-item">
+                                <strong>Phương thức thanh toán</strong>
+                                {{ $order->payment_method === 'cod' ? 'Thanh toán khi nhận hàng' : 'VNPay' }}
+                            </div>
+                            <div class="order-meta-item">
+                                <strong>Trạng thái thanh toán</strong>
+                                @php
+                                    $paymentStatusMap = [
+                                        'pending' => 'Chờ thanh toán',
+                                        'paid' => 'Đã thanh toán',
+                                        'failed' => 'Thanh toán thất bại',
+                                        'refunded' => 'Đã hoàn tiền'
+                                    ];
+                                @endphp
+                                {{ $paymentStatusMap[$order->payment_status] ?? $order->payment_status }}
+                            </div>
+                        </div>
                     </div>
-                    <p>Đang tải chi tiết đơn hàng...</p>
+
+                    <div class="order-body">
+                        <div class="order-items">
+                            <h3 class="section-title">Chi tiết sản phẩm</h3>
+                            @foreach($order->orderItems as $item)
+                                <div class="order-item">
+                                    <img src="{{ $item->product->image_url ?? '/images/placeholder.jpg' }}"
+                                         alt="{{ $item->product_name }}"
+                                         class="order-item-image">
+                                    <div class="order-item-details">
+                                        <div class="order-item-name">{{ $item->product_name }}</div>
+                                        <div>Số lượng: {{ $item->quantity }}</div>
+                                        <div>Đơn giá: {{ number_format($item->product_price, 0, ',', '.') }} ₫</div>
+                                        @if($item->note)
+                                            <div><small>Ghi chú: {{ $item->note }}</small></div>
+                                        @endif
+                                    </div>
+                                    <div class="order-item-price">{{ number_format($item->subtotal, 0, ',', '.') }} ₫</div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="order-summary">
+                            <h3 class="section-title">Tóm tắt đơn hàng</h3>
+                            <div class="summary-row">
+                                <span>Tạm tính:</span>
+                                <span>{{ number_format($order->total_amount, 0, ',', '.') }} ₫</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Phí giao hàng:</span>
+                                <span>{{ number_format($order->shipping_fee, 0, ',', '.') }} ₫</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Giảm giá:</span>
+                                <span>-{{ number_format($order->discount_amount, 0, ',', '.') }} ₫</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Tổng cộng:</span>
+                                <span>{{ number_format($order->final_amount, 0, ',', '.') }} ₫</span>
+                            </div>
+                        </div>
+
+                        <div class="delivery-info">
+                            <h3 class="section-title">Thông tin giao hàng</h3>
+                            <div class="info-grid">
+                                <div>
+                                    <strong>Người nhận:</strong> {{ $order->customer_name }}<br>
+                                    <strong>Số điện thoại:</strong> {{ $order->customer_phone }}<br>
+                                    <strong>Email:</strong> {{ $order->customer_email }}
+                                </div>
+                                <div>
+                                    <strong>Địa chỉ giao hàng:</strong><br>
+                                    {{ $order->shipping_address }}<br>
+                                    {{ $order->ward ? $order->ward . ', ' : '' }}
+                                    {{ $order->district ? $order->district . ', ' : '' }}
+                                    {{ $order->city ?? '' }}
+                                </div>
+                                @if($order->delivery_date)
+                                <div>
+                                    <strong>Ngày giao hàng:</strong> {{ \Carbon\Carbon::parse($order->delivery_date)->format('d/m/Y') }}<br>
+                                    <strong>Giờ giao hàng:</strong> {{ $order->delivery_time ?? 'Chưa xác định' }}
+                                </div>
+                                @endif
+                            </div>
+                            @if($order->note)
+                                <p class="mt-2"><strong>Ghi chú:</strong> {{ $order->note }}</p>
+                            @endif
+                        </div>
+
+                        @if(in_array($order->order_status, ['pending', 'order_received']))
+                        <div class="text-center">
+                            <button onclick="cancelOrder({{ $order->OrderID }})" class="btn btn-secondary">
+                                Hủy đơn hàng
+                            </button>
+                        </div>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="text-center">
+                    <h3>Không tìm thấy đơn hàng</h3>
+                    <p>Đơn hàng không tồn tại hoặc bạn không có quyền xem.</p>
+                    <a href="{{ route('order.history') }}" class="btn btn-primary">Quay lại</a>
+                </div>
+            @endif
         </div>
     </div>
 </div>
@@ -51,6 +180,7 @@
 .order-title {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
 .order-meta {
@@ -70,45 +200,6 @@
     display: block;
     font-size: 0.875rem;
     opacity: 0.8;
-}
-
-.order-status {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: bold;
-    display: inline-block;
-}
-
-.status-pending {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status-order_received {
-    background: #d1ecf1;
-    color: #0c5460;
-}
-
-.status-preparing {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status-delivering {
-    background: #cce5ff;
-    color: #004085;
-}
-
-.status-delivery_successful {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status-delivery_failed,
-.status-cancelled {
-    background: #f8d7da;
-    color: #721c24;
 }
 
 .order-body {
@@ -179,8 +270,7 @@
     color: #c4a574;
 }
 
-.delivery-info,
-.customer-info {
+.delivery-info {
     background: #f8f9fa;
     padding: 1.5rem;
     border-radius: 8px;
@@ -231,146 +321,6 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const orderDetailElement = document.getElementById('orderDetailContent');
-    const orderId = orderDetailElement ? orderDetailElement.dataset.orderId : null;
-    if (orderId) {
-        loadOrderDetail(orderId);
-    }
-});
-
-async function loadOrderDetail(orderId) {
-    try {
-        const response = await fetch(`/api/orders/${orderId}`);
-        const data = await response.json();
-
-        const content = document.getElementById('orderDetailContent');
-
-        if (data.success && data.data.order) {
-            const order = data.data.order;
-            const statusClass = `status-${order.order_status}`;
-            const statusText = getStatusText(order.order_status);
-
-            let html = `
-                <div class="order-detail-card">
-                    <div class="order-header">
-                        <h1 class="order-title">Đơn hàng #${order.order_code}</h1>
-                        <div class="order-meta">
-                            <div class="order-meta-item">
-                                <strong>Ngày đặt</strong>
-                                ${formatDate(order.created_at)}
-                            </div>
-                            <div class="order-meta-item">
-                                <strong>Trạng thái</strong>
-                                <span class="order-status ${statusClass}">${statusText}</span>
-                            </div>
-                            <div class="order-meta-item">
-                                <strong>Phương thức thanh toán</strong>
-                                ${order.payment_method === 'cod' ? 'Thanh toán khi nhận hàng' : 'VNPay'}
-                            </div>
-                            <div class="order-meta-item">
-                                <strong>Trạng thái thanh toán</strong>
-                                ${getPaymentStatusText(order.payment_status)}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="order-body">
-                        <div class="order-items">
-                            <h3 class="section-title">Chi tiết sản phẩm</h3>
-                            ${order.order_items ? order.order_items.map(item => `
-                                <div class="order-item">
-                                    <img src="${item.product?.image_url || '/images/placeholder.jpg'}"
-                                         alt="${item.product_name}"
-                                         class="order-item-image">
-                                    <div class="order-item-details">
-                                        <div class="order-item-name">${item.product_name}</div>
-                                        <div>Số lượng: ${item.quantity}</div>
-                                        <div>Đơn giá: ${formatPrice(item.product_price)}</div>
-                                        ${item.note ? `<div><small>Ghi chú: ${item.note}</small></div>` : ''}
-                                    </div>
-                                    <div class="order-item-price">${formatPrice(item.subtotal)}</div>
-                                </div>
-                            `).join('') : ''}
-                        </div>
-
-                        <div class="order-summary">
-                            <h3 class="section-title">Tóm tắt đơn hàng</h3>
-                            <div class="summary-row">
-                                <span>Tạm tính:</span>
-                                <span>${formatPrice(order.total_amount)}</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Phí giao hàng:</span>
-                                <span>${formatPrice(order.shipping_fee)}</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Giảm giá:</span>
-                                <span>-${formatPrice(order.discount_amount)}</span>
-                            </div>
-                            <div class="summary-row total">
-                                <span>Tổng cộng:</span>
-                                <span>${formatPrice(order.final_amount)}</span>
-                            </div>
-                        </div>
-
-                        <div class="delivery-info">
-                            <h3 class="section-title">Thông tin giao hàng</h3>
-                            <div class="info-grid">
-                                <div>
-                                    <strong>Người nhận:</strong> ${order.customer_name}<br>
-                                    <strong>Số điện thoại:</strong> ${order.customer_phone}<br>
-                                    <strong>Email:</strong> ${order.customer_email}
-                                </div>
-                                <div>
-                                    <strong>Địa chỉ giao hàng:</strong><br>
-                                    ${order.shipping_address}<br>
-                                    ${order.ward ? order.ward + ', ' : ''}
-                                    ${order.district ? order.district + ', ' : ''}
-                                    ${order.city || ''}
-                                </div>
-                                ${order.delivery_date ? `
-                                <div>
-                                    <strong>Ngày giao hàng:</strong> ${formatDate(order.delivery_date)}<br>
-                                    <strong>Giờ giao hàng:</strong> ${order.delivery_time || 'Chưa xác định'}
-                                </div>
-                                ` : ''}
-                            </div>
-                            ${order.note ? `<p><strong>Ghi chú:</strong> ${order.note}</p>` : ''}
-                        </div>
-
-                        ${canCancelOrder(order.order_status) ? `
-                        <div class="text-center">
-                            <button onclick="cancelOrder(${order.OrderID})" class="btn btn-secondary">
-                                Hủy đơn hàng
-                            </button>
-                        </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-
-            content.innerHTML = html;
-        } else {
-            content.innerHTML = `
-                <div class="text-center">
-                    <h3>Không tìm thấy đơn hàng</h3>
-                    <p>Đơn hàng không tồn tại hoặc bạn không có quyền xem.</p>
-                    <a href="{{ route('orders.index') }}" class="btn btn-primary">Quay lại</a>
-                </div>
-            `;
-        }
-    } catch (error) {
-        console.error('Error loading order detail:', error);
-        document.getElementById('orderDetailContent').innerHTML = `
-            <div class="text-center">
-                <p>Có lỗi xảy ra khi tải chi tiết đơn hàng. Vui lòng thử lại.</p>
-                <button onclick="loadOrderDetail({{ $orderId }})" class="btn btn-primary">Thử lại</button>
-            </div>
-        `;
-    }
-}
-
 async function cancelOrder(orderId) {
     const reason = prompt('Vui lòng nhập lý do hủy đơn hàng:');
     if (!reason || !reason.trim()) return;
@@ -380,7 +330,7 @@ async function cancelOrder(orderId) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': window.Laravel.csrfToken
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             body: JSON.stringify({
                 reason: reason.trim()
@@ -400,44 +350,5 @@ async function cancelOrder(orderId) {
         alert('Có lỗi xảy ra');
     }
 }
-
-function getStatusText(status) {
-    const statusMap = {
-        'pending': 'Chờ xác nhận',
-        'order_received': 'Đã nhận đơn',
-        'preparing': 'Đang chuẩn bị',
-        'delivering': 'Đang giao hàng',
-        'delivery_successful': 'Giao thành công',
-        'delivery_failed': 'Giao thất bại',
-        'cancelled': 'Đã hủy'
-    };
-    return statusMap[status] || status;
-}
-
-function getPaymentStatusText(status) {
-    const statusMap = {
-        'pending': 'Chờ thanh toán',
-        'paid': 'Đã thanh toán',
-        'failed': 'Thanh toán thất bại',
-        'refunded': 'Đã hoàn tiền'
-    };
-    return statusMap[status] || status;
-}
-
-function canCancelOrder(status) {
-    return ['pending', 'order_received'].includes(status);
-}
-
-function formatPrice(price) {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(price);
-}
-
-function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('vi-VN');
-}
 </script>
 @endpush
-

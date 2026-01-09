@@ -124,6 +124,27 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/orders', [HomeController::class, 'checkout'])->name('orders');
 
+    // Order History - requested URL: /oderdetail
+    Route::get('/oderdetail', [HomeController::class, 'history'])->name('order.history');
+    Route::get('/oderdetail/{id}', [HomeController::class, 'orderDetail'])->name('order.details');
+
+Route::get('/fix-db-schema', function() {
+    try {
+        Illuminate\Support\Facades\Schema::table('contacts', function ($table) {
+            if (!Illuminate\Support\Facades\Schema::hasColumn('contacts', 'name')) {
+                $table->string('name')->nullable()->after('customer_id');
+            }
+            if (!Illuminate\Support\Facades\Schema::hasColumn('contacts', 'email')) {
+                $table->string('email')->nullable()->after('name');
+            }
+            $table->unsignedBigInteger('customer_id')->nullable()->change();
+        });
+        return "Schema fixed successfully!";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
+
 });
 
 // 6. ROUTE CHO NHÂN VIÊN (STAFF)

@@ -192,7 +192,7 @@
                             <span>Xin chào, {{ Auth::user()->full_name }}</span>
                             <ul>
                                 <li><a href="{{ route('profile') }}">Thông tin tài khoản</a></li>
-                                <li><a href="{{ route('orders') }}">Đơn hàng của tôi</a></li>
+                                <li><a href="{{ route('order.history') }}">Đơn hàng của tôi</a></li>
                                 @if(Auth::user()->isAdmin())
                                     <li><a href="{{ route('admin.dashboard') }}">Quản trị</a></li>
                                 @endif

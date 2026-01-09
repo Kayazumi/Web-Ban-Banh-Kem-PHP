@@ -283,6 +283,48 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Contact Form Handler
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'Đang gửi...';
+            btn.disabled = true;
+
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert(data.message || 'Gửi tin nhắn thành công!');
+                    this.reset();
+                } else {
+                    const errorMessage = data.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
+                    const detailedError = data.error ? `\nChi tiết: ${data.error}` : '';
+                    alert(`${errorMessage}${detailedError}`);
+                    console.error('Errors:', data);
+                }
+            } catch (error) {
+                console.error('Error submitting contact form:', error);
+                alert(`Có lỗi xảy ra kết nối: ${error.message}`);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
 });
 
 async function loadFeaturedProducts() {

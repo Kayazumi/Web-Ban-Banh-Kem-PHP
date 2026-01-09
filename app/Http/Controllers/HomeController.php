@@ -95,4 +95,20 @@ class HomeController extends Controller
 
         return view('orders', compact('items', 'subtotal', 'vat', 'total', 'promotions'));
     }
+
+    public function history()
+    {
+        $orders = \App\Models\Order::where('customer_id', Auth::id())
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10);
+        return view('order-history', compact('orders'));
+    }
+
+    public function orderDetail($id)
+    {
+        $order = \App\Models\Order::with(['orderItems.product', 'staff', 'statusHistory'])
+             ->where('customer_id', Auth::id())
+             ->findOrFail($id);
+        return view('order-detail', ['order' => $order, 'orderId' => $id]);
+    }
 }
