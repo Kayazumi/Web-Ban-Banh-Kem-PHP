@@ -115,6 +115,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // 5. ROUTE CHUNG CHO NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (CUSTOMER / USER THƯỜNG)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
+        $user = Auth::user();
+        // Nếu là nhân viên -> chuyển sang trang profile nhân viên
+        if ($user->role === 'staff') {
+            return redirect()->route('staff.profile');
+        }
+        // Nếu là admin -> chuyển sang dashboard
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        // Nếu là khách hàng -> hiển thị view profile khách hàng
         return view('profile');
     })->name('profile');
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Staff;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,8 +11,7 @@ class UpdateProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Trả về true để cho phép tất cả nhân viên đã đăng nhập đều có thể gửi yêu cầu này
-        return true; 
+        return true;
     }
 
     /**
@@ -22,13 +21,13 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             // Họ tên bắt buộc nhập, tối đa 100 ký tự
-            'full_name' => 'required|string|max:100', 
-            
+            'full_name' => 'required|string|max:100',
+
             // Số điện thoại không bắt buộc, tối đa 20 ký tự
-            'phone'     => 'nullable|string|max:20', 
-            
+            'phone'     => 'nullable|string|max:20',
+
             // Địa chỉ không bắt buộc, tối đa 255 ký tự
-            'address'   => 'nullable|string|max:255', 
+            'address'   => 'nullable|string|max:255',
         ];
     }
 

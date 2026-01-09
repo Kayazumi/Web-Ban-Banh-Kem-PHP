@@ -55,15 +55,15 @@
                     <h2 class="section-subtitle">Thay đổi mật khẩu</h2>
                     <div class="form-group">
                         <label>Mật khẩu hiện tại</label>
-                        <input type="password" name="current_password" required>
+                        <input type="password" name="oldPassword" required>
                     </div>
                     <div class="form-group">
                         <label>Mật khẩu mới</label>
-                        <input type="password" name="new_password" id="newPassword" required>
+                        <input type="password" name="newPassword" id="newPassword" required>
                     </div>
                     <div class="form-group">
                         <label>Xác nhận mật khẩu mới</label>
-                        <input type="password" name="new_password_confirmation" id="confirmPassword" required>
+                        <input type="password" name="newPassword_confirmation" id="confirmPassword" required>
                     </div>
                 </div>
                 <button type="submit" class="save-btn">Đổi mật khẩu</button>

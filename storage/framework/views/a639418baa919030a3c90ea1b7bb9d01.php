@@ -144,12 +144,15 @@
                 </li>
 
                 <?php if(auth()->guard()->check()): ?>
+                
+                <?php if(Auth::user()->role === 'customer'): ?>
                 <li>
                     <a href="<?php echo e(route('cart')); ?>" class="nav-cart" style="padding: 0 10px;">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="cart-count" id="cartCount">0</span>
                     </a>
                 </li>
+                <?php endif; ?>
                 <?php endif; ?>
 
                 <li class="nav-user">
@@ -158,7 +161,12 @@
                             <span>Xin chào, <?php echo e(Auth::user()->full_name); ?></span>
                             <ul>
                                 <li><a href="<?php echo e(route('profile')); ?>">Thông tin tài khoản</a></li>
-                                <li><a href="<?php echo e(route('orders.index')); ?>">Đơn hàng của tôi</a></li>
+                                
+                                
+                                <?php if(Auth::user()->role === 'customer'): ?>
+                                <li><a href="<?php echo e(route('order.history')); ?>">Đơn hàng của tôi</a></li>
+                                <?php endif; ?>
+
                                 <?php if(Auth::user()->isAdmin()): ?>
                                 <li><a href="<?php echo e(route('admin.dashboard')); ?>">Quản trị</a></li>
                                 <?php endif; ?>
@@ -291,7 +299,7 @@
         function handleSearch() {
             const query = document.getElementById('searchInput').value;
             if(query.trim()) {
-                window.location.href = '<?php echo e(route("products.index")); ?>?search=' + encodeURIComponent(query);
+                window.location.href = '<?php echo e(route("products")); ?>?search=' + encodeURIComponent(query);
             }
         }
 

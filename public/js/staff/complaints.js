@@ -36,9 +36,11 @@ async function loadComplaints() {
     const search = document.getElementById('complaint-search')?.value.trim() || '';
     let status = 'all';
 
-    const checked = document.querySelector('.filter-checkbox input[type="checkbox"]:checked');
-    if (checked && checked.value !== 'all') {
-        status = checked.value;
+    const checkedBoxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
+    const checkedValues = Array.from(checkedBoxes).map(cb => cb.value);
+
+    if (checkedValues.length > 0 && !checkedValues.includes('all')) {
+        status = checkedValues.join(',');
     }
 
     const tbody = document.getElementById('complaints-table-body');
@@ -213,8 +215,8 @@ async function sendToCustomer() {
 
 // Hàm chung xử lý cả 2 trường hợp
 async function handleUpdateComplaint(options = { send_to_customer: false }) {
-    const id = document.querySelector('.btn-outline-modal')?.dataset?.id || 
-               document.querySelector('.btn-save-modal')?.dataset?.id;
+    const id = document.querySelector('.btn-outline-modal')?.dataset?.id ||
+        document.querySelector('.btn-save-modal')?.dataset?.id;
     if (!id) {
         alert('Lỗi: Không xác định được ID khiếu nại');
         return;

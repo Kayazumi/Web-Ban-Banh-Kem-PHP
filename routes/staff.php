@@ -21,8 +21,8 @@ Route::middleware(['auth', 'staff'])->prefix('staff')->name('staff.')->group(fun
     Route::prefix('api')->group(function () {
         
         // API cho Profile
-        Route::post('/profile/update', [ProfileController::class, 'update'])->name('api.profile.update');
-        Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('api.profile.password');
+        Route::match(['PUT', 'POST'], '/profile', [ProfileController::class, 'update'])->name('api.profile.update');
+        Route::post('/password', [ProfileController::class, 'changePassword'])->name('api.profile.password');
 
         // API cho Orders
         Route::get('/orders', [StaffOrderController::class, 'apiIndex']);

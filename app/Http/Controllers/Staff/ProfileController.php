@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Staff\UpdateProfileRequest;
-use App\Http\Requests\Staff\UpdatePasswordRequest;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -12,16 +12,18 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
     // Hiển thị trang giao diện hồ sơ
-    public function index() {
-        return view('staff.profile.index'); 
+    public function index()
+    {
+        return view('staff.profile.index');
     }
 
     // API Cập nhật thông tin cá nhân
-    public function update(UpdateProfileRequest $request) {
+    public function update(UpdateProfileRequest $request)
+    {
         /** @var \App\Models\User $user */ // Sửa lỗi gạch đỏ chữ update
-        $user = Auth::user(); 
-        
-        $user->update($request->validated()); 
+        $user = Auth::user();
+
+        $user->update($request->validated());
 
         return response()->json([
             'success' => true,
@@ -31,9 +33,10 @@ class ProfileController extends Controller
     }
 
     // API Đổi mật khẩu
-    public function changePassword(UpdatePasswordRequest $request) {
+    public function changePassword(UpdatePasswordRequest $request)
+    {
         /** @var \App\Models\User $user */
-        $user = Auth::user(); 
+        $user = Auth::user();
 
         // Kiểm tra mật khẩu cũ
         if (!Hash::check($request->oldPassword, $user->password_hash)) {
@@ -41,7 +44,7 @@ class ProfileController extends Controller
         }
 
         // Lưu mật khẩu mới
-        $user->update(['password_hash' => Hash::make($request->newPassword)]); 
+        $user->update(['password_hash' => Hash::make($request->newPassword)]);
 
         return response()->json(['success' => true, 'message' => 'Đổi mật khẩu thành công!']);
     }

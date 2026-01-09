@@ -1,12 +1,12 @@
 // Profile Page JavaScript - La Cuisine Ngọt
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // ===== TAB SWITCHING =====
     const tabLinks = document.querySelectorAll('.tab-link');
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function () {
             const targetTab = this.getAttribute('data-tab');
 
             // Remove active class from all tabs and contents
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== UPDATE PROFILE INFO FORM =====
     const infoForm = document.getElementById('infoForm');
     if (infoForm) {
-        infoForm.addEventListener('submit', async function(e) {
+        infoForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const submitBtn = this.querySelector('.save-btn');
@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(this);
 
             try {
-                const response = await fetch('/staff/api/profile/update', {
+                // Sửa đường dẫn thành /staff/api/profile và method thành PUT
+                const response = await fetch('/staff/api/profile', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (data.success) {
                     showAlert('success', 'Cập nhật thông tin thành công!');
-                    
+
                     // Update displayed name if changed
                     const newName = formData.get('full_name');
                     if (newName) {
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== CHANGE PASSWORD FORM =====
     const passwordForm = document.getElementById('passwordForm');
     if (passwordForm) {
-        passwordForm.addEventListener('submit', async function(e) {
+        passwordForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const newPassword = document.getElementById('newPassword').value;
@@ -101,7 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(this);
 
             try {
-                const response = await fetch('/staff/api/profile/change-password', {
+                // Sửa đường dẫn thành /staff/api/password
+                const response = await fetch('/staff/api/password', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -157,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
 
         // Close button
-        alert.querySelector('.alert-close').addEventListener('click', function() {
+        alert.querySelector('.alert-close').addEventListener('click', function () {
             clearTimeout(hideTimeout);
             alert.classList.remove('show');
             setTimeout(() => alert.remove(), 300);

@@ -43,7 +43,7 @@
         const togglePassword = document.getElementById('togglePassword');
         const submitBtn = loginForm.querySelector('.btn-submit');
 
-        // Logic 1: Hiển thị/Ẩn mật khẩu bằng icon
+        // Hiển thị/ẩn mật khẩu
         togglePassword.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
@@ -51,14 +51,14 @@
             this.classList.toggle('fa-eye-slash');
         });
 
-        // Logic 2: Xử lý đăng nhập AJAX
+        // Xử lý đăng nhập AJAX
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             submitBtn.classList.add('loading');
             submitBtn.textContent = 'Đang đăng nhập...';
+            submitBtn.disabled = true;
 
-            // Lấy CSRF Token an toàn từ thẻ meta hoặc input
             const tokenMeta = document.querySelector('meta[name="csrf-token"]');
             const csrfToken = tokenMeta ? tokenMeta.getAttribute('content') : document.querySelector('input[name="_token"]').value;
 
@@ -85,21 +85,60 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    // Đăng nhập thành công
+                    showNotification('success', 'Đăng nhập thành công! Đang chuyển trang...');
+                    
                     if (data.data.token) {
                         localStorage.setItem('api_token', data.data.token);
                     }
-                    window.location.href = data.data.redirect || '/';
+                    
+                    setTimeout(() => {
+                        window.location.href = data.data.redirect || '/';
+                    }, 1000);
                 } else {
-                    alert(data.message || 'Đăng nhập thất bại');
+                    // Đăng nhập thất bại
+                    showNotification('error', data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
+                    submitBtn.classList.remove('loading');
+                    submitBtn.textContent = 'Đăng nhập';
+                    submitBtn.disabled = false;
                 }
             } catch (error) {
                 console.error('Lỗi:', error);
-                alert('Có lỗi xảy ra. Vui lòng thử lại.');
-            } finally {
+                showNotification('error', 'Có lỗi xảy ra. Vui lòng thử lại sau.');
                 submitBtn.classList.remove('loading');
                 submitBtn.textContent = 'Đăng nhập';
+                submitBtn.disabled = false;
             }
         });
+
+        // Hàm hiển thị thông báo đẹp
+        function showNotification(type, message) {
+    const oldNotif = document.querySelector('.login-notification');
+    if (oldNotif) oldNotif.remove();
+
+    const notif = document.createElement('div');
+    notif.className = `login-notification ${type}`;
+    notif.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span>${message}</span>
+        <button class="notif-close" type="button">&times;</button>
+    `;
+
+    loginForm.insertBefore(notif, loginForm.firstChild);
+
+    // Tự động ẩn sau 5 giây
+    const autoHide = setTimeout(() => {
+        notif.classList.add('fade-out');
+        setTimeout(() => notif.remove(), 300);
+    }, 5000);
+
+    // Nút đóng thủ công
+    notif.querySelector('.notif-close').addEventListener('click', function() {
+        clearTimeout(autoHide);
+        notif.classList.add('fade-out');
+        setTimeout(() => notif.remove(), 300);
+    });
+}
     });
 </script>
 @endpush
