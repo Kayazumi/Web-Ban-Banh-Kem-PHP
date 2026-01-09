@@ -32,6 +32,11 @@
     .hero h1 { font-size: 28px; }
     .hero .container { flex-direction: column; text-align: center; }
 }
+
+/* Out of stock badge & disabled button */
+.badge.out-of-stock { background: #c0392b; color: white; padding: 6px 10px; border-radius: 12px; font-size: 12px; position: absolute; left: 12px; top: 12px; z-index: 5; }
+.product-card .btn[disabled], .product-card .btn[aria-disabled="true"] { opacity: 0.6; cursor: not-allowed; pointer-events: none; background: #999; color: #fff; }
+.swiper-wrapper.centered { justify-content: center; }
 </style>
 @endpush
 
@@ -394,10 +399,16 @@ function displayProducts(products) {
     const wrapper = document.querySelector('#featuredProducts');
     if (!wrapper) return;
 
-    wrapper.innerHTML = products.map(product => `
+    wrapper.innerHTML = products.map(product => {
+        const outOfStock = (product.quantity === 0);
+        const stockBadge = outOfStock ? `<span class="badge out-of-stock">Hết hàng</span>` : '';
+        const btn = outOfStock ? `<button class="btn btn-secondary" aria-disabled="true">Hết hàng</button>` : `<a href="/products/${product.product_id}" class="btn btn-primary">Xem chi tiết</a>`;
+
+        return `
         <div class="swiper-slide">
-            <div class="product-card">
+            <div class="product-card" style="position:relative;">
                 <div class="product-image">
+                    ${stockBadge}
                     <img src="${product.image_url || '/images/placeholder.jpg'}"
                          alt="${product.product_name}"
                          onerror="this.src='/images/placeholder.jpg'">
@@ -412,11 +423,12 @@ function displayProducts(products) {
                             : ''}
                         <span class="current-price">${formatPrice(product.price)}</span>
                     </div>
-                    <a href="/products/${product.product_id}" class="btn btn-primary">Xem chi tiết</a>
+                    ${btn}
                 </div>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     // Đợi DOM cập nhật xong rồi khởi tạo Swiper
     setTimeout(initFeaturedSwiper, 100);
@@ -426,10 +438,23 @@ function displayCategoryProducts(products, selector, categoryName) {
     const wrapper = document.querySelector(selector);
     if (!wrapper) return;
 
-    wrapper.innerHTML = products.map(product => `
+    // center if only one product to show it in the middle
+    if (products.length === 1) {
+        wrapper.classList.add('centered');
+    } else {
+        wrapper.classList.remove('centered');
+    }
+
+    wrapper.innerHTML = products.map(product => {
+        const outOfStock = (product.quantity === 0);
+        const stockBadge = outOfStock ? `<span class="badge out-of-stock">Hết hàng</span>` : '';
+        const btn = outOfStock ? `<button class="btn btn-secondary" aria-disabled="true">Hết hàng</button>` : `<a href="/products/${product.product_id}" class="btn btn-primary">Xem chi tiết</a>`;
+
+        return `
         <div class="swiper-slide">
-            <div class="product-card">
+            <div class="product-card" style="position:relative;">
                 <div class="product-image">
+                    ${stockBadge}
                     <img src="${product.image_url || '/images/placeholder.jpg'}"
                          alt="${product.product_name}"
                          onerror="this.src='/images/placeholder.jpg'">
@@ -444,11 +469,12 @@ function displayCategoryProducts(products, selector, categoryName) {
                             : ''}
                         <span class="current-price">${formatPrice(product.price)}</span>
                     </div>
-                    <a href="/products/${product.product_id}" class="btn btn-primary">Xem chi tiết</a>
+                    ${btn}
                 </div>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     // Khởi tạo Swiper cho category
     setTimeout(() => initCategorySwiper(categoryName), 100);
