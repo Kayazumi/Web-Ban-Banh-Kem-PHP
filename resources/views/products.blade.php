@@ -21,9 +21,11 @@
                     <label for="priceFilter">Giá:</label>
                     <select id="priceFilter" class="form-control">
                         <option value="">Tất cả giá</option>
-                        <option value="duoi500">Dưới 500.000đ</option>
-                        <option value="500-700">500.000đ - 700.000đ</option>
-                        <option value="tren700">Trên 700.000đ</option>
+                        <option value="0-200000">Dưới 200.000đ</option>
+                        <option value="200000-400000">200.000đ - 400.000đ</option>
+                        <option value="400000-600000">400.000đ - 600.000đ</option>
+                        <option value="600000-1000000">600.000đ - 1.000.000đ</option>
+                        <option value="1000000+">Trên 1.000.000đ</option>
                     </select>
                 </div>
 
@@ -184,11 +186,7 @@
 }
 
 .badge-featured {
-<<<<<<< Updated upstream
     background: #b08d55; /* Gold/brown color from image */
-=======
-    background: #324F29;
->>>>>>> Stashed changes
 }
 
 .badge-new {
@@ -241,15 +239,9 @@
 }
 
 .current-price {
-<<<<<<< Updated upstream
     font-size: 1.4rem;
     font-weight: 700;
     color: #b08d55; /* Gold/brown color */
-=======
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #c4a574;
->>>>>>> Stashed changes
 }
 
 .product-actions {
@@ -274,19 +266,8 @@
     text-decoration: none;
 }
 
-<<<<<<< Updated upstream
 .btn-detail:hover {
     background: #a88b5e;
-=======
-.btn-outline {
-    background: transparent;
-    border: 1px solid #c4a574;
-    color: #c4a574;
-}
-
-.btn-outline:hover {
-    background: #c4a574;
->>>>>>> Stashed changes
     color: white;
 }
 
@@ -373,12 +354,44 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCategories();
 
     // Check for search param in URL
+    // Check for search param in URL
     const urlParams = new URLSearchParams(window.location.search);
-    const searchParam = urlParams.get('search');
     
-    if (searchParam) {
-        document.getElementById('searchInput').value = searchParam;
-        currentFilters.search = searchParam;
+    // Read parameters from URL (from app.blade.php redirect)
+    if(urlParams.has('search')) {
+        const s = urlParams.get('search');
+        document.getElementById('searchInput').value = s;
+        currentFilters.search = s;
+    }
+    
+    if(urlParams.has('category')) {
+        const c = urlParams.get('category');
+        currentFilters.category = c;
+        // The category dropdown is loaded via async loadCategories, 
+        // so we'll set the value there or use a timeout/observer if needed.
+        // For simplicity, we can store it to set later in loadCategories
+        window.initialCategory = c; 
+    }
+
+    if(urlParams.has('price_min')) {
+        currentFilters.price_min = urlParams.get('price_min');
+    }
+    if(urlParams.has('price_max')) {
+        currentFilters.price_max = urlParams.get('price_max');
+    }
+    
+    // Reconstruct price range selector value if both exist
+    if(currentFilters.price_min && currentFilters.price_max) {
+        document.getElementById('priceFilter').value = `${currentFilters.price_min}-${currentFilters.price_max}`;
+    } else if(currentFilters.price_min && currentFilters.price_min == 1000000) {
+       document.getElementById('priceFilter').value = '1000000+';
+    } else if(currentFilters.price_max && currentFilters.price_max == 200000) {
+        document.getElementById('priceFilter').value = '0-200000';
+    }
+
+    // Sort order (optional, if you want to support it)
+    if(urlParams.has('sort')) {
+        // You would need a sort dropdown in products.blade.php if you want to sync this too
     }
 
     loadProducts();
@@ -406,6 +419,11 @@ async function loadCategories() {
                 option.textContent = category.category_name;
                 categorySelect.appendChild(option);
             });
+            
+            // Set initial value if passed from URL
+            if(window.initialCategory) {
+                 categorySelect.value = window.initialCategory;
+            }
         }
     } catch (error) {
         console.error('Error loading categories:', error);
@@ -460,7 +478,7 @@ async function loadProducts(page = 1) {
             pagination.innerHTML = renderPagination(data.data.pagination);
         } else {
             productsGrid.innerHTML = `
-                <div class="text-center">
+                <div class="text-center" style="grid-column: 1 / -1;">
                     <h3>Không tìm thấy sản phẩm nào</h3>
                     <p>Vui lòng thử lại với bộ lọc khác.</p>
                 </div>
@@ -524,18 +542,17 @@ function applyFilters() {
     if (category) currentFilters.category = category;
 
     // Parse price range
+    // Parse price range from the dropdown values like "200000-400000"
     if (priceRange) {
-        switch (priceRange) {
-            case 'duoi500':
-                currentFilters.price_max = 500000;
-                break;
-            case '500-700':
-                currentFilters.price_min = 500000;
-                currentFilters.price_max = 700000;
-                break;
-            case 'tren700':
-                currentFilters.price_min = 700000;
-                break;
+        if (priceRange.includes('+')) {
+            const min = priceRange.replace('+', '');
+            currentFilters.price_min = min;
+        } else {
+            const parts = priceRange.split('-');
+            if (parts.length === 2) {
+                currentFilters.price_min = parts[0];
+                currentFilters.price_max = parts[1];
+            }
         }
     }
 

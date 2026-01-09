@@ -274,6 +274,7 @@
     outline: none;
     padding: 0;
     margin: 0;
+    -webkit-appearance: textfield;
     -moz-appearance: textfield;
 }
 
@@ -837,16 +838,17 @@ function decreaseQuantity() {
 }
 
 async function buyNow(productId) {
+    if (!window.Laravel.user) {
+        alert('Vui lòng đăng nhập để tiếp tục thanh toán');
+        window.location.href = '/login';
+        return;
+    }
+
     const qtyInput = document.getElementById('quantity');
     const quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
     
-    // Add to cart first (silently)
-    const success = await addToCart(productId, quantity, true);
-    
-    if (success) {
-        // Redirect to orders page as requested
-        window.location.href = '/orders'; 
-    }
+    // Redirect directly to checkout ("orders" page)
+    window.location.href = `/orders?product_id=${productId}&quantity=${quantity}`;
 }
 </script>
 @endpush

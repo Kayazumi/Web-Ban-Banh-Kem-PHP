@@ -56,10 +56,10 @@ Route::middleware('auth')->group(function () {
 
     // Order API
     Route::controller(OrderController::class)->group(function () {
-        Route::get('/orders', 'index');
-        Route::post('/orders', 'store');
-        Route::get('/orders/{id}', 'show');
-        Route::post('/orders/{id}/cancel', 'cancel');
+        Route::get('/orders', 'index')->name('api.orders.index');
+        Route::post('/orders', 'store')->name('api.orders.store');
+        Route::get('/orders/{id}', 'show')->name('api.orders.show');
+        Route::post('/orders/{id}/cancel', 'cancel')->name('api.orders.cancel');
     });
 });
 

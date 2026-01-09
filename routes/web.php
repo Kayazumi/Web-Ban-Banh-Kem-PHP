@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [HomeController::class, 'products'])->name('products');
+Route::get('/products/{id}', [HomeController::class, 'productDetail'])->name('products.detail');
 
 // 2. AUTHENTICATION - Cho khách chưa đăng nhập
 Route::middleware('guest')->group(function () {
@@ -116,9 +117,8 @@ Route::middleware('auth')->group(function () {
         return view('cart');
     })->name('cart');
 
-    Route::get('/orders', function () {
-        return view('orders.index');
-    })->name('orders.index');
+    Route::get('/orders', [HomeController::class, 'checkout'])->name('orders');
+
 });
 
 // 6. ROUTE CHO NHÂN VIÊN (STAFF)

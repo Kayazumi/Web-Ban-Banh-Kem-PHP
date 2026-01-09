@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -27,5 +29,53 @@ class HomeController extends Controller
     public function products()
     {
         return view('products');
+    }
+
+    public function productDetail($id)
+    {
+        return view('product-detail', ['productId' => $id]);
+    }
+
+    public function checkout(Request $request)
+    {
+        $items = [];
+        $subtotal = 0;
+
+        // Case 1: Buy Now (Direct purchase of one item)
+        if ($request->has('product_id') && $request->has('quantity')) {
+            $product = Product::find($request->product_id);
+            if ($product) {
+                $quantity = (int) $request->quantity;
+                $items[] = [
+                    'id' => $product->ProductID,
+                    'name' => $product->product_name,
+                    'price' => $product->price,
+                    'quantity' => $quantity,
+                    'image' => $product->image_url // Optional for view
+                ];
+                $subtotal += $product->price * $quantity;
+            }
+        } 
+        // Case 2: Checkout from Cart
+        else {
+            $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+            foreach ($cartItems as $cartItem) {
+                if ($cartItem->product) {
+                    $items[] = [
+                        'id' => $cartItem->product->ProductID,
+                        'name' => $cartItem->product->product_name,
+                        'price' => $cartItem->product->price,
+                        'quantity' => $cartItem->quantity,
+                        'image' => $cartItem->product->image_url
+                    ];
+                    $subtotal += $cartItem->product->price * $cartItem->quantity;
+                }
+            }
+        }
+
+        $vat = $subtotal * 0.08;
+        $total = $subtotal + $vat;
+
+        return view('orders', compact('items', 'subtotal', 'vat', 'total'));
     }
 }
