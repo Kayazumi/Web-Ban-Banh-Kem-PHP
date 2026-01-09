@@ -22,89 +22,119 @@
     <!-- các meta, title, css chung -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/account.css') }}">
 
     @stack('styles')
 
     <style>
-    /* Global centered modal used for confirmations/alerts */
-    .global-modal-overlay {
-        position: fixed;
-        inset: 0;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0,0,0,0.5);
-        z-index: 99999;
-    }
-    .global-modal {
-        background: #0f1b1a;
-        color: #e8fff9;
-        border-radius: 10px;
-        max-width: 540px;
-        width: 92%;
-        padding: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    }
-    .global-modal .modal-title { font-weight:700; margin-bottom:8px; }
-    .global-modal .modal-body { margin-bottom:14px; line-height:1.45; }
-    .global-modal .modal-actions { text-align:right; }
-    .global-modal .btn-primary {
-        background:#7fe3d0;
-        color:#05332d;
-        border:0;
-        padding:8px 14px;
-        border-radius:8px;
-        cursor:pointer;
-        font-weight:600;
-    }
-    .global-modal .btn-secondary {
-        background:transparent;
-        color:#cdebe5;
-        border:1px solid rgba(255,255,255,0.06);
-        padding:8px 12px;
-        border-radius:8px;
-        cursor:pointer;
-        margin-right:8px;
-    }
-    /* Auth links in navbar - make login/register visually prominent */
-    .nav-login-1, .nav-login-2 {
-        display: inline-block;
-        padding: 6px 10px;
-        border-radius: 6px;
-        text-decoration: none;
-        color: #fff;
-        font-weight: 600;
-        transition: all .15s ease;
-        margin-left: 6px;
-    }
-    .nav-login-1:hover, .nav-login-2:hover { transform: translateY(-1px); opacity: 0.95; }
-    .nav-login-2 {
-        background: #fff;
-        color: #1f4d3a;
-        padding: 8px 14px;
-    }
-    .nav-separator { color: rgba(255,255,255,0.35); margin: 0 6px; }
-    /* auth-actions container style */
-    .auth-actions {
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
-        margin-left: 12px;
-    }
-    /* make login link look like subtle outline button */
-    .nav-login-1 {
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.08);
-        padding: 8px 12px;
-        color: #fff;
-    }
-    /* adjust register button to match register page style */
-    .nav-login-2 {
-        background: #fff;
-        color: #1f4d3a;
-        padding: 8px 14px;
-        box-shadow: 0 6px 18px rgba(31,77,58,0.12);
-    }
+        /* Global centered modal used for confirmations/alerts */
+        .global-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99999;
+        }
+
+        .global-modal {
+            background: #0f1b1a;
+            color: #e8fff9;
+            border-radius: 10px;
+            max-width: 540px;
+            width: 92%;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .global-modal .modal-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .global-modal .modal-body {
+            margin-bottom: 14px;
+            line-height: 1.45;
+        }
+
+        .global-modal .modal-actions {
+            text-align: right;
+        }
+
+        .global-modal .btn-primary {
+            background: #7fe3d0;
+            color: #05332d;
+            border: 0;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .global-modal .btn-secondary {
+            background: transparent;
+            color: #cdebe5;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        /* Auth links in navbar - make login/register visually prominent */
+        .nav-login-1,
+        .nav-login-2 {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            transition: all .15s ease;
+            margin-left: 6px;
+        }
+
+        .nav-login-1:hover,
+        .nav-login-2:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        .nav-login-2 {
+            background: #fff;
+            color: #1f4d3a;
+            padding: 8px 14px;
+        }
+
+        .nav-separator {
+            color: rgba(255, 255, 255, 0.35);
+            margin: 0 6px;
+        }
+
+        /* auth-actions container style */
+        .auth-actions {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            margin-left: 12px;
+        }
+
+        /* make login link look like subtle outline button */
+        .nav-login-1 {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px 12px;
+            color: #fff;
+        }
+
+        /* adjust register button to match register page style */
+        .nav-login-2 {
+            background: #fff;
+            color: #1f4d3a;
+            padding: 8px 14px;
+            box-shadow: 0 6px 18px rgba(31, 77, 58, 0.12);
+        }
     </style>
 
 
@@ -113,6 +143,7 @@
 
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="{{ asset('js/customer.js') }}"></script>
 
 </head>
 
@@ -157,23 +188,57 @@
 
                 <li class="nav-user">
                     @auth
-                        <div class="user-menu">
-                            <span>Xin chào, {{ Auth::user()->full_name }}</span>
-                            <ul>
-                                <li><a href="{{ route('profile') }}">Thông tin tài khoản</a></li>
-                                
-                                {{-- Chỉ hiển thị Đơn hàng của tôi cho Khách hàng --}}
-                                @if(Auth::user()->role === 'customer')
-                                <li><a href="{{ route('order.history') }}">Đơn hàng của tôi</a></li>
-                                @endif
+                        <div class="nav-user-dropdown">
+                            <button class="user-dropdown-toggle" id="userDropdownToggle">
+                                <i class="fas fa-user-circle"></i>
+                                <span class="user-name">{{ Auth::user()->full_name }}</span>
+                                <i class="fas fa-chevron-down chevron-icon"></i>
+                            </button>
 
-                                @if(Auth::user()->isAdmin())
-                                <li><a href="{{ route('admin.dashboard') }}">Quản trị</a></li>
-                                @endif
-                                <li><button id="logoutBtn" onclick="logout()">Đăng xuất</button></li>
-                            </ul>
+                            <div class="user-dropdown-menu" id="userDropdownMenu">
+                                <div class="dropdown-header">
+                                    <div class="dropdown-user-info">
+                                        <i class="fas fa-user-circle user-avatar"></i>
+                                        <div class="user-details">
+                                            <strong>{{ Auth::user()->full_name }}</strong>
+                                            <span class="user-role">{{ Auth::user()->role === 'admin' ? 'Quản trị viên' : (Auth::user()->role === 'staff' ? 'Nhân viên' : 'Khách hàng') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-divider"></div>
+
+                                <ul class="dropdown-items">
+                                    <li>
+                                        <a href="{{ route('profile') }}" class="dropdown-item">
+                                            <i class="fas fa-user"></i>
+                                            <span>Thông tin tài khoản</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('order.history') }}" class="dropdown-item">
+                                            <i class="fas fa-receipt"></i>
+                                            <span>Đơn hàng của tôi</span>
+                                        </a>
+                                    </li>
+                                    @if(Auth::user()->isAdmin())
+                                    <li>
+                                        <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                                            <i class="fas fa-tools"></i>
+                                            <span>Quản trị</span>
+                                        </a>
+                                    </li>
+                                    @endif
+                                    <li>
+                                        <button type="button" class="dropdown-item logout-item" onclick="logout()">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                            <span>Đăng xuất</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                @else
+                    @else
                         <div class="auth-actions">
                             <a href="{{ route('login') }}" class="nav-login-1">ĐĂNG NHẬP</a>
                             <a href="{{ route('register') }}" class="nav-login-2">ĐĂNG KÝ</a>
@@ -276,18 +341,29 @@
         </div>
     </footer>
 
+    @php
+        $laravelData = [
+            'csrfToken' => csrf_token(),
+            'isLoggedIn' => auth()->check(),
+            'user' => auth()->check() ? auth()->user()->only(['UserID', 'full_name', 'role']) : null,
+            'routes' => [
+                'logout' => route("logout"),
+                'cart' => url("api/cart"),
+                'products' => url("api/products"),
+                'orders' => route("api.orders.index"),
+            ]
+        ];
+    @endphp
     <script>
-        window.Laravel = {
-            csrfToken: '{{ csrf_token() }}',
-            isLoggedIn: {{ auth()->check() ? 'true' : 'false' }},
-            user: {!! auth()->check() ? json_encode(auth()->user()->only(['UserID', 'full_name', 'role'])) : 'null' !!},
-            routes: {
-                logout: '{{ route("logout") }}',
-                cart: '{{ url("api/cart") }}',
-                products: '{{ url("api/products") }}',
-                orders: '{{ url("api/orders") }}'
-            }
-        };
+        // Expose server data safely to JS
+        <?php echo 'window.Laravel = ' . json_encode($laravelData, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP) . ';'; ?>
+        // Backwards-compat alias used by legacy scripts
+        try {
+            window.isLoggedIn = !!window.Laravel && !!window.Laravel.isLoggedIn;
+            window.Laravel = window.Laravel || {};
+        } catch (e) {
+            window.isLoggedIn = false;
+        }
 
         // Toggle search bar
         document.querySelector('.nav-search')?.addEventListener('click', function(e) {
@@ -338,10 +414,10 @@
             });
         }
 
-        document.addEventListener('click', function(e) {
-        const filterWrapper = document.querySelector('.filter-wrapper');
-        const filterPopup = document.querySelector('.filter-popup');
-        const filterBtn = document.querySelector('.filter-btn');
+        document.addEventListener('click', function (e) {
+            const filterWrapper = document.querySelector('.filter-wrapper');
+            const filterPopup = document.querySelector('.filter-popup');
+            const filterBtn = document.querySelector('.filter-btn');
 
         if (!filterWrapper.contains(e.target)) {
             filterPopup.classList.add('hidden');
@@ -436,6 +512,38 @@
 
         window.showConfirm = showConfirm;
         window.showAlert = showAlert;
+    })();
+    </script>
+    <script>
+    // User dropdown toggle (shared behavior with staff layout)
+    (function() {
+        const dropdownToggle = document.getElementById('userDropdownToggle');
+        const dropdownMenu = document.getElementById('userDropdownMenu');
+        const chevron = dropdownToggle ? dropdownToggle.querySelector('.chevron-icon') : null;
+
+        if (!dropdownToggle || !dropdownMenu) return;
+
+        dropdownToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+            if (chevron) chevron.classList.toggle('rotate');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+                if (chevron) chevron.classList.remove('rotate');
+            }
+        });
+
+        // Close on ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                dropdownMenu.classList.remove('show');
+                if (chevron) chevron.classList.remove('rotate');
+            }
+        });
     })();
     </script>
 </body>

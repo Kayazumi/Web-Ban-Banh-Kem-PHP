@@ -27,6 +27,26 @@ class HomeController extends Controller
         return view('home', compact('featuredProducts', 'categories'));
     }
 
+    /**
+     * Render homepage as a guest (no user data exposed to JS/layout)
+     */
+    public function guest()
+    {
+        // reuse index logic to fetch featured products and categories
+        $productController = new ProductController();
+        $response = $productController->featured();
+        $data = $response->getData(true);
+
+        $featuredProducts = $data['data']['products'] ?? [];
+
+        $categoriesResponse = $productController->categories();
+        $categoriesData = $categoriesResponse->getData(true);
+        $categories = $categoriesData['data']['categories'] ?? [];
+
+        // pass a flag to the view to render as guest (used by layout to avoid exposing Auth user)
+        return view('home', compact('featuredProducts', 'categories'))->with('asGuest', true);
+    }
+
     public function products()
     {
         return view('products');

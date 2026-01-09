@@ -56,24 +56,14 @@
                     <span>Khuyến mãi</span>
                 </a>
 
-                <a href="{{ route('home') }}" target="_blank">
+                <a href="{{ route('guest.home') }}" target="_blank">
                     <i class="fas fa-external-link-alt"></i>
                     <span>Xem website</span>
                 </a>
             </nav>
 
             <div class="sidebar-footer">
-                <div class="user-info">
-                    <span>{{ Auth::user()->full_name }}</span>
-                    <small>{{ Auth::user()->email }}</small>
-                </div>
-                <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Đăng xuất</span>
-                    </button>
-                </form>
+                <!-- user info removed per design request -->
             </div>
         </aside>
 
@@ -81,8 +71,18 @@
         <main class="admin-main">
             <header class="admin-header">
                 <h1>@yield('page-title', 'Dashboard')</h1>
-                <div class="header-actions">
-                    <span class="current-time" id="currentTime"></span>
+                <div class="header-actions header-user-stack">
+                    <div class="header-user-line">{{ Auth::user()->role === 'admin' ? 'Quản trị viên' : (Auth::user()->role === 'staff' ? 'Nhân viên' : 'Khách hàng') }} {{ Auth::user()->email }}</div>
+                    <div style="display:flex;align-items:center;">
+                        <span class="current-time" id="currentTime"></span>
+                        <form action="{{ route('logout') }}" method="POST" style="display:inline;margin-left:16px;">
+                        @csrf
+                        <button type="submit" class="logout-btn header-logout-btn" style="display:flex;align-items:center;gap:8px;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Đăng xuất</span>
+                        </button>
+                    </form>
+                    </div>
                 </div>
             </header>
 

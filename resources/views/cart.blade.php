@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadCart() {
     try {
-        const response = await fetch('/api/cart');
+        const response = await fetch('/api/cart', { credentials: 'same-origin' });
         const data = await response.json();
 
         const cartContent = document.getElementById('cartContent');

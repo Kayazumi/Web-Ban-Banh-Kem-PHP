@@ -48,7 +48,8 @@ function updateCartCount() {
     fetch('/api/cart', {
         headers: {
             'Accept': 'application/json'
-        }
+        },
+        credentials: 'same-origin'
     })
         .then(response => response.json())
         .then(data => {

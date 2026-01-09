@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [HomeController::class, 'products'])->name('products');
 Route::get('/products/{id}', [HomeController::class, 'productDetail'])->name('products.detail');
+// Guest view route: open public site without exposing authenticated user data to JS/layout
+Route::get('/guest', [HomeController::class, 'guest'])->name('guest.home');
 
 // 2. AUTHENTICATION - Cho khách chưa đăng nhập
 Route::middleware('guest')->group(function () {

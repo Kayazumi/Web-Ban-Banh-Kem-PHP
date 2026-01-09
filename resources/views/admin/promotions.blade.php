@@ -723,19 +723,39 @@ document.addEventListener('DOMContentLoaded', function(){
             
             // Populate form - change form title
             document.querySelector('.form-title').textContent = 'Chỉnh sửa khuyến mãi';
-            
-            // Fill form fields
+
+            // Fill only the fields that exist in the create form (avoid null element access)
+            // Form fields: name="code", name="title", name="type", name="start_date", name="end_date", name="value", name="quantity", name="min_order", promoImageUrl
             document.querySelector('[name="title"]').value = p.promotion_name || p.promotion_code || '';
-            document.querySelector('[name="promotion_code"]').value = p.promotion_code || '';
-            document.querySelector('[name="description"]').value = p.description || '';
-            document.querySelector('[name="promotion_type"]').value = p.promotion_type || 'percentage';
-            document.querySelector('[name="discount_value"]').value = p.discount_value || '';
-            document.querySelector('[name="min_order_value"]').value = p.min_order_value || '';
-            document.querySelector('[name="max_discount"]').value = p.max_discount || '';
-            document.querySelector('[name="usage_limit"]').value = p.usage_limit || '';
-            document.querySelector('[name="start_date"]').value = p.start_date ? p.start_date.split(' ')[0] : '';
-            document.querySelector('[name="end_date"]').value = p.end_date ? p.end_date.split(' ')[0] : '';
-            document.getElementById('promoImageUrl').value = p.image_url || '';
+            const codeInput = document.querySelector('[name="code"]');
+            if (codeInput) codeInput.value = p.promotion_code || '';
+
+            // Map backend promotion_type to front-end select values used in the form
+            const typeMapToForm = (ptype) => {
+                if (!ptype) return 'percent';
+                if (ptype === 'percentage') return 'percent';
+                if (ptype === 'fixed_amount') return 'fixed';
+                return 'free_shipping';
+            };
+            const typeSelect = document.querySelector('[name="type"]');
+            if (typeSelect) typeSelect.value = typeMapToForm(p.promotion_type);
+
+            const valueInput = document.querySelector('[name="value"]');
+            if (valueInput) valueInput.value = (p.discount_value !== undefined && p.discount_value !== null) ? p.discount_value : '';
+
+            const quantityInput = document.querySelector('[name="quantity"]');
+            if (quantityInput) quantityInput.value = (p.quantity !== undefined && p.quantity !== null) ? p.quantity : '';
+
+            const minOrderInput = document.querySelector('[name="min_order"]');
+            if (minOrderInput) minOrderInput.value = (p.min_order_value !== undefined && p.min_order_value !== null) ? p.min_order_value : '';
+
+            const startInput = document.querySelector('[name="start_date"]');
+            if (startInput) startInput.value = p.start_date ? p.start_date.split(' ')[0] : '';
+            const endInput = document.querySelector('[name="end_date"]');
+            if (endInput) endInput.value = p.end_date ? p.end_date.split(' ')[0] : '';
+
+            const promoImageUrlEl = document.getElementById('promoImageUrl');
+            if (promoImageUrlEl) promoImageUrlEl.value = p.image_url || '';
             
             // Show image preview if URL exists
             if (p.image_url) {
@@ -745,8 +765,10 @@ document.addEventListener('DOMContentLoaded', function(){
             
             // Change submit button text and add data attribute
             const submitBtn = document.querySelector('#promoForm button[type="submit"]');
-            submitBtn.textContent = 'Cập nhật khuyến mãi';
-            submitBtn.dataset.editId = p.PromotionID;
+            if (submitBtn) {
+                submitBtn.textContent = 'Cập nhật khuyến mãi';
+                submitBtn.dataset.editId = p.PromotionID;
+            }
             
         } catch(e) {
             console.error(e);

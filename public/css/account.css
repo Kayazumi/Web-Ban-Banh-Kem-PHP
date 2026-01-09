@@ -187,6 +187,11 @@ body.account-page .nav-menu-link:hover::after {
     padding: 0.5rem 0;
 }
 
+/* Slightly indent dropdown items so text aligns more to the right (improves readability) */
+.user-dropdown-menu .dropdown-items {
+    padding-left: 12px;
+}
+
 .dropdown-item {
     display: flex;
     align-items: center;
@@ -219,6 +224,18 @@ body.account-page .nav-menu-link:hover::after {
 
 .logout-item {
     color: #e74c3c !important;
+}
+
+/* Force label text in dropdown items to be visible and not collapsed */
+.user-dropdown-menu .dropdown-item span {
+    color: #2c3e50 !important;
+    display: inline-block !important;
+    width: auto !important;
+    max-width: calc(100% - 36px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
 }
 
 .logout-item:hover {
