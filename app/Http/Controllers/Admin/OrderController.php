@@ -35,7 +35,7 @@ class OrderController extends Controller
         }
 
         $orders = $query->orderBy('created_at', 'desc')
-                        ->paginate(15);
+                        ->paginate(10);
 
         return response()->json([
             'success' => true,
