@@ -264,8 +264,8 @@
 
     // Store original values
     /* eslint-disable */
-    const originalSubtotal = {{ $subtotal }};
-    const originalVat = {{ $vat }};
+    const originalSubtotal = <?php echo json_encode($subtotal); ?>;
+    const originalVat = <?php echo json_encode($vat); ?>;
     /* eslint-enable */
 
     // Listen for promotion selection

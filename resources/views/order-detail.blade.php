@@ -136,7 +136,7 @@
 
                         @if(in_array($order->order_status, ['pending', 'order_received']))
                         <div class="text-center">
-                            <button onclick="cancelOrder({{ $order->OrderID }})" class="btn btn-secondary">
+                            <button onclick="cancelOrder('{{ $order->OrderID }}')" class="btn btn-secondary">
                                 Hủy đơn hàng
                             </button>
                         </div>
