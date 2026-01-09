@@ -143,8 +143,8 @@ Yêu cầu: PHP 8.2+, Composer, Node.js, npm, SQLite hoặc MySQL
 
 1. Clone project:
 ```bash
-git clone <repo> Nhom1_Ca4_CNPM_Laravel
-cd Nhom1_Ca4_CNPM_Laravel
+git clone <repo> Website-Ban-Banh-Kem-PHP
+cd Website-Ban-Banh-Kem-PHP
 ```
 
 2. Cài phụ thuộc:
@@ -251,4 +251,3 @@ Ghi chú & phát triển thêm
 -------------------------
 - Tích hợp gateway thanh toán (VNPay) cho checkout\n+- Gửi email thông báo (order status)\n+- Viết unit / feature tests\n+- Dockerize production deployment\n+
 --------------------------------------------------------------------------------
-Nếu bạn muốn tôi ghi thêm phần API docs chi tiết (ví dụ mẫu request/response) hoặc hướng dẫn deploy Docker — bảo tôi biết phần nào cần mở rộng.  
