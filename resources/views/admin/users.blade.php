@@ -5,6 +5,9 @@
 @section('content')
 <div class="admin-content">
     <div class="content-header">
+        <button class="btn btn-primary" onclick="showAddUserModal()">
+            <i class="fas fa-plus"></i> Thêm người dùng mới
+        </button>
     </div>
 
     <!-- Filters -->
@@ -70,14 +73,14 @@
                 <button id="usersNextPage" class="pagination-btn">›</button>
             </div>
         </div>
-    </div>
 </div>
+
 <!-- Edit User Modal -->
 <div id="userModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content user-modal">
         <div class="modal-header">
             <h3 id="userModalTitle">Chỉnh sửa người dùng</h3>
-            <button class="close-btn" onclick="closeUserModal()">&times;</button>
+            <button class="close-btn" onclick="closeUserModal()">×</button>
         </div>
         <div class="modal-body">
             <form id="userForm">
@@ -85,7 +88,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="editFullName">Họ tên *</label>
-                        <input type="text" id="editFullName" name="full_name" required>
+                        <input type="text" id="editFullName" name="full_name" placeholder="Nhập họ tên" required>
                     </div>
                     <div class="form-group">
                         <label for="editRole">Loại tài khoản *</label>
@@ -99,15 +102,15 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="editPhone">Số điện thoại *</label>
-                        <input type="text" id="editPhone" name="phone" required>
+                        <input type="text" id="editPhone" name="phone" placeholder="Nhập số điện thoại" required>
                     </div>
                     <div class="form-group">
                         <label for="editEmail">Email *</label>
-                        <input type="email" id="editEmail" name="email" required>
+                        <input type="email" id="editEmail" name="email" placeholder="Nhập email" required>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group full-width">
                         <label for="editStatus">Trạng thái</label>
                         <select id="editStatus" name="status">
                             <option value="active">Hoạt động</option>
@@ -115,14 +118,75 @@
                             <option value="banned">Đã khóa</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
                         <label for="editAddress">Địa chỉ</label>
-                        <input type="text" id="editAddress" name="address">
+                        <input type="text" id="editAddress" name="address" placeholder="Nhập địa chỉ">
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Lưu</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Hủy</button>
+                    <button type="button" class="btn-cancel" onclick="closeUserModal()">Hủy</button>
+                    <button type="submit" class="btn-save">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div id="addUserModal" class="modal">
+    <div class="modal-content user-modal">
+        <div class="modal-header">
+            <h3>Thêm người dùng mới</h3>
+            <button class="close-btn" onclick="closeAddUserModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="addUserForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addFullName">Họ tên *</label>
+                        <input type="text" id="addFullName" name="full_name" placeholder="Nhập họ tên" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addRole">Loại tài khoản *</label>
+                        <select id="addRole" name="role" required>
+                            <option value="">Chọn loại tài khoản</option>
+                            <option value="customer">Khách hàng</option>
+                            <option value="staff">Nhân viên</option>
+                            <option value="admin">Quản trị viên</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="addPhone">Số điện thoại *</label>
+                        <input type="text" id="addPhone" name="phone" placeholder="Nhập số điện thoại" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addEmail">Email *</label>
+                        <input type="email" id="addEmail" name="email" placeholder="Nhập email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="addStatus">Trạng thái</label>
+                        <select id="addStatus" name="status">
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Không hoạt động</option>
+                            <option value="banned">Đã khóa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="addAddress">Địa chỉ</label>
+                        <input type="text" id="addAddress" name="address" placeholder="Nhập địa chỉ">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddUserModal()">Hủy</button>
+                    <button type="submit" class="btn-save">Lưu</button>
                 </div>
             </form>
         </div>
@@ -340,6 +404,63 @@
     background: none;
     cursor: default;
     pointer-events: none;
+}
+
+/* User Modal Styles */
+.user-modal {
+    max-width: 550px;
+}
+
+.user-modal .form-group.full-width {
+    flex: 1 1 100%;
+}
+
+.user-modal .form-group input,
+.user-modal .form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.user-modal .form-group input::placeholder {
+    color: #999;
+}
+
+.user-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.user-modal .btn-cancel {
+    background-color: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.user-modal .btn-cancel:hover {
+    background-color: #e0e0e0;
+}
+
+.user-modal .btn-save {
+    background-color: #3d5a3d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.user-modal .btn-save:hover {
+    background-color: #2d4a2d;
 }
 </style>
 @endpush
@@ -677,11 +798,113 @@ function getStatusText(status) {
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('vi-VN');
 }
+
+function showAddUserModal() {
+    document.getElementById('addUserForm').reset();
+    document.getElementById('addUserModal').style.display = 'block';
+}
+
+function closeAddUserModal() {
+    document.getElementById('addUserModal').style.display = 'none';
+}
+
+// Handle user form submission (edit)
+document.getElementById('userForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const userId = document.getElementById('editUserId').value;
+    const formData = new FormData(e.target);
+    const data = {
+        full_name: formData.get('full_name'),
+        role: formData.get('role'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        status: formData.get('status'),
+        address: formData.get('address')
+    };
+
+    try {
+        const token = localStorage.getItem('api_token');
+        const csrf = window.Laravel && window.Laravel.csrfToken ? window.Laravel.csrfToken : (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
+        const response = await fetch(`/api/admin/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-CSRF-TOKEN': csrf,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Cập nhật người dùng thành công!');
+            closeUserModal();
+            loadUsers();
+        } else {
+            alert(result.message || 'Có lỗi xảy ra');
+        }
+    } catch (error) {
+        console.error('Error updating user:', error);
+        alert('Có lỗi xảy ra');
+    }
+});
+
+// Handle add user form submission
+document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = {
+        username: formData.get('email').split('@')[0], // Use email prefix as username
+        full_name: formData.get('full_name'),
+        role: formData.get('role'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        status: formData.get('status'),
+        address: formData.get('address'),
+        password: 'password123' // Default password
+    };
+
+    try {
+        const token = localStorage.getItem('api_token');
+        const csrf = window.Laravel && window.Laravel.csrfToken ? window.Laravel.csrfToken : (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
+        const response = await fetch('/api/admin/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'X-CSRF-TOKEN': csrf,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Thêm người dùng thành công!');
+            closeAddUserModal();
+            loadUsers();
+        } else {
+            alert(result.message || 'Có lỗi xảy ra');
+        }
+    } catch (error) {
+        console.error('Error adding user:', error);
+        alert('Có lỗi xảy ra');
+    }
+});
+
 // close modal when clicking outside
 window.onclick = function(event) {
-    const modal = document.getElementById('userModal');
-    if (modal && event.target === modal) {
+    const userModal = document.getElementById('userModal');
+    const addModal = document.getElementById('addUserModal');
+    
+    if (event.target === userModal) {
         closeUserModal();
+    }
+    if (event.target === addModal) {
+        closeAddUserModal();
     }
 };
 </script>

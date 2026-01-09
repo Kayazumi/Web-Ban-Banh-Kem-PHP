@@ -67,17 +67,20 @@
 </div>
     <!-- Order Detail Modal -->
     <div id="orderDetailModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content order-detail-modal">
+            <div class="order-modal-header">
                 <h3 id="orderDetailTitle">Chi tiết đơn hàng</h3>
-                <button class="close-btn" onclick="closeOrderModal()">&times;</button>
+                <button class="close-btn"  onclick="closeOrderModal()">×</button>
+            </div>
+            <div class="order-code-bar" id="orderCodeBar">
+                <!-- Order code will be inserted here -->
             </div>
             <div class="modal-body" id="orderDetailBody">
                 <!-- populated by JS -->
             </div>
-            <div class="modal-footer" style="padding:1rem;display:flex;gap:0.5rem;justify-content:flex-end;border-top:1px solid #eee;">
-                <button class="btn btn-secondary" onclick="closeOrderModal()">Đóng</button>
-                <select id="orderStatusSelect" style="padding:6px;border-radius:4px;border:1px solid #ddd;">
+            <div class="order-modal-footer">
+                <button class="btn-cancel" onclick="closeOrderModal()">Đóng</button>
+                <select id="orderStatusSelect" class="status-select">
                     <option value="pending">Chờ xác nhận</option>
                     <option value="order_received">Đã nhận đơn</option>
                     <option value="preparing">Đang chuẩn bị</option>
@@ -86,7 +89,7 @@
                     <option value="delivery_failed">Giao thất bại</option>
                     <option value="cancelled">Đã hủy</option>
                 </select>
-                <button id="saveOrderStatusBtn" class="btn btn-primary">Cập nhật trạng thái</button>
+                <button id="saveOrderStatusBtn" class="btn-save">Cập nhật trạng thái</button>
             </div>
         </div>
     </div>
@@ -324,6 +327,156 @@
 }
 .modal-body {
     padding: 1rem;
+}
+
+/* Order Detail Modal Specific Styles */
+.order-detail-modal {
+    max-width: 600px;
+}
+
+.order-modal-header {
+    background-color: #3d5a3d;
+    color: white;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px 8px 0 0;
+}
+
+.order-modal-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.order-modal-header .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.order-code-bar {
+    background-color: #4a6d4a;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.order-detail-modal .modal-body {
+    padding: 1.5rem;
+}
+
+.order-section {
+    margin-bottom: 1.5rem;
+}
+
+.order-section-title {
+    background-color: #f5f0e8;
+    color: #333;
+    padding: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.order-info-row {
+    display: flex;
+    padding: 0.25rem 0;
+    font-size: 0.875rem;
+}
+
+.order-info-label {
+    min-width: 140px;
+    color: #666;
+}
+
+.order-info-value {
+    color: #333;
+}
+
+.order-products-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+}
+
+.order-products-table thead {
+    background-color: #f5f0e8;
+}
+
+.order-products-table th,
+.order-products-table td {
+    padding: 0.5rem;
+    text-align: left;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #eee;
+}
+
+.order-products-table th {
+    font-weight: 500;
+}
+
+.order-products-table .text-center {
+    text-align: center;
+}
+
+.order-products-table .text-right {
+    text-align: right;
+}
+
+.order-total-row {
+    background-color: #f5f0e8;
+    font-weight: 600;
+}
+
+.order-modal-footer {
+    padding: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #eee;
+}
+
+.btn-cancel {
+    background-color: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.btn-cancel:hover {
+    background-color: #e0e0e0;
+}
+
+.status-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    max-width: 150px;
+}
+
+.btn-save {
+    background-color: #3d5a3d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.btn-save:hover {
+    background-color: #2d4a2d;
 }
 </style>
 @endpush
@@ -589,30 +742,74 @@ async function showOrderDetail(orderId) {
             return;
         }
         const order = payload.data.order;
-        const body = document.getElementById('orderDetailBody');
-        // build simple detail layout similar to provided mock
+        
+        // Update order code bar
+        document.getElementById('orderCodeBar').innerHTML = `Chi tiết đơn hàng-${order.order_code}`;
+        
+        // Build product items
         let itemsHtml = '';
         (order.orderItems || []).forEach(i => {
             const prod = i.product || {};
-            itemsHtml += `<tr><td>${prod.product_name || ''}</td><td style="text-align:center">${i.quantity}</td><td style="text-align:right">${formatPrice(i.subtotal)}</td></tr>`;
+            itemsHtml += `
+                <tr>
+                    <td>${prod.product_name || ''}</td>
+                    <td class="text-center">${i.quantity}</td>
+                    <td class="text-right">${formatPrice(i.subtotal)}</td>
+                </tr>
+            `;
         });
+        
         const total = formatPrice(order.final_amount);
+        
+        // Build modal body
+        const body = document.getElementById('orderDetailBody');
         body.innerHTML = `
-            <div style="padding:0 1rem 1rem;">
-                <h4>Chi tiết đơn hàng - ${order.order_code}</h4>
-                <h5>Thông tin khách hàng</h5>
-                <p>Tên khách: ${order.customer_name}<br>Điện thoại: ${order.customer_phone}<br>Địa chỉ: ${order.customer_address || order.customer_address_line || ''}</p>
-                <h5>Danh sách sản phẩm</h5>
-                <table style="width:100%;border-collapse:collapse;margin-bottom:1rem">
-                    <thead><tr style="background:#f5f5f5"><th style="text-align:left">Tên sản phẩm</th><th style="width:100px;text-align:center">Số lượng</th><th style="width:120px;text-align:right">Tổng tiền</th></tr></thead>
+            <div class="order-section">
+                <div class="order-section-title">Thông tin khách hàng</div>
+                <div class="order-info-row">
+                    <span class="order-info-label">Tên khách hàng:</span>
+                    <span class="order-info-value">${order.customer_name}</span>
+                </div>
+                <div class="order-info-row">
+                    <span class="order-info-label">Số điện thoại:</span>
+                    <span class="order-info-value">${order.customer_phone}</span>
+                </div>
+                <div class="order-info-row">
+                    <span class="order-info-label">Địa chỉ giao hàng:</span>
+                    <span class="order-info-value">${order.customer_address || order.customer_address_line || ''}</span>
+                </div>
+            </div>
+            
+            <div class="order-section">
+                <div class="order-section-title">Danh sách sản phẩm</div>
+                <table class="order-products-table">
+                    <thead>
+                        <tr>
+                            <th>Tên sản phẩm</th>
+                            <th class="text-center" style="width: 100px;">Số lượng</th>
+                            <th class="text-right" style="width: 120px;">Tổng tiền</th>
+                        </tr>
+                    </thead>
                     <tbody>${itemsHtml}</tbody>
-                    <tfoot><tr><td></td><td style="text-align:right;font-weight:700">Tổng cộng</td><td style="text-align:right;font-weight:700">${total}</td></tr></tfoot>
+                    <tfoot>
+                        <tr class="order-total-row">
+                            <td colspan="2">Tổng cộng</td>
+                            <td class="text-right">${total}</td>
+                        </tr>
+                    </tfoot>
                 </table>
-                <h5>Trạng thái đơn hàng hiện tại</h5>
-                <p>Lần cập nhật cuối: ${formatDate(order.updated_at || order.created_at)}</p>
+            </div>
+            
+            <div class="order-section">
+                <div class="order-section-title">Trạng thái đơn hàng hiện tại</div>
+                <div class="order-info-row">
+                    <span class="order-info-label">Lần cập nhật cuối:</span>
+                    <span class="order-info-value">${formatDate(order.updated_at || order.created_at)}</span>
+                </div>
             </div>
         `;
-        // set modal status select and attach order id to save button
+        
+        // Set modal status select and attach order id to save button
         document.getElementById('orderStatusSelect').value = order.order_status || 'pending';
         document.getElementById('saveOrderStatusBtn').dataset.orderId = order.OrderID;
         document.getElementById('orderDetailModal').style.display = 'block';

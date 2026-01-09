@@ -83,6 +83,12 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::apiResource('/users', AdminUserController::class);
     Route::put('/users/{id}/status', [AdminUserController::class, 'updateStatus']);
     Route::put('/users/{id}/password', [AdminUserController::class, 'changePassword']);
+
+    // Admin Complaint API
+    Route::get('/complaints', [\App\Http\Controllers\Admin\ComplaintController::class, 'index']);
+    Route::get('/complaints/{id}', [\App\Http\Controllers\Admin\ComplaintController::class, 'show']);
+    Route::put('/complaints/{id}/status', [\App\Http\Controllers\Admin\ComplaintController::class, 'updateStatus']);
+    Route::put('/complaints/{id}/resolution', [\App\Http\Controllers\Admin\ComplaintController::class, 'updateResolution']);
 });
 
 Route::middleware(['auth:sanctum', 'staff'])->group(function () {

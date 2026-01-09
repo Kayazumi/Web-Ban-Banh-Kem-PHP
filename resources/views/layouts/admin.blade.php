@@ -46,6 +46,11 @@
                     <span>Người dùng</span>
                 </a>
 
+                <a href="{{ route('admin.complaints') }}" class="{{ request()->routeIs('admin.complaints*') ? 'active' : '' }}">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Khiếu nại</span>
+                </a>
+
                 <a href="{{ route('admin.promotions') }}" class="{{ request()->routeIs('admin.promotions*') ? 'active' : '' }}">
                     <i class="fas fa-tags"></i>
                     <span>Khuyến mãi</span>

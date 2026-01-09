@@ -636,6 +636,8 @@ document.addEventListener('DOMContentLoaded', function(){
         e.preventDefault();
         const form = new FormData(e.target);
         const imageFile = form.get('imageFile');
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const editId = submitBtn.dataset.editId; // Check if editing
         const body = {};
         
         form.forEach((v,k) => {
@@ -668,20 +670,87 @@ document.addEventListener('DOMContentLoaded', function(){
             if (token) headers['Authorization'] = `Bearer ${token}`;
             if (csrf) headers['X-CSRF-TOKEN'] = csrf;
             
-            const res = await fetch('/api/admin/promotions',{ method:'POST', headers, body: JSON.stringify(body) });
+            // Determine URL and method based on edit mode
+            const url = editId ? `/api/admin/promotions/${editId}` : '/api/admin/promotions';
+            const method = editId ? 'PUT' : 'POST';
+            
+            const res = await fetch(url, { method, headers, body: JSON.stringify(body) });
             const data = await res.json();
             
             if (data.success) {
-                alert('Tạo khuyến mãi thành công!');
+                alert(editId ? 'Cập nhật khuyến mãi thành công!' : 'Tạo khuyến mãi thành công!');
                 loadPromotions();
                 e.target.reset();
                 document.getElementById('promoImagePreview').style.display = 'none';
+                
+                // Reset form to create mode
+                document.querySelector('.form-title').textContent = 'Tạo khuyến mãi mới';
+                submitBtn.textContent = 'Tạo khuyến mãi mới';
+                delete submitBtn.dataset.editId;
             } else {
-                alert('Lỗi: ' + (data.message || 'Không thể tạo khuyến mãi'));
+                alert('Lỗi: ' + (data.message || 'Không thể lưu khuyến mãi'));
             }
         } catch(err){
             console.error(err);
             alert('Lỗi kết nối');
+        }
+    });
+    
+    // Edit promotion button handler
+    document.getElementById('editPromoBtn').addEventListener('click', async function() {
+        if (!currentPromoId) return;
+        
+        try {
+            const token = localStorage.getItem('api_token');
+            const headers = {'Accept':'application/json'};
+            if (token) headers['Authorization']=`Bearer ${token}`;
+            
+            const res = await fetch('/api/admin/promotions/'+currentPromoId,{ headers });
+            const payload = await res.json();
+            
+            if (!payload.success) {
+                alert('Không tải được thông tin');
+                return;
+            }
+            
+            const p = payload.data.promotion;
+            
+            // Close detail modal
+            closePromoModal();
+            
+            // Scroll to form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Populate form - change form title
+            document.querySelector('.form-title').textContent = 'Chỉnh sửa khuyến mãi';
+            
+            // Fill form fields
+            document.querySelector('[name="title"]').value = p.promotion_name || p.promotion_code || '';
+            document.querySelector('[name="promotion_code"]').value = p.promotion_code || '';
+            document.querySelector('[name="description"]').value = p.description || '';
+            document.querySelector('[name="promotion_type"]').value = p.promotion_type || 'percentage';
+            document.querySelector('[name="discount_value"]').value = p.discount_value || '';
+            document.querySelector('[name="min_order_value"]').value = p.min_order_value || '';
+            document.querySelector('[name="max_discount"]').value = p.max_discount || '';
+            document.querySelector('[name="usage_limit"]').value = p.usage_limit || '';
+            document.querySelector('[name="start_date"]').value = p.start_date ? p.start_date.split(' ')[0] : '';
+            document.querySelector('[name="end_date"]').value = p.end_date ? p.end_date.split(' ')[0] : '';
+            document.getElementById('promoImageUrl').value = p.image_url || '';
+            
+            // Show image preview if URL exists
+            if (p.image_url) {
+                document.getElementById('promoPreviewImg').src = p.image_url;
+                document.getElementById('promoImagePreview').style.display = 'block';
+            }
+            
+            // Change submit button text and add data attribute
+            const submitBtn = document.querySelector('#promoForm button[type="submit"]');
+            submitBtn.textContent = 'Cập nhật khuyến mãi';
+            submitBtn.dataset.editId = p.PromotionID;
+            
+        } catch(e) {
+            console.error(e);
+            alert('Lỗi tải thông tin');
         }
     });
 });
@@ -839,12 +908,5 @@ async function deletePromo(){
         alert('Lỗi kết nối');
     }
 }
-
-// Close modal when clicking outside
-document.getElementById('promoDetailModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closePromoModal();
-    }
-});
 </script>
 @endpush

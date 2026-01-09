@@ -104,6 +104,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         return view('admin.orders');
     })->name('orders');
 
+    // Admin: complaints management (web)
+    Route::get('/complaints', function () {
+        return view('admin.complaints');
+    })->name('complaints');
+
     // Reports removed
 });
 
