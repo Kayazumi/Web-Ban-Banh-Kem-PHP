@@ -4,27 +4,46 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/customer.css') }}">
+<style>
+/* Hero: full-width background image using banh.jpg, overlay, and centered content */
+.hero {
+    position: relative;
+    background-image: url("{{ asset('images/banh.jpg') }}");
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    padding: 120px 0 80px; /* leave space below nav */
+}
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18,44,30,0.45), rgba(18,44,30,0.25));
+    z-index: 0;
+}
+.hero .container { position: relative; z-index: 1; display:flex; align-items:center; gap:40px; }
+.hero-content { max-width: 720px; }
+.hero h1 { font-size: 48px; margin:0 0 12px; color: #fff; text-shadow: 0 6px 22px rgba(0,0,0,0.35); }
+.hero .hero-subtitle { color: rgba(255,255,255,0.95); font-weight:600; margin-bottom:18px; }
+.hero .hero-description { color: rgba(255,255,255,0.9); line-height:1.5; margin-bottom:20px; }
+.hero .btn-hero { background: rgba(255,255,255,0.9); color: #23492f; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight:600; }
+@media (max-width: 768px) {
+    .hero { padding: 90px 0 48px; }
+    .hero h1 { font-size: 28px; }
+    .hero .container { flex-direction: column; text-align: center; }
+}
+</style>
 @endpush
 
 @section('content')
-<!-- Hero Section -->
-<section id="home" class="hero">
+<!-- Hero Section (background uses images/banh.jpg) -->
+<section id="home" class="hero" role="banner" aria-label="Hero">
     <div class="container">
         <div class="hero-content">
-            <h1>LA CUISINE NGỌT</h1>
-            <p class="hero-subtitle">Thương hiệu bánh kem cao cấp hàng đầu Việt Nam</p>
-            <p class="hero-description">
-                Mỗi chiếc bánh là một tác phẩm nghệ thuật, mang đến trải nghiệm vị giác tinh tế và cảm xúc ấm áp.
-                Chúng tôi cam kết sử dụng nguyên liệu cao cấp, quy trình sản xuất nghiêm ngặt để mang đến cho bạn
-                những sản phẩm tốt nhất.
-            </p>
-            <div class="hero-buttons">
-                <a href="#products" class="btn btn-primary">Xem sản phẩm</a>
-                <a href="#contact" class="btn btn-secondary">Liên hệ ngay</a>
-            </div>
-        </div>
-        <div class="hero-image">
-            <img src="{{ asset('images/chaomung1.jpg') }}" alt="Bánh kem cao cấp">
+            <h1>Bánh Kem Cao Cấp</h1>
+            <p class="hero-subtitle">Thưởng thức hương vị tuyệt vời từ những chiếc bánh được làm thủ công với tinh yêu.</p>
+            <p class="hero-description">Mỗi chiếc bánh là một tác phẩm nghệ thuật — nguyên liệu cao cấp, quy trình cẩn trọng và tình yêu trong từng khâu. Khám phá bộ sưu tập bánh của chúng tôi và đặt ngay để tận hưởng khoảnh khắc ngọt ngào.</p>
+            <a href="#products" class="btn-hero">Khám phá ngay</a>
         </div>
     </div>
 </section>
