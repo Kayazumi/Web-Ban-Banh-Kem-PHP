@@ -663,6 +663,34 @@ document.addEventListener('DOMContentLoaded', function(){
             body.description = body.title;
         }
         
+        // Normalize date inputs (accept both dd/mm/yyyy and yyyy-mm-dd)
+        const normalizeDateInput = (val) => {
+            if (!val) return null;
+            // dd/mm/yyyy -> yyyy-mm-dd
+            const dmy = val.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            if (dmy) {
+                return `${dmy[3]}-${dmy[2].padStart(2,'0')}-${dmy[1].padStart(2,'0')}`;
+            }
+            // already yyyy-mm-dd
+            if (val.match(/^\d{4}-\d{2}-\d{2}$/)) return val;
+            // fallback: return as-is (server will validate)
+            return val;
+        };
+
+        if (body.start_date) body.start_date = normalizeDateInput(body.start_date);
+        if (body.end_date) body.end_date = normalizeDateInput(body.end_date);
+
+        // Normalize numeric inputs (remove thousands separators, parse numbers)
+        if (body.value !== undefined && body.value !== null && body.value !== '') {
+            body.value = parseFloat(String(body.value).replace(/[, ]+/g, '')) || 0;
+        }
+        if (body.min_order !== undefined && body.min_order !== null && body.min_order !== '') {
+            body.min_order = parseFloat(String(body.min_order).replace(/[, ]+/g, '')) || null;
+        }
+        if (body.quantity !== undefined && body.quantity !== null && body.quantity !== '') {
+            body.quantity = parseInt(body.quantity) || 0;
+        }
+
         try {
             const token = localStorage.getItem('api_token');
             const csrf = window.Laravel && window.Laravel.csrfToken ? window.Laravel.csrfToken : (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
@@ -688,7 +716,13 @@ document.addEventListener('DOMContentLoaded', function(){
                 submitBtn.textContent = 'Tạo khuyến mãi mới';
                 delete submitBtn.dataset.editId;
             } else {
-                showAlert('Lỗi: ' + (data.message || 'Không thể lưu khuyến mãi'));
+                // Show validation errors clearly if provided
+                if (data.errors) {
+                    const messages = Object.keys(data.errors).map(k => `${k}: ${data.errors[k].join('; ')}`).join('\n');
+                    showAlert('Lỗi: ' + (data.message || 'Không thể lưu khuyến mãi') + '\n' + messages);
+                } else {
+                    showAlert('Lỗi: ' + (data.message || 'Không thể lưu khuyến mãi'));
+                }
             }
         } catch(err){
             console.error(err);
