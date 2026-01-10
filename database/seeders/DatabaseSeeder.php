@@ -594,31 +594,96 @@ class DatabaseSeeder extends Seeder
 
         // 6. Contacts (sample)
         $contacts = [
-            ['customer_id' => 3, 'subject' => 'Hỏi về bánh Entremet', 'message' => 'Cho mình hỏi bánh Entremets Rose còn hàng không?', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
-            ['customer_id' => 4, 'subject' => 'Góp ý về giao hàng', 'message' => 'Shipper giao hàng hôm qua hơi chậm, mong shop có thể cải thiện dịch vụ.', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
-            ['customer_id' => 3, 'subject' => 'Yêu cầu tư vấn bánh Mousse', 'message' => 'Mình muốn đặt bánh Mousse Chanh Dây cho tiệc sinh nhật 10 người, shop tư vấn giúp mình kích thước nhé.', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
-            ['customer_id' => 4, 'subject' => 'Phản hồi về chất lượng Strawberry Cloud Cake', 'message' => 'Bánh Strawberry Cloud Cake lần trước mình đặt rất ngon, cảm ơn shop!', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
-            ['customer_id' => 3, 'subject' => 'Hỏi về size bánh Entremet', 'message' => 'Cho em hỏi bánh Entremets Rose size 500g ăn được cho mấy người ạ? Em định đặt cho sinh nhật 8 người.', 'status' => 'responded', 'created_at' => now()->subDays(8), 'updated_at' => now()->subDays(7)],
-            ['customer_id' => 4, 'subject' => 'Có thể custom bánh không?', 'message' => 'Shop có nhận custom bánh theo yêu cầu không ạ? Em muốn bánh hình trái tim với tên riêng.', 'status' => 'responded', 'created_at' => now()->subDays(12), 'updated_at' => now()->subDays(11)],
-            ['customer_id' => 3, 'subject' => 'Bánh có gluten-free không?', 'message' => 'Gia đình em có người dị ứng gluten, shop có loại bánh nào gluten-free không ạ?', 'status' => 'pending', 'created_at' => now()->subHours(5), 'updated_at' => now()->subHours(5)],
+    // BẢN GHI CỦA KHÁCH HÀNG 3 (Nguyễn Văn A)
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về bánh Entremet', 'message' => 'Cho mình hỏi bánh Entremets Rose còn hàng không?', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 4 (Trần Thị B)
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Góp ý về giao hàng', 'message' => 'Shipper giao hàng hôm qua hơi chậm, mong shop có thể cải thiện dịch vụ.', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Yêu cầu tư vấn bánh Mousse', 'message' => 'Mình muốn đặt bánh Mousse Chanh Dây cho tiệc sinh nhật 10 người, shop tư vấn giúp mình kích thước nhé.', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Phản hồi về chất lượng Strawberry Cloud Cake', 'message' => 'Bánh Strawberry Cloud Cake lần trước mình đặt rất ngon, cảm ơn shop!', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về size bánh Entremet', 'message' => 'Cho em hỏi bánh Entremets Rose size 500g ăn được cho mấy người ạ? Em định đặt cho sinh nhật 8 người.', 'status' => 'responded', 'created_at' => now()->subDays(8), 'updated_at' => now()->subDays(7)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Có thể custom bánh không?', 'message' => 'Shop có nhận custom bánh theo yêu cầu không ạ? Em muốn bánh hình trái tim với tên riêng.', 'status' => 'responded', 'created_at' => now()->subDays(12), 'updated_at' => now()->subDays(11)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Bánh có gluten-free không?', 'message' => 'Gia đình em có người dị ứng gluten, shop có loại bánh nào gluten-free không ạ?', 'status' => 'pending', 'created_at' => now()->subHours(5), 'updated_at' => now()->subHours(5)],
+    
+    // Các bản ghi đã có sẵn name/email (GIỮ NGUYÊN)
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về bánh Entremet', 'message' => 'Cho mình hỏi bánh Entremets Rose còn hàng không?', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Góp ý về giao hàng', 'message' => 'Shipper giao hàng hôm qua hơi chậm, mong shop có thể cải thiện dịch vụ.', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Yêu cầu tư vấn bánh Mousse', 'message' => 'Mình muốn đặt bánh Mousse Chanh Dây cho tiệc sinh nhật 10 người, shop tư vấn giúp mình kích thước nhé.', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Phản hồi về chất lượng Strawberry Cloud Cake', 'message' => 'Bánh Strawberry Cloud Cake lần trước mình đặt rất ngon, cảm ơn shop!', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về size bánh Entremet', 'message' => 'Cho em hỏi bánh Entremets Rose size 500g ăn được cho mấy người ạ? Em định đặt cho sinh nhật 8 người.', 'status' => 'responded', 'created_at' => now()->subDays(8), 'updated_at' => now()->subDays(7)],
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Có thể custom bánh không?', 'message' => 'Shop có nhận custom bánh theo yêu cầu không ạ? Em muốn bánh hình trái tim với tên riêng.', 'status' => 'responded', 'created_at' => now()->subDays(12), 'updated_at' => now()->subDays(11)],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Bánh có gluten-free không?', 'message' => 'Gia đình em có người dị ứng gluten, shop có loại bánh nào gluten-free không ạ?', 'status' => 'pending', 'created_at' => now()->subHours(5), 'updated_at' => now()->subHours(5)],
 
-            ['customer_id' => 4, 'subject' => 'Giao hàng ngoại thành', 'message' => 'Shop có giao hàng đến Bình Dương không ạ? Phí ship khoảng bao nhiêu?', 'status' => 'responded', 'created_at' => now()->subDays(6), 'updated_at' => now()->subDays(5)],
-            ['customer_id' => 3, 'subject' => 'Đặt hàng gấp trong ngày', 'message' => 'Em cần gấp bánh trong chiều nay, shop có ship hỏa tốc được không? Em sẵn sàng trả thêm phí.', 'status' => 'responded', 'created_at' => now()->subDays(2), 'updated_at' => now()->subDays(2)],
-            ['customer_id' => 4, 'subject' => 'Thời gian giao hàng', 'message' => 'Nếu đặt hàng hôm nay thì sớm nhất bao giờ nhận được ạ?', 'status' => 'pending', 'created_at' => now()->subHours(3), 'updated_at' => now()->subHours(3)],
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Giao hàng ngoại thành', 'message' => 'Shop có giao hàng đến Bình Dương không ạ? Phí ship khoảng bao nhiêu?', 'status' => 'responded', 'created_at' => now()->subDays(6), 'updated_at' => now()->subDays(5)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Đặt hàng gấp trong ngày', 'message' => 'Em cần gấp bánh trong chiều nay, shop có ship hỏa tốc được không? Em sẵn sàng trả thêm phí.', 'status' => 'responded', 'created_at' => now()->subDays(2), 'updated_at' => now()->subDays(2)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Thời gian giao hàng', 'message' => 'Nếu đặt hàng hôm nay thì sớm nhất bao giờ nhận được ạ?', 'status' => 'pending', 'created_at' => now()->subHours(3), 'updated_at' => now()->subHours(3)],
+    
+    // Các bản ghi đã có sẵn name/email (GIỮ NGUYÊN)
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Giao hàng ngoại thành', 'message' => 'Shop có giao hàng đến Bình Dương không ạ? Phí ship khoảng bao nhiêu?', 'status' => 'responded', 'created_at' => now()->subDays(6), 'updated_at' => now()->subDays(5)],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Đặt hàng gấp trong ngày', 'message' => 'Em cần gấp bánh trong chiều nay, shop có ship hỏa tốc được không? Em sẵn sàng trả thêm phí.', 'status' => 'responded', 'created_at' => now()->subDays(2), 'updated_at' => now()->subDays(2)],
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Thời gian giao hàng', 'message' => 'Nếu đặt hàng hôm nay thì sớm nhất bao giờ nhận được ạ?', 'status' => 'pending', 'created_at' => now()->subHours(3), 'updated_at' => now()->subHours(3)],
 
-            ['customer_id' => 3, 'subject' => 'Góp ý về website', 'message' => 'Em thấy website đẹp nhưng load hơi chậm. Shop nên tối ưu lại để trải nghiệm tốt hơn ạ.', 'status' => 'responded', 'created_at' => now()->subDays(15), 'updated_at' => now()->subDays(14)],
-            ['customer_id' => 4, 'subject' => 'Đề xuất thêm hình thức thanh toán', 'message' => 'Shop có thể thêm COD không ạ? Nhiều người chưa quen thanh toán online lắm.', 'status' => 'responded', 'created_at' => now()->subDays(20), 'updated_at' => now()->subDays(19)],
-            ['customer_id' => 3, 'subject' => 'Khen ngợi dịch vụ', 'message' => 'Em rất hài lòng với chất lượng bánh và dịch vụ của shop. Sẽ giới thiệu cho bạn bè!', 'status' => 'responded', 'created_at' => now()->subDays(4), 'updated_at' => now()->subDays(3)],
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Góp ý về website', 'message' => 'Em thấy website đẹp nhưng load hơi chậm. Shop nên tối ưu lại để trải nghiệm tốt hơn ạ.', 'status' => 'responded', 'created_at' => now()->subDays(15), 'updated_at' => now()->subDays(14)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Đề xuất thêm hình thức thanh toán', 'message' => 'Shop có thể thêm COD không ạ? Nhiều người chưa quen thanh toán online lắm.', 'status' => 'responded', 'created_at' => now()->subDays(20), 'updated_at' => now()->subDays(19)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Khen ngợi dịch vụ', 'message' => 'Em rất hài lòng với chất lượng bánh và dịch vụ của shop. Sẽ giới thiệu cho bạn bè!', 'status' => 'responded', 'created_at' => now()->subDays(4), 'updated_at' => now()->subDays(3)],
+    
+    // Các bản ghi đã có sẵn name/email (GIỮ NGUYÊN)
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Góp ý về website', 'message' => 'Em thấy website đẹp nhưng load hơi chậm. Shop nên tối ưu lại để trải nghiệm tốt hơn ạ.', 'status' => 'responded', 'created_at' => now()->subDays(15), 'updated_at' => now()->subDays(14)],
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Đề xuất thêm hình thức thanh toán', 'message' => 'Shop có thể thêm COD không ạ? Nhiều người chưa quen thanh toán online lắm.', 'status' => 'responded', 'created_at' => now()->subDays(20), 'updated_at' => now()->subDays(19)],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Khen ngợi dịch vụ', 'message' => 'Em rất hài lòng với chất lượng bánh và dịch vụ của shop. Sẽ giới thiệu cho bạn bè!', 'status' => 'responded', 'created_at' => now()->subDays(4), 'updated_at' => now()->subDays(3)],
 
-            ['customer_id' => 4, 'subject' => 'Chương trình tích điểm', 'message' => 'Shop có chương trình tích điểm cho khách hàng thân thiết không ạ?', 'status' => 'pending', 'created_at' => now()->subHours(10), 'updated_at' => now()->subHours(10)],
-            ['customer_id' => 3, 'subject' => 'Mã giảm giá cho sinh nhật', 'message' => 'Tháng sau là sinh nhật em, shop có mã giảm giá đặc biệt không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(9), 'updated_at' => now()->subDays(8)],
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Chương trình tích điểm', 'message' => 'Shop có chương trình tích điểm cho khách hàng thân thiết không ạ?', 'status' => 'pending', 'created_at' => now()->subHours(10), 'updated_at' => now()->subHours(10)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Mã giảm giá cho sinh nhật', 'message' => 'Tháng sau là sinh nhật em, shop có mã giảm giá đặc biệt không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(9), 'updated_at' => now()->subDays(8)],
+    
+    // Các bản ghi đã có sẵn name/email (GIỮ NGUYÊN)
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Chương trình tích điểm', 'message' => 'Shop có chương trình tích điểm cho khách hàng thân thiết không ạ?', 'status' => 'pending', 'created_at' => now()->subHours(10), 'updated_at' => now()->subHours(10)],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Mã giảm giá cho sinh nhật', 'message' => 'Tháng sau là sinh nhật em, shop có mã giảm giá đặc biệt không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(9), 'updated_at' => now()->subDays(8)],
 
-            ['customer_id' => 4, 'subject' => 'Hỏi về bảo quản bánh', 'message' => 'Bánh Mousse để tủ lạnh được bao lâu ạ? Và có cần làm gì đặc biệt không?', 'status' => 'responded', 'created_at' => now()->subDays(7), 'updated_at' => now()->subDays(6)],
-            ['customer_id' => 3, 'subject' => 'Hỏi về nguyên liệu', 'message' => 'Bánh của shop có sử dụng chất bảo quản không ạ? Em muốn biết rõ về nguyên liệu.', 'status' => 'pending', 'created_at' => now()->subHours(8), 'updated_at' => now()->subHours(8)],
-            ['customer_id' => 4, 'subject' => 'Đặt bánh cho công ty', 'message' => 'Công ty em muốn đặt 50 chiếc bánh nhỏ cho sự kiện, shop có hỗ trợ không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(11), 'updated_at' => now()->subDays(10)],
-            ['customer_id' => 3, 'subject' => 'Hỏi về giá', 'message' => 'Nếu đặt số lượng lớn (từ 20 chiếc) có được giảm giá không shop?', 'status' => 'pending', 'created_at' => now()->subHours(2), 'updated_at' => now()->subHours(2)],
-            ['customer_id' => 4, 'subject' => 'Hỏi về thiết kế bánh', 'message' => 'Shop có thể làm bánh theo theme Hello Kitty cho bé không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(5), 'updated_at' => now()->subDays(4)],
-        ];
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Hỏi về bảo quản bánh', 'message' => 'Bánh Mousse để tủ lạnh được bao lâu ạ? Và có cần làm gì đặc biệt không?', 'status' => 'responded', 'created_at' => now()->subDays(7), 'updated_at' => now()->subDays(6)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về nguyên liệu', 'message' => 'Bánh của shop có sử dụng chất bảo quản không ạ? Em muốn biết rõ về nguyên liệu.', 'status' => 'pending', 'created_at' => now()->subHours(8), 'updated_at' => now()->subHours(8)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Đặt bánh cho công ty', 'message' => 'Công ty em muốn đặt 50 chiếc bánh nhỏ cho sự kiện, shop có hỗ trợ không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(11), 'updated_at' => now()->subDays(10)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 3
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về giá', 'message' => 'Nếu đặt số lượng lớn (từ 20 chiếc) có được giảm giá không shop?', 'status' => 'pending', 'created_at' => now()->subHours(2), 'updated_at' => now()->subHours(2)],
+    
+    // BẢN GHI CỦA KHÁCH HÀNG 4
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Hỏi về thiết kế bánh', 'message' => 'Shop có thể làm bánh theo theme Hello Kitty cho bé không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(5), 'updated_at' => now()->subDays(4)],
+    
+    // Các bản ghi đã có sẵn name/email (GIỮ NGUYÊN)
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Hỏi về bảo quản bánh', 'message' => 'Bánh Mousse để tủ lạnh được bao lâu ạ? Và có cần làm gì đặc biệt không?', 'status' => 'responded', 'created_at' => now()->subDays(7), 'updated_at' => now()->subDays(6)],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về nguyên liệu', 'message' => 'Bánh của shop có sử dụng chất bảo quản không ạ? Em muốn biết rõ về nguyên liệu.', 'status' => 'pending', 'created_at' => now()->subHours(8), 'updated_at' => now()->subHours(8)],
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Đặt bánh cho công ty', 'message' => 'Công ty em muốn đặt 50 chiếc bánh nhỏ cho sự kiện, shop có hỗ trợ không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(11), 'updated_at' => now()->subDays(10)],
+    ['customer_id' => 3, 'name' => 'Nguyễn Văn A', 'email' => 'customer01@email.com', 'subject' => 'Hỏi về giá', 'message' => 'Nếu đặt số lượng lớn (từ 20 chiếc) có được giảm giá không shop?', 'status' => 'pending', 'created_at' => now()->subHours(2), 'updated_at' => now()->subHours(2)],
+    ['customer_id' => 4, 'name' => 'Trần Thị B', 'email' => 'customer02@email.com', 'subject' => 'Hỏi về thiết kế bánh', 'message' => 'Shop có thể làm bánh theo theme Hello Kitty cho bé không ạ?', 'status' => 'responded', 'created_at' => now()->subDays(5), 'updated_at' => now()->subDays(4)],
+];
 
         foreach ($contacts as $idx => $c) {
             DB::table('contacts')->updateOrInsert(

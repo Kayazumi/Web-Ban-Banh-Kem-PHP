@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->id('ContactID'); // Match existing primary key
+            
+            // ✅ customer_id BẮT BUỘC (chỉ user đã đăng nhập mới liên hệ được)
             $table->unsignedBigInteger('customer_id');
+            
+            // ✅ THÊM 3 CỘT LƯU SNAPSHOT từ form
+            $table->string('name', 100);
+            $table->string('email', 100);
+            $table->string('phone', 20)->nullable();
+            
             $table->string('subject', 255);
             $table->text('message');
             $table->enum('status', ['pending', 'responded'])->default('pending');
@@ -21,8 +29,8 @@ return new class extends Migration
             $table->unsignedBigInteger('responded_by')->nullable();
             $table->timestamps();
 
-            $table->foreign('customer_id')->references('UserID')->on('users');
-            $table->foreign('responded_by')->references('UserID')->on('users');
+            $table->foreign('customer_id')->references('UserID')->on('users')->onDelete('cascade');
+            $table->foreign('responded_by')->references('UserID')->on('users')->onDelete('set null');
             $table->index(['status']);
         });
     }

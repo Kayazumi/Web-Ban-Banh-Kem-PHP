@@ -8,102 +8,167 @@ use App\Models\ComplaintResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 class StaffComplaintController extends Controller
 {
-    // Lấy danh sách khiếu nại (JSON)
-    public function apiIndex(Request $request)
+    /**
+     * API: Danh sách khiếu nại
+     */
+    public function apiIndex()
     {
-        $query = Complaint::with(['customer', 'order']);
+        try {
+            $complaints = Complaint::with(['customer', 'order'])
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($complaint) {
+                    return [
+                        'id' => $complaint->ComplaintID,
+                        'complaint_id' => $complaint->ComplaintID,
+                        'ComplaintID' => $complaint->ComplaintID,
+                        'complaint_code' => $complaint->complaint_code,
+                        'order' => $complaint->order ? [
+                            'order_code' => $complaint->order->order_code
+                        ] : null,
+                        'customer' => $complaint->customer ? [
+                            'full_name' => $complaint->customer->full_name,
+                            'phone' => $complaint->customer->phone,
+                            'email' => $complaint->customer->email
+                        ] : null,
+                        'title' => $complaint->title,
+                        'content' => $complaint->content,
+                        'status' => $complaint->status,
+                        'created_at' => $complaint->created_at
+                    ];
+                });
 
-        if ($request->filled('status') && $request->status !== 'all') {
-            $statuses = explode(',', $request->status);
-            $query->whereIn('status', $statuses);
+            return response()->json([
+                'success' => true,
+                'data' => $complaints
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi: ' . $e->getMessage()
+            ], 500);
         }
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('complaint_code', 'like', "%$search%")
-                    ->orWhere('title', 'like', "%$search%")
-                    ->orWhereHas('customer', function ($sq) use ($search) {
-                        $sq->where('full_name', 'like', "%$search%");
-                    });
-            });
-        }
-
-        $complaints = $query->orderBy('created_at', 'desc')->get();
-        return response()->json(['success' => true, 'data' => $complaints]);
     }
 
-    // Lấy chi tiết 1 khiếu nại và thông tin nhân viên đang trực
+    /**
+     * API: Chi tiết khiếu nại
+     */
     public function apiShow($id)
     {
-        $complaint = Complaint::with(['customer', 'responses.user'])->find($id);
+        try {
+            $complaint = Complaint::with(['customer', 'order', 'responses'])
+                ->findOrFail($id);
 
-        if (!$complaint) {
-            return response()->json(['success' => false, 'message' => 'Không tìm thấy khiếu nại'], 404);
+            // ✅ Lấy phản hồi mới nhất từ bảng complaint_responses
+            $latestResponse = $complaint->responses()
+                ->where('user_type', 'staff')
+                ->latest()
+                ->first();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $complaint->ComplaintID,
+                    'complaint_code' => $complaint->complaint_code,
+                    'order' => $complaint->order,
+                    'customer' => $complaint->customer,
+                    'title' => $complaint->title,
+                    'content' => $complaint->content,
+                    'status' => $complaint->status,
+                    'response' => $latestResponse ? $latestResponse->content : '', // ✅ Hiển thị response cũ
+                    'created_at' => $complaint->created_at
+                ],
+                'current_staff' => [
+                    'id' => Auth::id(),
+                    'full_name' => Auth::user()->full_name
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi: ' . $e->getMessage()
+            ], 404);
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => $complaint,
-            'current_staff' => [
-                'id' => Auth::id(),
-                'full_name' => Auth::user()->full_name
-            ]
-        ]);
     }
 
-    // Cập nhật phản hồi và trạng thái
-    public function apiUpdate(Request $request, $id)
+    /**
+     * ✅ API: Phản hồi khiếu nại (LƯU VÀO complaint_responses)
+     */
+        /**
+     * API: Phản hồi khiếu nại (lưu tạm hoặc gửi khách)
+     */
+    public function apiUpdate($id, Request $request)
     {
-        $request->validate([
-            'status' => 'required|in:pending,processing,resolved',
-            'response_content' => 'required|string|min:5',
-            'send_to_customer' => 'sometimes|boolean'
-        ]);
-
         DB::beginTransaction();
+
         try {
             $complaint = Complaint::findOrFail($id);
 
-            $sendToCustomer = $request->boolean('send_to_customer', false);
+            // ✅ SỬA: Check nếu đã resolved, không cho update nữa
+            if ($complaint->status === 'resolved') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Khiếu nại đã được giải quyết, không thể chỉnh sửa nữa!'
+                ], 403);
+            }
 
-            // Nếu gửi khách thì buộc phải là resolved
-            $finalStatus = $sendToCustomer ? 'resolved' : $request->status;
+            $validated = $request->validate([
+                'response_content' => 'required|string|min:10',
+                'send_to_customer' => 'boolean'  // true: gửi khách, false: lưu tạm
+            ]);
 
+            // ✅ SỬA: Lưu response với updateOrCreate để tránh duplicate (update nếu đã có cho staff này)
+            ComplaintResponse::updateOrCreate(
+                [
+                    'complaint_id' => $id,
+                    'user_id' => Auth::id(),
+                    'user_type' => 'staff'
+                ],
+                [
+                    'content' => $validated['response_content'],
+                    // TODO: Nếu cần field 'is_draft', add đây: 'is_draft' => !$request->send_to_customer
+                ]
+            );
+
+            // ✅ SỬA: Update status complaints dựa trên send_to_customer
+            $newStatus = $request->send_to_customer ? 'resolved' : 'processing';
             $complaint->update([
-                'status' => $finalStatus,
-                'assigned_to' => Auth::id(),
-                'resolved_at' => $finalStatus === 'resolved' ? now() : null
+                'status' => $newStatus,
+                'resolution' => $validated['response_content'],  // Lưu resolution = response cuối
+                'resolved_at' => $request->send_to_customer ? now() : null
+                // TODO: Nếu có compensation, add validate và update đây
             ]);
 
-            ComplaintResponse::create([
-                'complaint_id' => $id,
-                'user_id' => Auth::id(),
-                'user_type' => 'staff',
-                'content' => $request->response_content
-                // Nếu muốn lưu lịch sử đã gửi: thêm cột sent_to_customer sau
-            ]);
-
-            // === NƠI BẠN SẼ GỬI EMAIL/THÔNG BÁO CHO KHÁCH SAU NÀY ===
-            if ($sendToCustomer) {
-                // TODO: Gửi mail, SMS, hoặc push notification ở đây
-                // Ví dụ: Mail::to($complaint->customer->email)->send(...);
+            // 3. Gửi email nếu send_to_customer = true
+            if ($request->send_to_customer) {
+                // TODO: Thêm logic gửi email (giữ nguyên)
+                // Mail::to($complaint->customer->email)->send(new ComplaintResponseMail(...));
+                
+                Log::info('Email sẽ gửi đến: ' . $complaint->customer->email);
+                Log::info('Nội dung: ' . $validated['response_content']);
             }
 
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => $sendToCustomer
-                    ? 'Đã gửi phản hồi cho khách hàng!'
-                    : 'Đã lưu phản hồi tạm!'
+                'message' => $request->send_to_customer 
+                    ? 'Đã gửi phản hồi cho khách hàng và giải quyết khiếu nại!'
+                    : 'Đã lưu tạm phản hồi thành công (trạng thái: đang xử lý)!'
             ]);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

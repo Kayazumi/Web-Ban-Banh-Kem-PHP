@@ -103,6 +103,7 @@ function applyFiltersAndPaginate() {
 // ========================================================================
 // 3. RENDER BẢNG KHIẾU NẠI
 // ========================================================================
+
 function renderComplaints() {
     const tbody = document.getElementById('complaints-table-body');
     if (!tbody) return;
@@ -128,6 +129,14 @@ function renderComplaints() {
     tbody.innerHTML = filteredComplaints.map(item => {
         const complaintId = item.id || item.complaint_id || item.ComplaintID || item.complaintId;
         
+        // ✅ THÊM Ở ĐÂY: Disable nút nếu status là 'resolved'
+        const isResolved = item.status === 'resolved';
+        const buttonDisabled = isResolved ? 'disabled' : '';
+        const buttonOnClick = isResolved 
+            ? ''  // Không gọi hàm khi disabled
+            : `onclick="openComplaintModal(${complaintId})"`;
+        const buttonTitle = isResolved ? 'Đã giải quyết - Không thể chỉnh sửa' : 'Xử lý';
+
         return `
             <tr>
                 <td><span class="code-badge">${item.complaint_code || 'N/A'}</span></td>
@@ -143,7 +152,11 @@ function renderComplaints() {
                     </span>
                 </td>
                 <td style="text-align:center;">
-                    <button type="button" class="btn-process" onclick="openComplaintModal(${complaintId})" title="Xử lý">
+                    <!-- ✅ Button được disable và không onclick nếu resolved -->
+                    <button type="button" 
+                            class="btn-process ${buttonDisabled ? 'btn-disabled' : ''}" 
+                            ${buttonOnClick}
+                            title="${buttonTitle}">
                         <i class="fas fa-edit"></i>
                     </button>
                 </td>
@@ -248,18 +261,17 @@ async function openComplaintModal(id) {
         return;
     }
 
+    // Gán ID để dùng cho save/send sau này
+    currentComplaintId = id;
+
     try {
         const response = await fetch(`/staff/api/complaints/${id}`);
-        console.log('Chi tiết API response status:', response.status);
-
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error response body:', errorText);
             throw new Error(`HTTP ${response.status}`);
         }
 
         const result = await response.json();
-        console.log('Chi tiết API response:', result);
+        console.log('Full API response:', result); // <-- THÊM DÒNG NÀY để debug
 
         const data = result.data;
         if (!data) {
@@ -267,26 +279,23 @@ async function openComplaintModal(id) {
             return;
         }
 
-        // Điền thông tin khách hàng
+        // Điền thông tin khách hàng & khiếu nại (giữ nguyên)
         document.getElementById('detail-customer-name').value = data.customer?.full_name || 'Khách lạ';
         document.getElementById('detail-customer-phone').value = data.customer?.phone || 'N/A';
         document.getElementById('detail-content').value = data.content || data.title || '';
 
-        // Nhân viên phụ trách
-        document.getElementById('detail-staff-id').value = result.current_staff?.id || '';
-        document.getElementById('detail-staff-name').value = result.current_staff?.full_name || '';
+        // ✅ SỬA: Đọc current_staff từ result (không phải result.data)
+        const currentStaff = result.current_staff || {}; // Lấy trực tiếp từ root response
+        document.getElementById('detail-staff-id').value = currentStaff.id || 'N/A';
+        document.getElementById('detail-staff-name').value = currentStaff.full_name || 'Chưa có nhân viên phụ trách';
 
         // Trạng thái
         document.getElementById('detail-status').value = data.status || 'pending';
 
-        // Phản hồi cũ (nếu có)
+        // Phản hồi cũ
         document.getElementById('detail-response').value = data.response || '';
 
-        // === PHẦN QUAN TRỌNG: GÁN ID CHO CẢ 2 NÚT MỚI ===
-        const buttons = document.querySelectorAll('.btn-outline-modal, .btn-save-modal');
-        buttons.forEach(btn => {
-            if (btn) btn.dataset.id = id;
-        });
+        // Disable nếu resolved (giữ nguyên nếu đã có)
 
         // Hiển thị modal
         document.getElementById('complaintModal').classList.add('show');
@@ -294,7 +303,7 @@ async function openComplaintModal(id) {
 
     } catch (error) {
         console.error('Lỗi mở modal:', error);
-        alert('Không thể tải chi tiết khiếu nại. Vui lòng kiểm tra console (F12) để xem lỗi chi tiết.');
+        alert('Không thể tải chi tiết. Kiểm tra console (F12).');
     }
 }
 
@@ -309,14 +318,90 @@ function closeComplaintModal() {
 
 // Lưu tạm (chưa gửi khách hàng)
 async function saveDraft() {
-    await handleUpdateComplaint({ send_to_customer: false });
+    const responseContent = document.getElementById('detail-response').value.trim();
+    if (!responseContent) {
+        alert('Vui lòng nhập nội dung phản hồi!');
+        return;
+    }
+
+    const btn = event.target;  // Hoặc document.querySelector('.btn-outline-modal')
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Đang lưu...';
+
+    try {
+        const response = await fetch(`/staff/api/complaints/${currentComplaintId}/respond`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                response_content: responseContent,
+                send_to_customer: false  // ✅ Lưu tạm
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            closeComplaintModal();
+            loadComplaints();  // Reload để update status
+        } else {
+            alert(result.message || 'Lỗi lưu tạm!');
+        }
+    } catch (error) {
+        console.error('Lỗi:', error);
+        alert('Lỗi kết nối!');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
 }
 
-// Trả lời khách hàng (gửi chính thức)
+// ✅ SỬA: Function gửi khách (send_to_customer: true)
 async function sendToCustomer() {
-    // Tự động chuyển trạng thái thành "Đã giải quyết" khi gửi khách
-    document.getElementById('detail-status').value = 'resolved';
-    await handleUpdateComplaint({ send_to_customer: true });
+    const responseContent = document.getElementById('detail-response').value.trim();
+    if (!responseContent) {
+        alert('Vui lòng nhập nội dung phản hồi!');
+        return;
+    }
+
+    if (!confirm('Bạn chắc chắn muốn gửi phản hồi này cho khách hàng và đóng khiếu nại?')) return;
+
+    const btn = event.target;  // Hoặc document.querySelector('.btn-save-modal')
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Đang gửi...';
+
+    try {
+        const response = await fetch(`/staff/api/complaints/${currentComplaintId}/respond`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                response_content: responseContent,
+                send_to_customer: true  // ✅ Gửi khách
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert(result.message);
+            closeComplaintModal();
+            loadComplaints();
+        } else {
+            alert(result.message || 'Lỗi gửi!');
+        }
+    } catch (error) {
+        console.error('Lỗi:', error);
+        alert('Lỗi kết nối!');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
 }
 
 // Hàm chung xử lý cả 2 trường hợp

@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::table('contacts', function (Blueprint $table) {
             $table->unsignedBigInteger('customer_id')->nullable()->change();
-            $table->string('name')->after('customer_id')->nullable();
-            $table->string('email')->after('name')->nullable();
         });
     }
 
@@ -25,7 +23,6 @@ return new class extends Migration
     {
         Schema::table('contacts', function (Blueprint $table) {
             $table->unsignedBigInteger('customer_id')->nullable(false)->change();
-            $table->dropColumn(['name', 'email']);
         });
     }
 };

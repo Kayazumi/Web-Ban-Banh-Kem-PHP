@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Staff\ProfileController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\ContactController;
 
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 Route::get('/', function () {
@@ -177,6 +178,8 @@ Route::middleware('auth')->group(function () {
             return "Error: " . $e->getMessage();
         }
     });
+
+    Route::post('/api/contacts', [ContactController::class, 'store']);
 });
 
 // 6. ROUTE CHO NHÂN VIÊN (STAFF)

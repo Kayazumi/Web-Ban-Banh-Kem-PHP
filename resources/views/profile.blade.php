@@ -44,9 +44,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email (do cửa hàng cấp)</label>
-                    <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" readonly disabled style="background: #e9ecef; cursor: not-allowed;">
-                    <small style="color: #6c757d; font-size: 0.85rem;"><i class="fas fa-info-circle"></i> Email không thể thay đổi</small>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" required placeholder="Nhập email">
                 </div>
 
                 <div class="form-group">

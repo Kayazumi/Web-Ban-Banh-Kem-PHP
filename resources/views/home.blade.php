@@ -558,6 +558,7 @@
 </section>
 
 <!-- Contact Section -->
+<!-- Contact Section -->
 <section id="contact" class="contact-section">
     <div class="container">
         <h2 class="section-title">Liên hệ với chúng tôi</h2>
@@ -571,6 +572,10 @@
                     </div>
                     <div class="form-group">
                         <input type="email" name="email" placeholder="Email" required>
+                    </div>
+                    <!-- ✅ THÊM TRƯỜNG SĐT -->
+                    <div class="form-group">
+                        <input type="tel" name="phone" placeholder="Số điện thoại (không bắt buộc)">
                     </div>
                     <div class="form-group">
                         <input type="text" name="subject" placeholder="Tiêu đề" required>
@@ -608,46 +613,79 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Contact Form Handler
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.innerText;
-            btn.innerText = 'Đang gửi...';
-            btn.disabled = true;
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = this.querySelector('button[type="submit"]');
+        const originalText = btn.innerText;
+        btn.innerText = 'Đang gửi...';
+        btn.disabled = true;
 
-            try {
-                const formData = new FormData(this);
-                const response = await fetch('/api/contact', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
-                });
+            // try {
+            //     const formData = new FormData(this);
+            //     const response = await fetch('/api/contact', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Accept': 'application/json',
+            //             'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify(Object.fromEntries(formData))
+            //     });
                 
-                const data = await response.json();
+            //     const data = await response.json();
                 
-                if (response.ok && data.success) {
-                    showAlert(data.message || 'Gửi tin nhắn thành công!');
-                    this.reset();
-                } else {
-                    const errorMessage = data.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
-                    const detailedError = data.error ? `<br>Chi tiết: ${data.error}` : '';
-                    showAlert(`${errorMessage}${detailedError}`);
-                    console.error('Errors:', data);
-                }
-            } catch (error) {
-                console.error('Error submitting contact form:', error);
-                showAlert(`Có lỗi xảy ra kết nối: ${error.message}`);
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
+            //     if (response.ok && data.success) {
+            //         showAlert(data.message || 'Gửi tin nhắn thành công!');
+            //         this.reset();
+            //     } else {
+            //         const errorMessage = data.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
+            //         const detailedError = data.error ? `<br>Chi tiết: ${data.error}` : '';
+            //         showAlert(`${errorMessage}${detailedError}`);
+            //         console.error('Errors:', data);
+            //     }
+            // } catch (error) {
+            //     console.error('Error submitting contact form:', error);
+            //     showAlert(`Có lỗi xảy ra kết nối: ${error.message}`);
+            // } finally {
+            //     btn.innerText = originalText;
+            //     btn.disabled = false;
+        try {
+            const formData = new FormData(this);
+            const response = await fetch('/api/contacts', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            });
+
+            // ✅ Handle 401: Redirect to login
+            if (response.status === 401) {
+                alert('Vui lòng đăng nhập để gửi liên hệ!');
+                window.location.href = '/login';  // Hoặc '/login?redirect=' + encodeURIComponent(window.location.pathname) để redirect lại sau login
+                return;
             }
-        });
-    }
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                alert(data.message || 'Gửi tin nhắn thành công!');
+                this.reset();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+                console.error('Errors:', data.errors);
+            }
+        } catch (error) {
+            console.error('Error submitting contact form:', error);
+            alert('Có lỗi xảy ra kết nối. Vui lòng thử lại sau.');
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    });
+}
 });
 
 async function loadFeaturedProducts() {

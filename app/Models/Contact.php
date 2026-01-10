@@ -11,9 +11,10 @@ class Contact extends Model
     protected $primaryKey = 'ContactID';
 
     protected $fillable = [
-        'customer_id',
-        'name',
-        'email',
+        'customer_id',  // ID user (bắt buộc)
+        'name',         // Tên từ form
+        'email',        // Email từ form
+        'phone',        // SĐT từ form
         'subject',
         'message',
         'status',

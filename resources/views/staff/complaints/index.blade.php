@@ -104,10 +104,10 @@
             </div>
         </div>
                 <div class="modal-footer">
-    <button type="button" class="btn-outline-modal" onclick="saveDraft()">
+    <button type="button" class="btn-outline-modal" onclick="sendToCustomer()">
         TRẢ LỜI KHÁCH HÀNG
     </button>
-    <button type="button" class="btn-save-modal" onclick="sendToCustomer()">
+    <button type="button" class="btn-save-modal" onclick="saveDraft()">
         LƯU VÀ ĐÓNG
     </button>
 </div>
