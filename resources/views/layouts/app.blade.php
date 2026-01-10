@@ -182,7 +182,7 @@
                 <li>
                     <a href="{{ route('cart') }}" class="nav-cart" style="padding: 0 10px;">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cartCount">0</span>
+                        <span class="cart-count" id="cartCount">{{ $cartCount }}</span>
                     </a>
                 </li>
                 @endif
