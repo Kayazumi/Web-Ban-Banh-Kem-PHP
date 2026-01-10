@@ -598,6 +598,26 @@ class DatabaseSeeder extends Seeder
             ['customer_id' => 4, 'subject' => 'Góp ý về giao hàng', 'message' => 'Shipper giao hàng hôm qua hơi chậm, mong shop có thể cải thiện dịch vụ.', 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()],
             ['customer_id' => 3, 'subject' => 'Yêu cầu tư vấn bánh Mousse', 'message' => 'Mình muốn đặt bánh Mousse Chanh Dây cho tiệc sinh nhật 10 người, shop tư vấn giúp mình kích thước nhé.', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
             ['customer_id' => 4, 'subject' => 'Phản hồi về chất lượng Strawberry Cloud Cake', 'message' => 'Bánh Strawberry Cloud Cake lần trước mình đặt rất ngon, cảm ơn shop!', 'status' => 'responded', 'created_at' => now(), 'updated_at' => now()],
+            ['customer_id'=>3, 'subject'=>'Hỏi về size bánh Entremet', 'message'=>'Cho em hỏi bánh Entremets Rose size 500g ăn được cho mấy người ạ? Em định đặt cho sinh nhật 8 người.', 'status'=>'responded', 'created_at'=>now()->subDays(8), 'updated_at'=>now()->subDays(7)],
+    ['customer_id'=>4, 'subject'=>'Có thể custom bánh không?', 'message'=>'Shop có nhận custom bánh theo yêu cầu không ạ? Em muốn bánh hình trái tim với tên riêng.', 'status'=>'responded', 'created_at'=>now()->subDays(12), 'updated_at'=>now()->subDays(11)],
+    ['customer_id'=>3, 'subject'=>'Bánh có gluten-free không?', 'message'=>'Gia đình em có người dị ứng gluten, shop có loại bánh nào gluten-free không ạ?', 'status'=>'pending', 'created_at'=>now()->subHours(5), 'updated_at'=>now()->subHours(5)],
+    
+    ['customer_id'=>4, 'subject'=>'Giao hàng ngoại thành', 'message'=>'Shop có giao hàng đến Bình Dương không ạ? Phí ship khoảng bao nhiêu?', 'status'=>'responded', 'created_at'=>now()->subDays(6), 'updated_at'=>now()->subDays(5)],
+    ['customer_id'=>3, 'subject'=>'Đặt hàng gấp trong ngày', 'message'=>'Em cần gấp bánh trong chiều nay, shop có ship hỏa tốc được không? Em sẵn sàng trả thêm phí.', 'status'=>'responded', 'created_at'=>now()->subDays(2), 'updated_at'=>now()->subDays(2)],
+    ['customer_id'=>4, 'subject'=>'Thời gian giao hàng', 'message'=>'Nếu đặt hàng hôm nay thì sớm nhất bao giờ nhận được ạ?', 'status'=>'pending', 'created_at'=>now()->subHours(3), 'updated_at'=>now()->subHours(3)],
+    
+    ['customer_id'=>3, 'subject'=>'Góp ý về website', 'message'=>'Em thấy website đẹp nhưng load hơi chậm. Shop nên tối ưu lại để trải nghiệm tốt hơn ạ.', 'status'=>'responded', 'created_at'=>now()->subDays(15), 'updated_at'=>now()->subDays(14)],
+    ['customer_id'=>4, 'subject'=>'Đề xuất thêm hình thức thanh toán', 'message'=>'Shop có thể thêm COD không ạ? Nhiều người chưa quen thanh toán online lắm.', 'status'=>'responded', 'created_at'=>now()->subDays(20), 'updated_at'=>now()->subDays(19)],
+    ['customer_id'=>3, 'subject'=>'Khen ngợi dịch vụ', 'message'=>'Em rất hài lòng với chất lượng bánh và dịch vụ của shop. Sẽ giới thiệu cho bạn bè!', 'status'=>'responded', 'created_at'=>now()->subDays(4), 'updated_at'=>now()->subDays(3)],
+    
+    ['customer_id'=>4, 'subject'=>'Chương trình tích điểm', 'message'=>'Shop có chương trình tích điểm cho khách hàng thân thiết không ạ?', 'status'=>'pending', 'created_at'=>now()->subHours(10), 'updated_at'=>now()->subHours(10)],
+    ['customer_id'=>3, 'subject'=>'Mã giảm giá cho sinh nhật', 'message'=>'Tháng sau là sinh nhật em, shop có mã giảm giá đặc biệt không ạ?', 'status'=>'responded', 'created_at'=>now()->subDays(9), 'updated_at'=>now()->subDays(8)],
+    
+    ['customer_id'=>4, 'subject'=>'Hỏi về bảo quản bánh', 'message'=>'Bánh Mousse để tủ lạnh được bao lâu ạ? Và có cần làm gì đặc biệt không?', 'status'=>'responded', 'created_at'=>now()->subDays(7), 'updated_at'=>now()->subDays(6)],
+    ['customer_id'=>3, 'subject'=>'Hỏi về nguyên liệu', 'message'=>'Bánh của shop có sử dụng chất bảo quản không ạ? Em muốn biết rõ về nguyên liệu.', 'status'=>'pending', 'created_at'=>now()->subHours(8), 'updated_at'=>now()->subHours(8)],
+    ['customer_id'=>4, 'subject'=>'Đặt bánh cho công ty', 'message'=>'Công ty em muốn đặt 50 chiếc bánh nhỏ cho sự kiện, shop có hỗ trợ không ạ?', 'status'=>'responded', 'created_at'=>now()->subDays(11), 'updated_at'=>now()->subDays(10)],
+    ['customer_id'=>3, 'subject'=>'Hỏi về giá', 'message'=>'Nếu đặt số lượng lớn (từ 20 chiếc) có được giảm giá không shop?', 'status'=>'pending', 'created_at'=>now()->subHours(2), 'updated_at'=>now()->subHours(2)],
+    ['customer_id'=>4, 'subject'=>'Hỏi về thiết kế bánh', 'message'=>'Shop có thể làm bánh theo theme Hello Kitty cho bé không ạ?', 'status'=>'responded', 'created_at'=>now()->subDays(5), 'updated_at'=>now()->subDays(4)],        
         ];
 
         foreach ($contacts as $idx => $c) {
@@ -866,7 +886,32 @@ class DatabaseSeeder extends Seeder
         $complaints = [
             ['complaint_code'=>'CPL001','order_code'=>'ORD001','customer_id'=>3,'complaint_type'=>'product_quality','title'=>'Bánh bị móp một góc','content'=>'Khi nhận hàng, bánh Entremets Rose bị móp góc do quá trình vận chuyển. Tôi muốn được đổi sản phẩm mới.','status'=>'processing','priority'=>'high','created_at'=>now()->subDays(3)],
             ['complaint_code'=>'CPL002','order_code'=>'ORD005','customer_id'=>3,'complaint_type'=>'delivery','title'=>'Giao hàng trễ 1 ngày','content'=>'Đơn hàng được hẹn giao vào ngày 20/12 nhưng đến ngày 21/12 mới nhận được.','status'=>'resolved','priority'=>'medium','created_at'=>now()->subDays(10),'resolution'=>'Shop xin lỗi khách hàng và đã hoàn lại 50,000đ phí ship. Đã tặng voucher 100,000đ cho lần mua tiếp theo.','resolved_at'=>now()->subDays(5)],
+            ['complaint_code'=>'CPL003','order_code'=>'ORD20240201','customer_id'=>3,'complaint_type'=>'product_quality','title'=>'Bánh bị vỡ khi giao hàng','content'=>'Mousse Chanh Dây bị vỡ một phần do đóng gói không cẩn thận. Mong shop xử lý.','status'=>'pending','priority'=>'high','created_at'=>now()->subDays(2)],
+    
+            ['complaint_code'=>'CPL004','order_code'=>'ORD20240301','customer_id'=>3,'complaint_type'=>'product_quality','title'=>'Bánh không đúng như mô tả','content'=>'Entremets Rose nhận được có màu sắc khác với hình ảnh trên web, hơi thất vọng.','status'=>'processing','priority'=>'medium','created_at'=>now()->subDays(5)],
+    ['complaint_code'=>'CPL005','order_code'=>'ORD20240401','customer_id'=>3,'complaint_type'=>'product_quality','title'=>'Bánh có vị hơi chua','content'=>'Orange Serenade có vị chua hơn expected, có thể điều chỉnh được không ạ?','status'=>'resolved','priority'=>'low','created_at'=>now()->subDays(15),'resolution'=>'Shop đã ghi nhận và điều chỉnh công thức. Tặng voucher 50k cho lần mua sau.','resolved_at'=>now()->subDays(10)],
+    
+    ['complaint_code'=>'CPL006','order_code'=>'ORD20240501','customer_id'=>4,'complaint_type'=>'delivery','title'=>'Shipper giao sai địa chỉ','content'=>'Shipper giao đến địa chỉ khác, phải gọi điện mới tìm được. Rất bất tiện.','status'=>'processing','priority'=>'high','created_at'=>now()->subDays(3)],
+    ['complaint_code'=>'CPL007','order_code'=>'ORD20240601','customer_id'=>4,'complaint_type'=>'delivery','title'=>'Không nhận được thông báo giao hàng','content'=>'Shipper không báo trước khi giao, lúc đó tôi không có nhà nên phải đợi thêm 1 ngày.','status'=>'pending','priority'=>'medium','created_at'=>now()->subDays(1)],
+    ['complaint_code'=>'CPL008','order_code'=>'ORD20240701','customer_id'=>3,'complaint_type'=>'delivery','title'=>'Giao hàng chậm 2 ngày','content'=>'Đặt hàng từ 5/7 hẹn giao 7/7 nhưng đến 9/7 mới nhận được. Ảnh hưởng đến kế hoạch sinh nhật.','status'=>'resolved','priority'=>'high','created_at'=>now()->subDays(20),'resolution'=>'Shop xin lỗi và hoàn lại toàn bộ phí ship. Tặng thêm voucher 100k.','resolved_at'=>now()->subDays(18)],
+    
+    ['complaint_code'=>'CPL009','order_code'=>'ORD20240801','customer_id'=>4,'complaint_type'=>'service','title'=>'Nhân viên tư vấn không nhiệt tình','content'=>'Khi gọi điện hỏi về sản phẩm, nhân viên trả lời khá cộc lốc và không rõ ràng.','status'=>'processing','priority'=>'medium','created_at'=>now()->subDays(7)],
+    ['complaint_code'=>'CPL010','order_code'=>'ORD20240901','customer_id'=>3,'complaint_type'=>'service','title'=>'Không phản hồi tin nhắn','content'=>'Đã nhắn tin qua Zalo 3 lần hỏi về đơn hàng nhưng không được trả lời.','status'=>'pending','priority'=>'medium','created_at'=>now()->subHours(12)],
+    
+    ['complaint_code'=>'CPL011','order_code'=>'ORD20241001','customer_id'=>4,'complaint_type'=>'other','title'=>'Chưa nhận được hoá đơn VAT','content'=>'Đã thanh toán và yêu cầu xuất hoá đơn VAT từ 2 tuần trước nhưng chưa nhận được.','status'=>'processing','priority'=>'high','created_at'=>now()->subDays(14)],
+    ['complaint_code'=>'CPL012','order_code'=>'ORD20241101','customer_id'=>3,'complaint_type'=>'other','title'=>'Bị trừ tiền 2 lần','content'=>'Thanh toán qua VNPay nhưng bị trừ tiền 2 lần, mong shop kiểm tra và hoàn lại.','status'=>'resolved','priority'=>'high','created_at'=>now()->subDays(25),'resolution'=>'Đã kiểm tra và hoàn lại số tiền bị trừ nhầm trong vòng 24h.','resolved_at'=>now()->subDays(24)],
+    
+    ['complaint_code'=>'CPL013','order_code'=>'ORD20241201','customer_id'=>4,'complaint_type'=>'other','title'=>'Thiếu phụ kiện đi kèm','content'=>'Đơn hàng có order nón sinh nhật nhưng không thấy giao kèm theo bánh.','status'=>'pending','priority'=>'medium','created_at'=>now()->subHours(6)],
+    ['complaint_code'=>'CPL014','order_code'=>'ORD20250101','customer_id'=>3,'complaint_type'=>'other','title'=>'Không nhận được thiệp cảm ơn','content'=>'Các lần trước luôn có thiệp nhưng lần này không thấy. Có vấn đề gì không ạ?','status'=>'processing','priority'=>'low','created_at'=>now()->subDays(4)],
+    ['complaint_code'=>'CPL015','order_code'=>'ORD20250201','customer_id'=>4,'complaint_type'=>'product_quality','title'=>'Bánh có vị khác lạ','content'=>'Mousse Dưa Lưới có vị hơi tanh, không biết có phải do nguyên liệu không tươi?','status'=>'pending','priority'=>'high','created_at'=>now()->subHours(18)],
+    
+    ['complaint_code'=>'CPL016','order_code'=>'ORD20250301','customer_id'=>3,'complaint_type'=>'delivery','title'=>'Hộp đựng bánh bị bẹp','content'=>'Hộp bánh bị bẹp góc, may mà bánh vẫn còn nguyên. Mong shop cẩn thận hơn.','status'=>'pending','priority'=>'low','created_at'=>now()->subHours(4)],
+    ['complaint_code'=>'CPL017','order_code'=>'ORD20250401','customer_id'=>4,'complaint_type'=>'service','title'=>'Website bị lỗi khi đặt hàng','content'=>'Mình đặt hàng mà web cứ bị reload lại, mất thời gian quá.','status'=>'processing','priority'=>'medium','created_at'=>now()->subDays(6)],
+    ['complaint_code'=>'CPL018','order_code'=>'ORD002','customer_id'=>4,'complaint_type'=>'product_quality','title'=>'Bánh hơi ngọt','content'=>'Lime and Basil Entremets hơi ngọt so với khẩu vị gia đình mình. Có thể giảm đường được không ạ?','status'=>'resolved','priority'=>'low','created_at'=>now()->subDays(30),'resolution'=>'Shop đã ghi nhận. Lần sau quý khách có thể ghi chú yêu cầu giảm độ ngọt khi đặt hàng.','resolved_at'=>now()->subDays(28)],
+    ['complaint_code'=>'CPL019','order_code'=>'ORD003','customer_id'=>3,'complaint_type'=>'delivery','title'=>'Shipper không đeo khẩu trang','content'=>'Shipper giao hàng không đeo khẩu trang, mong shop nhắc nhở.','status'=>'resolved','priority'=>'medium','created_at'=>now()->subDays(22),'resolution'=>'Shop đã nhắc nhở đối tác vận chuyển. Xin lỗi vì sự bất tiện này.','resolved_at'=>now()->subDays(21)],
+    ['complaint_code'=>'CPL020','order_code'=>'ORD004','customer_id'=>4,'complaint_type'=>'other','title'=>'Muốn đổi trả bánh','content'=>'Mình đặt nhầm loại bánh, có thể đổi sang loại khác được không ạ?','status'=>'processing','priority'=>'medium','created_at'=>now()->subDays(1)],
         ];
+
         foreach ($complaints as $c) {
             $orderId = DB::table('orders')->where('order_code',$c['order_code'])->value('OrderID');
             $data = $c;
@@ -883,6 +928,35 @@ class DatabaseSeeder extends Seeder
             ['complaint_code'=>'CPL001','user_id'=>1,'user_type'=>'admin','content'=>'Chúng tôi xin lỗi về sự cố này. Shop sẽ giao sản phẩm mới cho bạn trong ngày hôm nay.','created_at'=>now()->subDays(3)],
             ['complaint_code'=>'CPL002','user_id'=>3,'user_type'=>'customer','content'=>'Cảm ơn shop đã xử lý nhanh chóng!','created_at'=>now()->subDays(5)],
             ['complaint_code'=>'CPL002','user_id'=>1,'user_type'=>'admin','content'=>'Shop rất vui khi bạn hài lòng. Mong bạn tiếp tục ủng hộ!','created_at'=>now()->subDays(5)],
+            ['complaint_code'=>'CPL004','user_id'=>2,'user_type'=>'staff','content'=>'Xin lỗi quý khách vì sự bất tiện này. Bộ phận kỹ thuật đã ghi nhận và sẽ cải thiện hình ảnh sản phẩm. Shop sẽ liên hệ quý khách trong 24h để hỗ trợ.','created_at'=>now()->subDays(4)],
+    
+    ['complaint_code'=>'CPL005','user_id'=>2,'user_type'=>'staff','content'=>'Cảm ơn quý khách đã phản hồi. Shop đã điều chỉnh công thức để phù hợp hơn với khẩu vị Việt Nam. Mời quý khách sử dụng mã GIAM50K cho lần mua tiếp theo.','created_at'=>now()->subDays(14)],
+    ['complaint_code'=>'CPL005','user_id'=>3,'user_type'=>'customer','content'=>'Cảm ơn shop đã xử lý nhanh chóng. Mình sẽ thử lại lần sau!','created_at'=>now()->subDays(13)],
+    
+    ['complaint_code'=>'CPL006','user_id'=>5,'user_type'=>'staff','content'=>'Shop rất xin lỗi về sự cố này. Chúng tôi đã nhắc nhở đối tác vận chuyển và sẽ theo dõi chặt chẽ hơn. Quý khách vui lòng cung cấp thêm thông tin để shop hỗ trợ tốt hơn.','created_at'=>now()->subDays(2)],
+    ['complaint_code'=>'CPL006','user_id'=>4,'user_type'=>'customer','content'=>'OK, mình đã nhận được hàng rồi. Lần sau cẩn thận hơn nhé shop.','created_at'=>now()->subDays(2)],
+    
+    ['complaint_code'=>'CPL008','user_id'=>2,'user_type'=>'staff','content'=>'Shop thành thật xin lỗi vì đã ảnh hưởng đến kế hoạch của quý khách. Chúng tôi đã hoàn lại phí ship và gửi tặng voucher 100k. Mong quý khách thông cảm!','created_at'=>now()->subDays(19)],
+    ['complaint_code'=>'CPL008','user_id'=>3,'user_type'=>'customer','content'=>'Cảm ơn shop. Lần sau hy vọng đúng hẹn hơn ạ.','created_at'=>now()->subDays(18)],
+    
+    ['complaint_code'=>'CPL009','user_id'=>6,'user_type'=>'staff','content'=>'Shop rất xin lỗi vì trải nghiệm không tốt của quý khách. Chúng tôi đã ghi nhận và sẽ đào tạo lại nhân viên. Nếu có bất kỳ thắc mắc nào, quý khách vui lòng liên hệ hotline để được hỗ trợ tốt hơn.','created_at'=>now()->subDays(6)],
+    
+    ['complaint_code'=>'CPL011','user_id'=>7,'user_type'=>'staff','content'=>'Xin lỗi quý khách vì sự chậm trễ. Bộ phận kế toán đang xử lý hoá đơn và sẽ gửi qua email trong vòng 48h. Quý khách vui lòng kiểm tra email thường xuyên.','created_at'=>now()->subDays(13)],
+    
+    ['complaint_code'=>'CPL012','user_id'=>2,'user_type'=>'staff','content'=>'Shop đã kiểm tra với VNPay và xác nhận có lỗi kỹ thuật. Số tiền đã được hoàn trả vào tài khoản của quý khách. Xin quý khách kiểm tra lại.','created_at'=>now()->subDays(24)],
+    ['complaint_code'=>'CPL012','user_id'=>3,'user_type'=>'customer','content'=>'Đã nhận được tiền hoàn. Cảm ơn shop xử lý nhanh!','created_at'=>now()->subDays(24)],
+    
+    ['complaint_code'=>'CPL014','user_id'=>8,'user_type'=>'staff','content'=>'Xin lỗi quý khách, do lỗi của bộ phận đóng gói nên đã thiếu thiệp. Shop sẽ gửi bổ sung thiệp cùng voucher 30k cho quý khách nhé.','created_at'=>now()->subDays(3)],
+    
+    ['complaint_code'=>'CPL017','user_id'=>2,'user_type'=>'staff','content'=>'Shop xin lỗi về sự cố kỹ thuật. Bộ phận IT đã khắc phục xong. Quý khách vui lòng thử lại và báo cho shop nếu còn vấn đề.','created_at'=>now()->subDays(5)],
+    ['complaint_code'=>'CPL017','user_id'=>4,'user_type'=>'customer','content'=>'Bây giờ đã ổn rồi ạ. Cảm ơn shop!','created_at'=>now()->subDays(5)],
+    
+    ['complaint_code'=>'CPL018','user_id'=>5,'user_type'=>'staff','content'=>'Shop đã ghi nhận. Lần sau quý khách có thể ghi chú yêu cầu giảm độ ngọt khi đặt hàng.','created_at'=>now()->subDays(29)],
+    ['complaint_code'=>'CPL018','user_id'=>4,'user_type'=>'customer','content'=>'OK, mình biết rồi. Thanks shop!','created_at'=>now()->subDays(28)],
+    
+    ['complaint_code'=>'CPL019','user_id'=>6,'user_type'=>'staff','content'=>'Shop đã nhắc nhở đối tác vận chuyển. Xin lỗi vì sự bất tiện này.','created_at'=>now()->subDays(21)],
+    
+    ['complaint_code'=>'CPL020','user_id'=>7,'user_type'=>'staff','content'=>'Shop có chính sách đổi trả trong vòng 24h nếu chưa sử dụng. Quý khách vui lòng liên hệ hotline để được hỗ trợ.','created_at'=>now()->subHours(20)],
         ];
         foreach ($complaintResponses as $cr) {
             $complaintId = DB::table('complaints')->where('complaint_code',$cr['complaint_code'])->value('ComplaintID');

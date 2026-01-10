@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $__env->yieldContent('title', 'La Cuisine Ngọt - Bánh Kem Cao Cấp'); ?></title>
     <meta name="description" content="<?php echo $__env->yieldContent('description', 'La Cuisine Ngọt - Thương hiệu bánh kem cao cấp hàng đầu Việt Nam'); ?>">
+    
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2921/2921822.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -16,13 +17,14 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- CSRF Token -->
+<!-- CSRF Token -->
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- các meta, title, css chung -->
     <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('css/customer.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('css/account.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/chatbot.css')); ?>">
 
     <?php echo $__env->yieldPushContent('styles'); ?>
 
@@ -546,5 +548,8 @@
         });
     })();
     </script>
+    
+    <!-- Chatbot Script -->
+    <script src="<?php echo e(asset('js/chatbot.js')); ?>"></script>
 </body>
 </html><?php /**PATH D:\ProgramFilesD\DevApps\XAM_PP\htdocs\Web-Ban-Banh-Kem-PHP\resources\views/layouts/app.blade.php ENDPATH**/ ?>

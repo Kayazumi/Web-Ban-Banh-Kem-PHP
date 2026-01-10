@@ -1,6 +1,7 @@
 /* ====================== CONTAINER CHÍNH ====================== */
 .staff-complaints-container {
-    max-width: 1400px; /* Rộng hơn để bảng kéo dài sát mép */
+    max-width: 1400px;
+    /* Rộng hơn để bảng kéo dài sát mép */
     margin: 0 auto;
     padding: 40px 30px;
     background: #EDDECD;
@@ -68,7 +69,7 @@
     padding: 20px;
     border-radius: 0 0 20px 20px;
     overflow-x: auto;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 #complaints-table {
@@ -93,7 +94,8 @@
     padding: 18px 12px;
     border-bottom: 1px solid #F0F0F0;
     font-size: 0.95rem;
-    vertical-align: middle; /* Căn giữa dọc nội dung với tiêu đề */
+    vertical-align: middle;
+    /* Căn giữa dọc nội dung với tiêu đề */
     text-align: left;
 }
 
@@ -114,13 +116,48 @@
 }
 
 /* Điều chỉnh độ rộng cột để cân đối và sát nhau */
-#complaints-table th:nth-child(1), #complaints-table td:nth-child(1) { width: 10%; }  /* MÃ KN */
-#complaints-table th:nth-child(2), #complaints-table td:nth-child(2) { width: 12%; }  /* MÃ ĐH */
-#complaints-table th:nth-child(3), #complaints-table td:nth-child(3) { width: 17%; }  /* KHÁCH HÀNG */
-#complaints-table th:nth-child(4), #complaints-table td:nth-child(4) { width: 28%; }  /* NỘI DUNG */
-#complaints-table th:nth-child(5), #complaints-table td:nth-child(5) { width: 15%; }  /* NGÀY PHẢN ÁNH */
-#complaints-table th:nth-child(6), #complaints-table td:nth-child(6) { width: 12%; }  /* TRẠNG THÁI */
-#complaints-table th:nth-child(7), #complaints-table td:nth-child(7) { width: 6%; }   /* XỬ LÝ */
+#complaints-table th:nth-child(1),
+#complaints-table td:nth-child(1) {
+    width: 10%;
+}
+
+/* MÃ KN */
+#complaints-table th:nth-child(2),
+#complaints-table td:nth-child(2) {
+    width: 12%;
+}
+
+/* MÃ ĐH */
+#complaints-table th:nth-child(3),
+#complaints-table td:nth-child(3) {
+    width: 17%;
+}
+
+/* KHÁCH HÀNG */
+#complaints-table th:nth-child(4),
+#complaints-table td:nth-child(4) {
+    width: 28%;
+}
+
+/* NỘI DUNG */
+#complaints-table th:nth-child(5),
+#complaints-table td:nth-child(5) {
+    width: 15%;
+}
+
+/* NGÀY PHẢN ÁNH */
+#complaints-table th:nth-child(6),
+#complaints-table td:nth-child(6) {
+    width: 12%;
+}
+
+/* TRẠNG THÁI */
+#complaints-table th:nth-child(7),
+#complaints-table td:nth-child(7) {
+    width: 6%;
+}
+
+/* XỬ LÝ */
 
 /* Badge trạng thái */
 .badge-status {
@@ -132,9 +169,20 @@
     min-width: 110px;
 }
 
-.status-pending { background: #FFF3CD; color: #856404; }
-.status-processing { background: #D1ECF1; color: #0C5460; }
-.status-resolved { background: #D4EDDA; color: #155724; }
+.status-pending {
+    background: #FFF3CD;
+    color: #856404;
+}
+
+.status-processing {
+    background: #D1ECF1;
+    color: #0C5460;
+}
+
+.status-resolved {
+    background: #D4EDDA;
+    color: #155724;
+}
 
 /* Icon xử lý - làm nổi bật hơn */
 #complaints-table td:nth-child(7) {
@@ -179,8 +227,15 @@
 }
 
 @keyframes modalFadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .modal-header {
@@ -308,11 +363,13 @@ textarea {
     .staff-complaints-container {
         padding: 24px 15px;
     }
+
     .detail-grid {
         grid-template-columns: 1fr;
         gap: 24px;
         padding: 24px;
     }
+
     .response-container {
         padding: 0 24px 24px;
     }
@@ -323,6 +380,7 @@ textarea {
         gap: 15px;
         justify-content: center;
     }
+
     #complaints-table th,
     #complaints-table td {
         padding: 12px 8px;
@@ -369,4 +427,79 @@ textarea {
 
 .btn-save-modal:hover {
     background: #2e4438;
+}
+
+/* ========================================================================
+   PHÂN TRANG (Đồng bộ với Orders/Contacts)
+   ======================================================================== */
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    border-radius: 0 0 20px 20px; /* Bo góc dưới khớp với wrapper */
+}
+
+.pagination-info {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.pagination-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #e0e0e0;
+    background: white;
+    color: #555;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.page-btn:hover:not(.active) {
+    background: #f8f9fa;
+    border-color: #395542;
+    color: #395542;
+}
+
+.page-btn.active {
+    background: #395542;
+    color: white;
+    border-color: #395542;
+    cursor: default;
+    font-weight: 600;
+}
+
+.page-dots {
+    padding: 0 8px;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* Responsive cho phân trang */
+@media (max-width: 992px) {
+    .pagination-controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .pagination-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }
