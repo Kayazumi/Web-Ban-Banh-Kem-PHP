@@ -26,7 +26,7 @@ return new class extends Migration
             $table->decimal('discount_amount', 10, 2)->default(0);
             $table->decimal('shipping_fee', 10, 2)->default(0);
             $table->decimal('final_amount', 12, 2);
-            $table->enum('payment_method', ['cod', 'vnpay'])->default('cod');
+            $table->enum('payment_method', ['bank_transfer'])->default('bank_transfer');
             $table->enum('payment_status', ['pending', 'paid', 'failed', 'refunded'])->default('pending');
             $table->enum('order_status', ['pending', 'order_received', 'preparing', 'delivering', 'delivery_successful', 'delivery_failed'])->default('pending');
             $table->text('note')->nullable();
