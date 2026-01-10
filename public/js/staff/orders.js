@@ -286,7 +286,7 @@ async function updateOrderStatus(selectElement) {
 
         const statusText = wrapper.querySelector('.status-text');
         statusText.textContent = getStatusLabel(newStatus);
-        
+
         showSuccess('Cập nhật trạng thái thành công!');
 
         // Cập nhật lại phân trang nếu cần
@@ -357,7 +357,7 @@ async function showOrderDetail(orderId) {
                 <h3>Thông tin đơn hàng</h3>
                 <div class="detail-row"><span class="detail-label">Mã đơn hàng:</span><span class="detail-value highlight">${order.OrderID}</span></div>
                 <div class="detail-row"><span class="detail-label">Ngày đặt:</span><span class="detail-value">${formatDateTime(order.OrderDate)}</span></div>
-                <div class="detail-row"><span class="detail-label">Phương thức thanh toán:</span><span class="detail-value">${order.payment_method}</span></div>
+                <div class="detail-row"><span class="detail-label">Phương thức thanh toán:</span><span class="detail-value">${getPaymentMethodLabel(order.payment_method)}</span></div>
                 <div class="detail-row"><span class="detail-label">Trạng thái:</span><span class="detail-value"><span class="status-badge ${order.Status}">${getStatusLabel(order.Status)}</span></span></div>
                 <div class="detail-row"><span class="detail-label">Tổng tiền:</span><span class="detail-value highlight">${formatCurrency(order.TotalAmount)}</span></div>
             </div>
@@ -440,6 +440,16 @@ function getStatusLabel(status) {
         'cancelled': 'Đã hủy'
     };
     return labels[status] || status;
+}
+
+function getPaymentMethodLabel(method) {
+    const labels = {
+        'cod': 'Thanh toán khi nhận hàng (COD)',
+        'bank_transfer': 'Chuyển khoản ngân hàng',
+        'vnpay': 'Thanh toán VNPay',
+        'momo': 'Ví MoMo'
+    };
+    return labels[method] || method;
 }
 
 function debounce(func, wait) {
