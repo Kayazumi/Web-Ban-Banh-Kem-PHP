@@ -97,3 +97,9 @@ Route::middleware(['auth:sanctum', 'staff'])->group(function () {
     Route::put('/staff/profile', [ProfileController::class, 'update']);
     Route::post('/staff/password', [ProfileController::class, 'changePassword']);
 });
+
+// Customer Profile API routes
+Route::middleware('auth')->group(function () {
+    Route::post('/profile', [\App\Http\Controllers\ProfileController::class, 'update']);
+    Route::post('/password', [\App\Http\Controllers\ProfileController::class, 'changePassword']);
+});

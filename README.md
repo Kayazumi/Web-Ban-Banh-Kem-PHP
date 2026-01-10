@@ -1,31 +1,16 @@
 # La Cuisine Ngọt — Tài liệu dự án
 
-Phiên bản Laravel: **Laravel 12** (PHP 8.2+). Đây là bản chuyển đổi từ dự án PHP thuần sang Laravel, giữ lại toàn bộ chức năng front-end và business logic backend.
+Phiên bản Laravel: **Laravel 12** (PHP 8.2+).
 
---------------------------------------------------------------------------------
-
-Mục lục
-- Giới thiệu
-- Tính năng chính
-- Cấu trúc dự án
-- Cài đặt & chạy
-- Cách dùng nhanh (quick start)
-- API endpoints chính
-- Admin panel
-- Upload / Storage
-- Testing & seed data
-- Troubleshooting
-- Ghi chú & hướng phát triển
-
---------------------------------------------------------------------------------
+LƯU Ý: Tệp này là tài liệu tổng quan cho dự án `Website-Ban-Banh-Kem-PHP_Laravel` — mô tả cấu trúc, tính năng và hướng dẫn cài đặt nhanh.
 
 Giới thiệu
 ------------
-La Cuisine Ngọt là một website thương mại điện tử bán bánh kem cao cấp. Ứng dụng hỗ trợ:
-- Quản lý sản phẩm, hình ảnh, danh mục
-- Giỏ hàng, tạo đơn, theo dõi trạng thái đơn
-- Tài khoản user (customer, staff, admin)
-- Hệ thống khuyến mãi, đánh giá, khiếu nại và phản hồi
+La Cuisine Ngọt là một ứng dụng thương mại điện tử mẫu dành cho tiệm bánh cao cấp — được xây dựng bằng Laravel và tối ưu cho việc quản lý sản phẩm, đơn hàng và trải nghiệm người dùng. Mục tiêu của repo này là:
+- Cung cấp một nền tảng quản trị (Admin) để CRUD sản phẩm, quản lý đơn hàng và người dùng.
+- Hỗ trợ đầy đủ luồng mua hàng: duyệt sản phẩm, giỏ hàng, checkout, theo dõi trạng thái đơn.
+- Triển khai các tính năng thực tế như khuyến mãi, upload ảnh, khiếu nại và đa vai trò (customer / staff / admin).
+Ứng dụng được thiết kế để dễ mở rộng (API-first), dễ tích hợp với các dịch vụ bên thứ ba (gateway thanh toán, vector search/AI, CDN) và phù hợp làm demo hoặc khung để phát triển tiếp.
 
 Tính năng chính
 -----------------
@@ -39,7 +24,7 @@ Tính năng chính
 
 Cấu trúc dự án (chính)
 -----------------------
-Dưới đây là mô tả đầy đủ, có cấu trúc cây và giải thích cho từng thư mục/tệp quan trọng trong dự án `Nhom1_Ca4_CNPM_Laravel` (phiên bản Laravel chuyển đổi từ PHP thuần).
+Dưới đây là mô tả đầy đủ, có cấu trúc cây và giải thích cho từng thư mục/tệp quan trọng trong dự án `Website-Ban-Banh-Kem-PHP_Laravel`.
 
 Cấu trúc (tóm tắt)
 ```
@@ -158,8 +143,8 @@ Yêu cầu: PHP 8.2+, Composer, Node.js, npm, SQLite hoặc MySQL
 
 1. Clone project:
 ```bash
-git clone <repo> Nhom1_Ca4_CNPM_Laravel
-cd Nhom1_Ca4_CNPM_Laravel
+git clone <repo> Website-Ban-Banh-Kem-PHP
+cd Website-Ban-Banh-Kem-PHP
 ```
 
 2. Cài phụ thuộc:
@@ -266,4 +251,3 @@ Ghi chú & phát triển thêm
 -------------------------
 - Tích hợp gateway thanh toán (VNPay) cho checkout\n+- Gửi email thông báo (order status)\n+- Viết unit / feature tests\n+- Dockerize production deployment\n+
 --------------------------------------------------------------------------------
-Nếu bạn muốn tôi ghi thêm phần API docs chi tiết (ví dụ mẫu request/response) hoặc hướng dẫn deploy Docker — bảo tôi biết phần nào cần mở rộng.  

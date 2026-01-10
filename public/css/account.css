@@ -342,6 +342,7 @@ body.account-page .nav-menu-link:hover::after {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -350,7 +351,7 @@ body.account-page .nav-menu-link:hover::after {
 
 /* === FORM PROFILE === */
 .profile-form {
-    padding: 2.5rem 3rem;
+    padding: 2.5rem 3rem 3.5rem;
 }
 
 .form-row {
@@ -403,6 +404,7 @@ body.account-page .nav-menu-link:hover::after {
     font-weight: 600;
     cursor: pointer;
     float: right;
+    margin-top: 1.5rem;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(62, 86, 65, 0.2);
 }

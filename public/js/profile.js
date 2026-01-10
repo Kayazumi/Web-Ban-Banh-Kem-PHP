@@ -35,8 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(this);
 
             try {
-                // Sửa đường dẫn thành /staff/api/profile và method thành PUT
-                const response = await fetch('/staff/api/profile', {
+                const response = await fetch('/api/profile', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -53,7 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update displayed name if changed
                     const newName = formData.get('full_name');
                     if (newName) {
-                        document.getElementById('staffNameDisplay').textContent = newName;
+                        const userNameDisplay = document.getElementById('userNameDisplay');
+                        if (userNameDisplay) {
+                            userNameDisplay.textContent = newName;
+                        }
                         const userNameElements = document.querySelectorAll('.user-name');
                         userNameElements.forEach(el => el.textContent = newName);
                     }
@@ -102,8 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(this);
 
             try {
-                // Sửa đường dẫn thành /staff/api/password
-                const response = await fetch('/staff/api/password', {
+                const response = await fetch('/api/password', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,

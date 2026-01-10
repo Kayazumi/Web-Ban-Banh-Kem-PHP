@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customer.css') }}">
     <link rel="stylesheet" href="{{ asset('css/account.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/chatbot.css') }}">
 
     @stack('styles')
 
@@ -546,5 +547,8 @@
         });
     })();
     </script>
+    
+    <!-- Chatbot Script -->
+    <script src="{{ asset('js/chatbot.js') }}"></script>
 </body>
 </html>

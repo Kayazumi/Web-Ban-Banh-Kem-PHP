@@ -219,11 +219,37 @@ class OrderController extends Controller
         $vatAmount = round($totalAmount * $vatRate);
         $shippingFee = 0; // Free shipping
         
-        $finalAmount = $totalAmount + $vatAmount + $shippingFee;
+        // Apply 10% Discount
+        $discountRate = 0.10;
+        $discountAmount = round($totalAmount * $discountRate);
+        
+        $finalAmount = $totalAmount + $vatAmount + $shippingFee - $discountAmount;
 
         DB::beginTransaction();
 
         try {
+            // Reserve stock atomically for each product using a conditional UPDATE.
+            // If any update affects 0 rows => not enough stock, rollback and return conflict.
+            foreach ($validItems as $item) {
+                $pid = $item['product']->ProductID;
+                $qty = (int)$item['quantity'];
+
+                $affected = DB::update(
+                    'UPDATE products SET quantity = quantity - ? WHERE ProductID = ? AND quantity >= ?',
+                    [$qty, $pid, $qty]
+                );
+
+                if ($affected === 0) {
+                    // Not enough stock for this product — rollback and notify client
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Sản phẩm '{$item['product']->product_name}' không đủ số lượng"
+                    ], 409);
+                }
+            }
+
+            // All stock reserved successfully (within the transaction) — create order and items
             // Generate order code
             $orderCode = 'ORD' . date('Ymd') . strtoupper(Str::random(6));
 
@@ -249,6 +275,7 @@ class OrderController extends Controller
                 'total_amount' => $totalAmount,
                 'shipping_fee' => $shippingFee,
                 'final_amount' => $finalAmount,
+                'discount_amount' => $discountAmount, // Save discount amount if column exists, otherwise optional
                 'payment_method' => $request->payment_method,
                 'payment_status' => $paymentStatus,
                 'note' => $request->note,
@@ -256,7 +283,7 @@ class OrderController extends Controller
                 'delivery_time' => $deliveryDateTime->format('H:i'),
             ]);
 
-            // Create order items
+            // Create order items and increment sold_count
             foreach ($validItems as $item) {
                 OrderItem::create([
                     'order_id' => $order->OrderID,
@@ -268,9 +295,11 @@ class OrderController extends Controller
                     'note' => $item['note'],
                 ]);
 
-                // Update product sold count and quantity
-                $item['product']->increment('sold_count', $item['quantity']);
-                $item['product']->decrement('quantity', $item['quantity']);
+                // Increment sold_count atomically
+                DB::update(
+                    'UPDATE products SET sold_count = sold_count + ? WHERE ProductID = ?',
+                    [$item['quantity'], $item['product']->ProductID]
+                );
             }
 
             // Clear cart only if items came from DB cart

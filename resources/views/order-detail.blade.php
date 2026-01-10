@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-12">
             <div class="mb-4">
-                <a href="{{ route('order.history') }}" class="btn btn-secondary">
+                <a href="{{ route('order.history') }}" class="btn btn-back">
                     <i class="fas fa-arrow-left"></i> Quay lại danh sách đơn hàng
                 </a>
             </div>
@@ -24,28 +24,22 @@
                             <div class="order-meta-item">
                                 <strong>Trạng thái</strong>
                                 @php
-                                    $statusClasses = [
-                                        'pending' => 'bg-warning text-dark',
-                                        'order_received' => 'bg-info text-white',
-                                        'preparing' => 'bg-secondary text-white',
-                                        'delivering' => 'bg-primary text-white',
-                                        'delivery_successful' => 'bg-success text-white',
-                                        'delivery_failed' => 'bg-danger text-white',
-                                        'cancelled' => 'bg-danger text-white'
+                                    $statusConfig = [
+                                        'pending' => ['color' => '#FFA500', 'icon' => 'fa-clock', 'text' => 'Chờ xác nhận', 'bg' => '#FFF4E6'],
+                                        'order_received' => ['color' => '#00BCD4', 'icon' => 'fa-check-circle', 'text' => 'Đã nhận đơn', 'bg' => '#E0F7FA'],
+                                        'preparing' => ['color' => '#9C27B0', 'icon' => 'fa-utensils', 'text' => 'Đang chuẩn bị', 'bg' => '#F3E5F5'],
+                                        'delivering' => ['color' => '#2196F3', 'icon' => 'fa-shipping-fast', 'text' => 'Đang giao hàng', 'bg' => '#E3F2FD'],
+                                        'delivery_successful' => ['color' => '#4CAF50', 'icon' => 'fa-check-double', 'text' => 'Giao thành công', 'bg' => '#E8F5E9'],
+                                        'delivery_failed' => ['color' => '#F44336', 'icon' => 'fa-times-circle', 'text' => 'Giao thất bại', 'bg' => '#FFEBEE'],
+                                        'cancelled' => ['color' => '#757575', 'icon' => 'fa-ban', 'text' => 'Đã hủy', 'bg' => '#F5F5F5']
                                     ];
-                                    $statusText = [
-                                        'pending' => 'Chờ xác nhận',
-                                        'order_received' => 'Đã nhận đơn',
-                                        'preparing' => 'Đang chuẩn bị',
-                                        'delivering' => 'Đang giao hàng',
-                                        'delivery_successful' => 'Giao thành công',
-                                        'delivery_failed' => 'Giao thất bại',
-                                        'cancelled' => 'Đã hủy'
-                                    ];
+                                    $status = $order->order_status;
+                                    $config = $statusConfig[$status] ?? ['color' => '#757575', 'icon' => 'fa-question', 'text' => $status, 'bg' => '#F5F5F5'];
                                 @endphp
-                                <span class="badge {{ $statusClasses[$order->order_status] ?? 'bg-secondary' }}" style="font-size: 0.9em;">
-                                    {{ $statusText[$order->order_status] ?? $order->order_status }}
-                                </span>
+                                <div class="status-badge-detail" style="background: {{ $config['bg'] }}; border-left: 4px solid {{ $config['color'] }}">
+                                    <i class="fas {{ $config['icon'] }}" style="color: {{ $config['color'] }}"></i>
+                                    <span style="color: {{ $config['color'] }}">{{ $config['text'] }}</span>
+                                </div>
                             </div>
                             <div class="order-meta-item">
                                 <strong>Phương thức thanh toán</strong>
@@ -304,6 +298,18 @@
     background: #c4a574;
 }
 
+.btn-back {
+    background: linear-gradient(135deg, #324F29 0%, #4a7338 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(50, 79, 41, 0.2);
+}
+
+.btn-back:hover {
+    background: linear-gradient(135deg, #263e20 0%, #324F29 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(50, 79, 41, 0.3);
+}
+
 .btn-secondary {
     background: #6c757d;
     color: white;
@@ -311,6 +317,20 @@
 
 .btn-secondary:hover {
     background: #545b62;
+}
+
+.status-badge-detail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.status-badge-detail i {
+    font-size: 1.1rem;
 }
 
 .text-center {

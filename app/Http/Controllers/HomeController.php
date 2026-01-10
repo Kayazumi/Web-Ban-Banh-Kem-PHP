@@ -146,7 +146,7 @@ class HomeController extends Controller
         $orders = \App\Models\Order::where('customer_id', Auth::id())
                     ->with('orderItems.product')
                     ->orderBy('created_at', 'desc')
-                    ->paginate(10);
+                    ->paginate(9);
         return view('order-history', compact('orders'));
     }
 
