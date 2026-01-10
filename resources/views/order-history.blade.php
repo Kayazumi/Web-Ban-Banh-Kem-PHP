@@ -169,7 +169,7 @@
         margin: 0 auto 1.5rem;
         box-shadow: 0 10px 30px rgba(50, 79, 41, 0.3);
     }
-
+    
     .header-icon i {
         font-size: 2.5rem;
         color: white;

@@ -806,6 +806,17 @@ async function showOrderDetail(orderId) {
                     <span class="order-info-label">Lần cập nhật cuối:</span>
                     <span class="order-info-value">${formatDate(order.updated_at || order.created_at)}</span>
                 </div>
+                <div class="order-info-row">
+                    <span class="order-info-label">Trạng thái thanh toán:</span>
+                    <span class="order-info-value">
+                        ${order.payment_status === 'paid' 
+                            ? '<span class="text-success fw-bold">✓ Đã thanh toán</span>' 
+                            : '<span class="text-warning fw-bold">⌛ Chờ thanh toán</span>'}
+                        ${order.payment_status !== 'paid' && order.payment_method === 'bank_transfer' 
+                            ? `<button class="btn btn-sm btn-success ms-2" onclick="markAsPaid(${order.OrderID})">Xác nhận đã thanh toán</button>` 
+                            : ''}
+                    </span>
+                </div>
             </div>
         `;
         
@@ -830,5 +841,43 @@ window.onclick = function(event) {
         closeOrderModal();
     }
 };
+</script>
+<script>
+// Separate function for marking as paid
+async function markAsPaid(orderId) {
+    if (!confirm('Xác nhận đơn hàng này đã được thanh toán?')) return;
+    
+    try {
+        const token = localStorage.getItem('api_token');
+        const csrf = window.Laravel && window.Laravel.csrfToken ? window.Laravel.csrfToken : (document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '');
+        
+        const response = await fetch(`/api/admin/orders/${orderId}/payment-status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Authorization': `Bearer ${token}`,
+                'X-CSRF-TOKEN': csrf
+            },
+            body: JSON.stringify({ status: 'paid' })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Cập nhật trạng thái thanh toán thành công!');
+            // Refresh modal
+            showOrderDetail(orderId);
+            // Refresh list
+            loadOrders(window.currentOrdersFilters ? (window.currentOrdersFilters.page || 1) : 1);
+        } else {
+            alert(data.message || 'Có lỗi xảy ra');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Lỗi hệ thống khi cập nhật thanh toán');
+    }
+}
 </script>
 @endpush

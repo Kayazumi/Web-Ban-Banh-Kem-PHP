@@ -97,6 +97,31 @@ class HomeController extends Controller
         $vat = $subtotal * 0.08;
         $total = $subtotal + $vat;
 
+        // Count Entremet cakes (category_id = 1)
+        $entremetsCount = 0;
+        foreach ($items as $item) {
+            $product = Product::find($item['id']);
+            if ($product && $product->category_id == 1) { // Entremet category
+                $entremetsCount += $item['quantity'];
+            }
+        }
+
+        // Auto-add gift if has Entremet
+        $giftItem = null;
+        if ($entremetsCount > 0) {
+            $gift = Product::find(12); // Bóng Bay và Dây Trang Trí
+            if ($gift) {
+                $giftItem = [
+                    'id' => $gift->ProductID,
+                    'name' => $gift->product_name,
+                    'quantity' => $entremetsCount,
+                    'price' => 0, // Free
+                    'image' => $gift->image_url,
+                    'is_gift' => true
+                ];
+            }
+        }
+
         // Fetch active promotions
         $promotions = Promotion::where('status', 'active')
             ->where(function($query) {
@@ -113,12 +138,13 @@ class HomeController extends Controller
             })
             ->get();
 
-        return view('orders', compact('items', 'subtotal', 'vat', 'total', 'promotions'));
+        return view('orders', compact('items', 'subtotal', 'vat', 'total', 'promotions', 'giftItem'));
     }
 
     public function history()
     {
         $orders = \App\Models\Order::where('customer_id', Auth::id())
+                    ->with('orderItems.product')
                     ->orderBy('created_at', 'desc')
                     ->paginate(9);
         return view('order-history', compact('orders'));
