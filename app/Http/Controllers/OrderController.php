@@ -15,7 +15,24 @@ use Illuminate\Support\Str;
 class OrderController extends Controller
 {
     /**
-     * Get user's orders
+     * Show customer's order history page
+     */
+    public function myOrders()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $orders = Order::where('customer_id', Auth::id())
+                      ->with(['orderItems.product'])
+                      ->orderBy('created_at', 'desc')
+                      ->paginate(5);
+
+        return view('order-history', compact('orders'));
+    }
+
+    /**
+     * Get user's orders (API)
      */
     public function index(Request $request)
     {
@@ -101,10 +118,9 @@ class OrderController extends Controller
             'ward' => 'nullable|string|max:50',
             'district' => 'nullable|string|max:50',
             'city' => 'nullable|string|max:50',
-            'payment_method' => 'required|in:cod,vnpay',
+            'payment_method' => 'required|in:cod,bank_transfer',
             'note' => 'nullable|string|max:500',
-            'delivery_date' => 'nullable|date|after:today',
-            'delivery_time' => 'nullable|string|max:20',
+            'delivery_time' => 'required|date|after:+2 hours',
         ]);
 
         if ($validator->fails()) {
@@ -120,44 +136,104 @@ class OrderController extends Controller
                         ->where('user_id', Auth::id())
                         ->get();
 
-        if ($cartItems->isEmpty()) {
+        $validItems = [];
+        $totalAmount = 0;
+        $shouldClearCart = false;
+
+        // 1. Try DB Cart
+        if ($cartItems->isNotEmpty()) {
+            $shouldClearCart = true;
+            foreach ($cartItems as $cartItem) {
+                if (!$cartItem->product || !$cartItem->product->is_active || $cartItem->product->quantity < $cartItem->quantity) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Sản phẩm '{$cartItem->product->product_name}' không đủ số lượng hoặc không khả dụng"
+                    ], 400);
+                }
+
+                $subtotal = $cartItem->product->price * $cartItem->quantity;
+                $totalAmount += $subtotal;
+
+                $validItems[] = [
+                    'product' => $cartItem->product,
+                    'quantity' => $cartItem->quantity,
+                    'subtotal' => $subtotal,
+                    'note' => $cartItem->note
+                ];
+            }
+        } 
+        // 2. Try Request Items (Direct Buy)
+        elseif ($request->has('items') && is_array($request->items)) {
+            foreach ($request->items as $itemData) {
+                if (!isset($itemData['id']) || !isset($itemData['quantity'])) continue;
+
+                $product = \App\Models\Product::find($itemData['id']);
+                $qty = (int)$itemData['quantity'];
+
+                if (!$product || !$product->is_active || $product->quantity < $qty) {
+                    $pName = $product ? $product->product_name : 'Sản phẩm';
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Sản phẩm '$pName' không đủ số lượng hoặc không khả dụng"
+                    ], 400);
+                }
+                
+                $sub = $product->price * $qty;
+                $totalAmount += $sub;
+                
+                $validItems[] = [
+                    'product' => $product,
+                    'quantity' => $qty,
+                    'subtotal' => $sub,
+                    'note' => null
+                ];
+            }
+        }
+
+        // 3. Process Gift Items
+        if ($request->has('gift_items') && is_array($request->gift_items)) {
+            foreach ($request->gift_items as $giftData) {
+                if (!isset($giftData['id'])) continue;
+                $product = \App\Models\Product::find($giftData['id']);
+                if ($product) {
+                    $validItems[] = [
+                        'product' => $product,
+                        'quantity' => (int)($giftData['quantity'] ?? 1),
+                        'subtotal' => 0, // Free
+                        'note' => 'Quà tặng'
+                    ];
+                }
+            }
+        }
+
+        if (empty($validItems)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Giỏ hàng trống'
+                'message' => 'Giỏ hàng trống hoặc không hợp lệ'
             ], 400);
         }
 
-        // Calculate totals and validate stock
-        $totalAmount = 0;
-        $validItems = [];
-
-        foreach ($cartItems as $cartItem) {
-            if (!$cartItem->product || !$cartItem->product->is_active || $cartItem->product->quantity < $cartItem->quantity) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Sản phẩm '{$cartItem->product->product_name}' không đủ số lượng hoặc không khả dụng"
-                ], 400);
-            }
-
-            $subtotal = $cartItem->product->price * $cartItem->quantity;
-            $totalAmount += $subtotal;
-
-            $validItems[] = [
-                'product' => $cartItem->product,
-                'quantity' => $cartItem->quantity,
-                'subtotal' => $subtotal,
-                'note' => $cartItem->note
-            ];
-        }
-
-        $shippingFee = 30000; // Fixed shipping fee
-        $finalAmount = $totalAmount + $shippingFee;
+        // Calculate VAT and Shipping to match logic in HomeController::checkout
+        // Frontend: VAT = 8%, Shipping = Free
+        $vatRate = 0.08;
+        $vatAmount = round($totalAmount * $vatRate);
+        $shippingFee = 0; // Free shipping
+        
+        $finalAmount = $totalAmount + $vatAmount + $shippingFee;
 
         DB::beginTransaction();
 
         try {
             // Generate order code
             $orderCode = 'ORD' . date('Ymd') . strtoupper(Str::random(6));
+
+            // Parse delivery_time to extract date and time
+            $deliveryDateTime = \Carbon\Carbon::parse($request->delivery_time);
+
+            // Set payment_status based on payment_method
+            // Bank transfer: auto-mark as paid (customer sees QR and pays immediately)
+            // COD: pending until delivery
+            $paymentStatus = ($request->payment_method === 'bank_transfer') ? 'paid' : 'pending';
 
             // Create order
             $order = Order::create([
@@ -174,9 +250,10 @@ class OrderController extends Controller
                 'shipping_fee' => $shippingFee,
                 'final_amount' => $finalAmount,
                 'payment_method' => $request->payment_method,
+                'payment_status' => $paymentStatus,
                 'note' => $request->note,
-                'delivery_date' => $request->delivery_date,
-                'delivery_time' => $request->delivery_time,
+                'delivery_date' => $deliveryDateTime->toDateString(),
+                'delivery_time' => $deliveryDateTime->format('H:i'),
             ]);
 
             // Create order items
@@ -196,8 +273,10 @@ class OrderController extends Controller
                 $item['product']->decrement('quantity', $item['quantity']);
             }
 
-            // Clear cart
-            Cart::where('user_id', Auth::id())->delete();
+            // Clear cart only if items came from DB cart
+            if ($shouldClearCart) {
+                Cart::where('user_id', Auth::id())->delete();
+            }
 
             DB::commit();
 
@@ -206,7 +285,7 @@ class OrderController extends Controller
                 'message' => 'Đặt hàng thành công',
                 'data' => [
                     'order' => $order->load('orderItems.product'),
-                    'redirect' => route('orders.show', $order->OrderID)
+                    'redirect' => route('orders.success', $order->OrderID)
                 ]
             ], 201);
 
@@ -285,5 +364,50 @@ class OrderController extends Controller
                 'message' => 'Có lỗi xảy ra khi hủy đơn hàng'
             ], 500);
         }
+    }
+
+    /**
+     * Order success page
+     */
+    public function success($id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $order = Order::with(['orderItems.product'])->find($id);
+
+        if (!$order) {
+            abort(404, 'Không tìm thấy đơn hàng');
+        }
+
+        // Only show to order owner
+        if ($order->customer_id !== Auth::id()) {
+            abort(403, 'Bạn không có quyền xem đơn hàng này');
+        }
+
+        // Generate VietQR URL if bank transfer
+        $qrUrl = null;
+        if ($order->payment_method === 'bank_transfer') {
+            $qrUrl = $this->generateVietQR($order);
+        }
+
+        return view('order-success', compact('order', 'qrUrl'));
+    }
+
+    /**
+     * Generate VietQR dynamic URL
+     */
+    private function generateVietQR($order)
+    {
+        $accountNo = '0817966088';
+        $accountName = urlencode('LACUISINE NGOT');
+        $amount = (int) $order->final_amount;
+        $description = urlencode($order->order_code);
+        $template = 'compact2'; // or 'compact', 'print', 'qr_only'
+        
+        // VietQR format: https://img.vietqr.io/image/{bin}-{account}-{template}.png?amount={amount}&addInfo={info}&accountName={name}
+        // Using default bank BIN for VietQR (you can specify exact bank if needed)
+        return "https://img.vietqr.io/image/970422-{$accountNo}-{$template}.png?amount={$amount}&addInfo={$description}&accountName={$accountName}";
     }
 }

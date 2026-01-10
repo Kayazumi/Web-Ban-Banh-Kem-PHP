@@ -7,7 +7,7 @@
     <h1 class="page-title text-center text-uppercase">Lịch sử đơn hàng</h1>
 
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-12">
             @if($orders->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover order-history-table">
@@ -16,7 +16,9 @@
                                 <th>Mã đơn hàng</th>
                                 <th>Ngày đặt</th>
                                 <th>Tổng tiền</th>
-                                <th>Trạng thái</th>
+                                <th>Phương thức TT</th>
+                                <th>Trạng thái TT</th>
+                                <th>Trạng thái đơn</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
@@ -30,6 +32,20 @@
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y H:i') }}</td>
                                     <td class="fw-bold text-success">{{ number_format($order->final_amount, 0, ',', '.') }} ₫</td>
+                                    <td>
+                                        @if($order->payment_method === 'cod')
+                                            <span class="badge bg-secondary">💵 COD</span>
+                                        @else
+                                            <span class="badge bg-info">🏦 Chuyển khoản</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($order->payment_status === 'paid')
+                                            <span class="badge bg-success">✓ Đã thanh toán</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark">⌛ Chưa TT</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @php
                                             $statusClasses = [
@@ -120,7 +136,7 @@
     
     .order-code-cell {
         font-family: monospace;
-        font-size: 1.1em;
+        font-size: 1em;
     }
     
     .btn-outline-primary {

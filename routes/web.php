@@ -12,6 +12,30 @@ use Illuminate\Support\Facades\DB;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [HomeController::class, 'products'])->name('products');
 Route::get('/products/{id}', [HomeController::class, 'productDetail'])->name('products.detail');
+
+// Order routes
+Route::post('/orders', [\App\Http\Controllers\OrderController::class, 'store'])->name('orders.store')->middleware('auth');
+Route::get('/orders/{id}/success', [\App\Http\Controllers\OrderController::class, 'success'])->name('orders.success')->middleware('auth');
+// Redirect old my-orders route to order.history (backward compatibility)
+Route::get('/my-orders', function() {
+    return redirect()->route('order.history');
+})->middleware('auth');
+
+
+// DEBUG: Temporary route to check order/user data
+Route::get('/debug-orders', function() {
+    $user = Auth::user();
+    $orders = \App\Models\Order::where('customer_id', $user->UserID)
+                ->orderBy('created_at', 'desc')
+                ->take(5)
+                ->get();
+    
+    $allOrders = \App\Models\Order::orderBy('created_at', 'desc')->take(5)->get();
+    
+    return view('debug-orders', compact('user', 'orders', 'allOrders'));
+})->middleware('auth');
+
+
 // Guest view route: open public site without exposing authenticated user data to JS/layout
 Route::get('/guest', [HomeController::class, 'guest'])->name('guest.home');
 

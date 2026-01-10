@@ -16,17 +16,17 @@
                     
                     <div class="form-group mb-3">
                         <label class="form-label">Họ tên *</label>
-                        <input type="text" name="full_name" class="form-control" value="{{ Auth::user()->full_name }}" required>
+                        <input type="text" name="customer_name" class="form-control" value="{{ Auth::user()->full_name }}" required>
                     </div>
                     
                     <div class="form-group mb-3">
                         <label class="form-label">Số điện thoại *</label>
-                        <input type="tel" name="phone" class="form-control" value="{{ Auth::user()->phone ?? '' }}" required>
+                        <input type="tel" name="customer_phone" class="form-control" value="{{ Auth::user()->phone ?? '' }}" required>
                     </div>
                     
                     <div class="form-group mb-3">
                         <label class="form-label">Địa chỉ mail*</label>
-                        <input type="email" name="email" class="form-control" value="{{ Auth::user()->email }}" required>
+                        <input type="email" name="customer_email" class="form-control" value="{{ Auth::user()->email }}" required>
                     </div>
                     
                     <div class="form-group mb-3">
@@ -55,6 +55,24 @@
                         </div>
                     </div>
                     
+                    <!-- Shipping Address -->
+                    <div id="shipping-address-group" class="mb-3">
+                        <div class="form-group mb-3">
+                            <label class="form-label">Địa chỉ nhận hàng *</label>
+                            <input type="text" name="shipping_address" class="form-control" required placeholder="Số nhà, tên đường...">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Phường/Xã</label>
+                                <input type="text" name="ward" class="form-control" placeholder="Nhập phường/xã...">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">Quận/Huyện</label>
+                                <input type="text" name="district" class="form-control" placeholder="Nhập quận/huyện...">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group mb-3">
                         <label class="form-label">Thành phố</label>
                         <input type="text" name="city" class="form-control" value="TP. Hồ Chí Minh">
@@ -64,6 +82,26 @@
                         <label class="form-label">Thời gian nhận bánh (sau ít nhất 2 giờ)*</label>
                         <div class="position-relative">
                             <input type="datetime-local" name="delivery_time" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method -->
+                    <h3 class="column-title mt-4">Phương thức thanh toán</h3>
+                    
+                    <div class="payment-methods mb-4">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="payment_method" 
+                                   id="payment_cod" value="cod" checked>
+                            <label class="form-check-label fw-bold" for="payment_cod">
+                                💵 Thanh toán khi nhận hàng (COD)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payment_method" 
+                                   id="payment_bank" value="bank_transfer">
+                            <label class="form-check-label" for="payment_bank">
+                                🏦 Chuyển khoản ngân hàng
+                            </label>
                         </div>
                     </div>
                     
@@ -83,7 +121,10 @@
                                 <span class="fw-bold pe-2">Tạm tính</span>
                             </div>
                             @foreach($items as $item)
-                            <div class="d-flex order-row p-3 border-bottom">
+                            <div class="d-flex order-row p-3 border-bottom align-items-center">
+                                @if(isset($item['image']) && $item['image'])
+                                <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}" class="order-item-img me-2">
+                                @endif
                                 <div class="flex-grow-1">
                                     <span class="item-name text-muted">{{ $item['name'] }}</span> 
                                     <span class="item-qty fw-bold">× {{ $item['quantity'] }}</span>
@@ -94,6 +135,22 @@
                                 <input type="hidden" name="items[{{ $loop->index }}][price]" value="{{ $item['price'] }}">
                             </div>
                             @endforeach
+                            
+                            @if(isset($giftItem) && $giftItem)
+                            <div class="d-flex order-row p-3 border-bottom bg-light align-items-center">
+                                @if(isset($giftItem['image']) && $giftItem['image'])
+                                <img src="{{ asset($giftItem['image']) }}" alt="{{ $giftItem['name'] }}" class="order-item-img me-2">
+                                @endif
+                                <div class="flex-grow-1">
+                                    <span class="item-name text-success">🎁 {{ $giftItem['name'] }}</span> 
+                                    <span class="item-qty fw-bold">× {{ $giftItem['quantity'] }}</span>
+                                    <small class="d-block text-muted fst-italic mt-1">Quà tặng khi mua Entremet</small>
+                                </div>
+                                <span class="item-price fw-bold text-success">Miễn phí</span>
+                                <input type="hidden" name="gift_items[0][id]" value="{{ $giftItem['id'] }}">
+                                <input type="hidden" name="gift_items[0][quantity]" value="{{ $giftItem['quantity'] }}">
+                            </div>
+                            @endif
                         </div>
                         
                         <div class="form-group mb-4">
@@ -239,6 +296,35 @@
     position: relative;
 }
 
+/* Order item images */
+.order-item-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    flex-shrink: 0; /* Don't shrink image */
+}
+
+.order-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap; /* Prevent wrapping */
+}
+
+.order-row .flex-grow-1 {
+    white-space: nowrap; /* Keep text on one line */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0; /* Allow flexbox to shrink */
+}
+
+.order-row .item-price {
+    flex-shrink: 0; /* Don't shrink price */
+    white-space: nowrap;
+    margin-left: 15px;
+}
+
 .action-area {
     display: flex;
     align-items: center; /* Align with top rows */
@@ -314,22 +400,64 @@
         document.querySelector('.total-amount').textContent = total.toLocaleString('vi-VN') + ' ₫';
     }
 
+    // Handle Picking/Delivery toggle
+    const deliveryMethodRadios = document.querySelectorAll('input[name="delivery_method"]');
+    const shippingGroup = document.getElementById('shipping-address-group');
+    const addrInput = document.querySelector('input[name="shipping_address"]');
+    
+    function toggleShipping() {
+        const isDelivery = document.getElementById('delivery').checked;
+        if (isDelivery) {
+            shippingGroup.style.display = 'block';
+            if (addrInput.value === 'Nhận tại cửa hàng') addrInput.value = '';
+        } else {
+            shippingGroup.style.display = 'none';
+            addrInput.value = 'Nhận tại cửa hàng';
+        }
+    }
+    
+    // Init and listen
+    deliveryMethodRadios.forEach(r => r.addEventListener('change', toggleShipping));
+    toggleShipping(); // Run on load
+
     document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Basic implementation for demonstration
-        if(!confirm('Xác nhận đặt hàng?')) return;
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...';
         
-        // Normally you would submit this via AJAX to an API endpoint
-        // e.g., /api/orders
-        
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData.entries());
-        
-        // Handle items array manually if needed or just submit form normally if backend supports it
-        // For now, let's just alert success
-        alert('Đặt hàng thành công! (Demo)');
-        window.location.href = '/';
+        try {
+            const formData = new FormData(this);
+            
+            const response = await fetch('{{ route("orders.store") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = result.data.redirect;
+            } else {
+                let msg = result.message || 'Có lỗi xảy ra khi đặt hàng';
+                if (result.errors) {
+                    msg += '\n' + Object.values(result.errors).flat().join('\n');
+                }
+                alert(msg);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Có lỗi hệ thống. Vui lòng thử lại.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     });
 </script>
 @endpush

@@ -146,6 +146,45 @@ class OrderController extends Controller
     }
 
     /**
+     * Update payment status.
+     */
+    public function updatePaymentStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:pending,paid,refunded',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy đơn hàng'
+            ], 404);
+        }
+
+        $order->update([
+            'payment_status' => $request->status,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cập nhật trạng thái thanh toán thành công',
+            'data' => [
+                'order' => $order
+            ]
+        ]);
+    }
+
+    /**
      * Get order statistics.
      */
     public function statistics(Request $request)
