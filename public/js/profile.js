@@ -1,6 +1,13 @@
 // Profile Page JavaScript - La Cuisine Ngọt
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Phát hiện role từ meta tag hoặc URL
+    const userRole = document.querySelector('meta[name="user-role"]')?.content || 
+                     (window.location.pathname.includes('/staff/') ? 'staff' : 
+                      window.location.pathname.includes('/admin/') ? 'admin' : 'customer');
+
+    console.log('Detected user role:', userRole); // Debug
+
     // ===== TAB SWITCHING =====
     const tabLinks = document.querySelectorAll('.tab-link');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -34,17 +41,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const formData = new FormData(this);
 
+            // Xác định API endpoint dựa trên role
+            const apiUrl = userRole === 'staff' 
+                ? '/staff/api/profile' 
+                : '/api/user/profile';
+
+            console.log('Calling API:', apiUrl); // Debug
+
             try {
-                const response = await fetch('/api/profile', {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: formData
                 });
 
+                console.log('Response status:', response.status); // Debug
+
+                // Kiểm tra Content-Type
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") === -1) {
+                    if (response.ok) {
+                        showAlert('success', 'Cập nhật thông tin thành công!');
+                        setTimeout(() => window.location.reload(), 1000);
+                        return;
+                    }
+                    throw new Error("Phản hồi từ máy chủ không hợp lệ (HTML).");
+                }
+
                 const data = await response.json();
+                console.log('Response data:', data); // Debug
 
                 if (data.success) {
                     showAlert('success', 'Cập nhật thông tin thành công!');
@@ -52,10 +81,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update displayed name if changed
                     const newName = formData.get('full_name');
                     if (newName) {
-                        const userNameDisplay = document.getElementById('userNameDisplay');
-                        if (userNameDisplay) {
-                            userNameDisplay.textContent = newName;
-                        }
+                        // Cập nhật tất cả các element hiển thị tên
+                        const nameDisplays = ['userNameDisplay', 'staffNameDisplay'];
+                        nameDisplays.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.textContent = newName;
+                        });
+                        
                         const userNameElements = document.querySelectorAll('.user-name');
                         userNameElements.forEach(el => el.textContent = newName);
                     }
@@ -103,15 +135,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const formData = new FormData(this);
 
+            // Xác định API endpoint dựa trên role
+            const apiUrl = userRole === 'staff' 
+                ? '/staff/api/password' 
+                : '/api/user/password';
+
+            console.log('Calling password API:', apiUrl); // Debug
+
             try {
-                const response = await fetch('/api/password', {
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: formData
                 });
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") === -1) {
+                    if (response.ok) {
+                        showAlert('success', 'Đổi mật khẩu thành công!');
+                        this.reset();
+                        return;
+                    }
+                    throw new Error("Phản hồi từ máy chủ không hợp lệ (HTML).");
+                }
 
                 const data = await response.json();
 

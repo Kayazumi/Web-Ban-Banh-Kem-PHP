@@ -8,23 +8,16 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\DB;
 
 // 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
-// 1. TRANG CHỦ - Luôn hiển thị trang chủ cho mọi người
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/products', [HomeController::class, 'products'])->name('products');
 Route::get('/products/{id}', [HomeController::class, 'productDetail'])->name('products.detail');
-// Guest view route: open public site without exposing authenticated user data to JS/layout
 Route::get('/guest', [HomeController::class, 'guest'])->name('guest.home');
 
 // 2. AUTHENTICATION - Cho khách chưa đăng nhập
 Route::middleware('guest')->group(function () {
-    // Hiển thị form đăng nhập
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-
-    // Nếu bạn có đăng ký
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-
-    // QUAN TRỌNG: Route xử lý AJAX login - ĐỔI THÀNH /login
     Route::post('/login', [AuthController::class, 'login']);
 });
 
@@ -42,8 +35,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         $deliveredCount = DB::table('orders')->where('order_status', 'delivery_successful')->count();
         $newCustomers = DB::table('users')->where('role', 'customer')->count();
 
-        // Determine default year/month in a DB-agnostic way:
-        // Option B: get latest created_at and parse with Carbon (works for MySQL/SQLite)
         $latestCreatedAt = DB::table('orders')
             ->whereNotNull('created_at')
             ->orderBy('created_at', 'desc')
@@ -68,10 +59,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
             if (!isset($monthly[$m])) $monthly[$m] = 0;
             $monthly[$m] += (float) $o->final_amount;
         }
-        // keep ordered by month
         ksort($monthly);
 
-        // top products by quantity sold
         $topProducts = DB::table('order_items')
             ->join('products', 'order_items.product_id', 'products.ProductID')
             ->selectRaw('products.product_name as name, SUM(order_items.quantity) as qty, SUM(order_items.subtotal) as revenue')
@@ -84,83 +73,77 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         return view('admin.dashboard', compact('totalRevenue', 'totalOrders', 'deliveredCount', 'newCustomers', 'monthly', 'topProducts', 'laravelUser', 'defaultYear', 'defaultMonth'));
     })->name('dashboard');
 
-    // Reports endpoints (session-authenticated) for dashboard charts
     Route::get('/reports/monthly', [\App\Http\Controllers\Admin\OrderController::class, 'monthlyRevenue']);
     Route::get('/reports/products', [\App\Http\Controllers\Admin\OrderController::class, 'productBreakdown']);
-    // Admin promotions page (web)
+    
     Route::get('/promotions', function () {
         return view('admin.promotions');
-    })->middleware(['auth', 'admin'])->name('promotions');
+    })->name('promotions');
 
     Route::get('/users', function () {
         return view('admin.users');
     })->name('users');
 
-    // Admin: products management (web)
     Route::get('/products', function () {
         return view('admin.products');
     })->name('products');
 
-    // Admin: orders management (web)
     Route::get('/orders', function () {
         return view('admin.orders');
     })->name('orders');
 
-    // Admin: complaints management (web)
     Route::get('/complaints', function () {
         return view('admin.complaints');
     })->name('complaints');
 
-    // Reports removed
+    // ❌ XÓA 2 DÒNG NÀY - Không cần route API riêng cho admin
+    // Route::post('/api/profile', [ProfileController::class, 'update'])->name('api.profile.update');
+    // Route::post('/api/password', [ProfileController::class, 'changePassword'])->name('api.password.update');
 });
 
 // 5. ROUTE CHUNG CHO NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (CUSTOMER / USER THƯỜNG)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', function () {
         $user = Auth::user();
-        // Nếu là nhân viên -> chuyển sang trang profile nhân viên
         if ($user->role === 'staff') {
             return redirect()->route('staff.profile');
         }
-        // Nếu là admin -> chuyển sang dashboard
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
-        // Nếu là khách hàng -> hiển thị view profile khách hàng
         return view('profile');
     })->name('profile');
+
+    // ✅ API cập nhật hồ sơ chung cho mọi user (Admin, Staff, Customer)
+    // QUAN TRỌNG: Không cần withoutMiddleware vì không có middleware 'admin' ở đây
+    Route::post('/api/user/profile', [ProfileController::class, 'update'])
+        ->name('user.profile.update');
+
+    Route::post('/api/user/password', [ProfileController::class, 'changePassword'])
+        ->name('user.password.update');
 
     Route::get('/cart', function () {
         return view('cart');
     })->name('cart');
 
     Route::get('/orders', [HomeController::class, 'checkout'])->name('orders');
-
-    // Order History - requested URL: /oderdetail
     Route::get('/oderdetail', [HomeController::class, 'history'])->name('order.history');
     Route::get('/oderdetail/{id}', [HomeController::class, 'orderDetail'])->name('order.details');
 
-Route::get('/fix-db-schema', function() {
-    try {
-        Illuminate\Support\Facades\Schema::table('contacts', function ($table) {
-            if (!Illuminate\Support\Facades\Schema::hasColumn('contacts', 'name')) {
-                $table->string('name')->nullable()->after('customer_id');
-            }
-            if (!Illuminate\Support\Facades\Schema::hasColumn('contacts', 'email')) {
-                $table->string('email')->nullable()->after('name');
-            }
-            $table->unsignedBigInteger('customer_id')->nullable()->change();
-        });
-        return "Schema fixed successfully!";
-    } catch (\Exception $e) {
-        return "Error: " . $e->getMessage();
-    }
-});
-
+    Route::get('/fix-db-schema', function () {
+        try {
+            Illuminate\Support\Facades\Schema::table('contacts', function ($table) {
+                if (!Illuminate\Support\Facades\Schema::hasColumn('contacts', 'name')) {
+                    $table->string('name')->nullable()->after('customer_id');
+                }
+                if (!Illuminate\Support\Facades\Schema::hasColumn('contacts', 'email')) {
+                    $table->string('email')->nullable()->after('name');
+                }
+                $table->unsignedBigInteger('customer_id')->nullable()->change();
+            });
+            return "Schema fixed successfully!";
+        } catch (\Exception $e) {
+            return "Error: " . $e->getMessage();
+        }
+    });
 });
 
 // 6. ROUTE CHO NHÂN VIÊN (STAFF)
-Route::middleware(['auth'])->prefix('staff')->name('staff.')->group(function () {
-    // Đảm bảo ProfileController::index trả về view staff dashboard của bạn
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-});
+require __DIR__ . '/staff.php';

@@ -1,69 +1,48 @@
 console.log('complaints.js loaded successfully!');
 
-// Hàm debounce để tránh gọi API quá nhiều khi gõ tìm kiếm
-function debounce(func, delay) {
-    let timeout;
-    return function () {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, arguments), delay);
-    };
-}
+// ========================================================================
+// QUẢN LÝ KHIẾU NẠI - NHÂN VIÊN (PHÂN TRANG CLIENT-SIDE)
+// ========================================================================
 
+let complaintsData = [];
+let filteredComplaints = [];
+let currentPage = 1;
+const itemsPerPage = 10;
+
+// ========================================================================
+// 1. KHỞI TẠO
+// ========================================================================
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOM fully loaded - starting complaints page');
-
-    // Gọi loadComplaints ngay khi trang tải
     loadComplaints();
-
-    // Tìm kiếm realtime (debounce 300ms)
-    const searchInput = document.getElementById('complaint-search');
-    if (searchInput) {
-        searchInput.addEventListener('input', debounce(loadComplaints, 300));
-    } else {
-        console.error('Không tìm thấy #complaint-search');
-    }
-
-    // Filter checkbox
-    document.querySelectorAll('.filter-checkbox input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', loadComplaints);
-    });
+    initEventListeners();
 });
 
-// Tải danh sách khiếu nại
-async function loadComplaints() {
+function initEventListeners() {
+    const searchInput = document.getElementById('complaint-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(() => applyFiltersAndPaginate(), 300));
+    }
+
+    document.querySelectorAll('.filter-checkbox input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => applyFiltersAndPaginate());
+    });
+}
+
+// ========================================================================
+// 2. TẢI DANH SÁCH KHIẾU NẠI
+// ========================================================================
+async function loadComplaints(resetPage = true) {
+    if (resetPage) currentPage = 1;
     console.log('loadComplaints() called');
 
-    const search = document.getElementById('complaint-search')?.value.trim() || '';
-    let status = 'all';
-
-    const checkedBoxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
-    const checkedValues = Array.from(checkedBoxes).map(cb => cb.value);
-
-    if (checkedValues.length > 0 && !checkedValues.includes('all')) {
-        status = checkedValues.join(',');
-    }
-
-    const tbody = document.getElementById('complaints-table-body');
-    if (!tbody) {
-        console.error('Không tìm thấy #complaints-table-body');
-        return;
-    }
-
-    // Hiển thị loading
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#666;">Đang tải dữ liệu...</td></tr>';
-
     try {
-        const params = new URLSearchParams();
-        if (search) params.append('search', search);
-        if (status !== 'all') params.append('status', status);
-
-        const url = `/staff/api/complaints?${params.toString()}`;
-        console.log('Calling API:', url);
-
-        const response = await fetch(url, {
+        // Tải toàn bộ dữ liệu (không truyền params search/status để lấy hết về client xử lý)
+        const response = await fetch('/staff/api/complaints', {
             headers: {
                 'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
             }
         });
 
@@ -72,68 +51,195 @@ async function loadComplaints() {
         }
 
         const result = await response.json();
-        console.log('API Response:', result);
+        complaintsData = result.data || [];
+        applyFiltersAndPaginate();
 
-        // Kiểm tra cấu trúc response
-        if (!result || !result.data) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#888;">Không có dữ liệu trả về từ server</td></tr>';
-            return;
-        }
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách khiếu nại:', error);
+        const tbody = document.getElementById('complaints-table-body');
+        if(tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:red;">Lỗi kết nối: ${error.message}</td></tr>`;
+    }
+}
 
-        if (result.data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#888;">Không có khiếu nại nào phù hợp</td></tr>';
-            return;
-        }
+// ========================================================================
+// ÁP DỤNG FILTER + PHÂN TRANG
+// ========================================================================
+function applyFiltersAndPaginate() {
+    const searchTerm = document.getElementById('complaint-search')?.value.toLowerCase().trim() || '';
+    
+    // Lấy các checkbox được chọn
+    const selectedStatuses = Array.from(document.querySelectorAll('.filter-checkbox input:checked'))
+        .map(cb => cb.value)
+        .filter(val => val !== 'all'); // Loại bỏ 'all' nếu có
 
-        // Xóa bảng cũ
-        tbody.innerHTML = '';
+    let temp = complaintsData.filter(item => {
+        // Logic tìm kiếm
+        const matchesSearch = !searchTerm ||
+            (item.complaint_code && item.complaint_code.toLowerCase().includes(searchTerm)) ||
+            (item.title && item.title.toLowerCase().includes(searchTerm)) ||
+            (item.customer && item.customer.full_name && item.customer.full_name.toLowerCase().includes(searchTerm));
 
-        // Map trạng thái sang tiếng Việt
-        const statusText = {
-            pending: 'Chờ xử lý',
-            processing: 'Đang xử lý',
-            resolved: 'Đã giải quyết'
-        };
+        // Logic lọc trạng thái
+        // Nếu không chọn gì hoặc chọn 'all' (đã lọc ở trên) thì lấy hết, ngược lại check includes
+        const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(item.status);
 
-        result.data.forEach(item => {
-            // *** QUAN TRỌNG: Tìm ID đúng của khiếu nại ***
-            // Thử các trường phổ biến: id, complaint_id, ComplaintID, complaintId
-            const complaintId = item.id || item.complaint_id || item.ComplaintID || item.complaintId || null;
+        return matchesSearch && matchesStatus;
+    });
 
-            if (!complaintId) {
-                console.warn('Item không có ID:', item);
-            }
+    const totalItems = temp.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-            const row = document.createElement('tr');
+    // Reset về trang 1 nếu trang hiện tại vượt quá tổng số trang
+    if (currentPage > totalPages && totalPages > 0) currentPage = 1;
 
-            row.innerHTML = `
-                <td>${item.complaint_code || 'N/A'}</td>
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    filteredComplaints = temp.slice(start, end);
+
+    renderComplaints();
+    renderPagination(totalPages, totalItems);
+}
+
+// ========================================================================
+// 3. RENDER BẢNG KHIẾU NẠI
+// ========================================================================
+function renderComplaints() {
+    const tbody = document.getElementById('complaints-table-body');
+    if (!tbody) return;
+
+    if (filteredComplaints.length === 0) {
+        tbody.innerHTML = `
+            <tr class="no-data">
+                <td colspan="7" style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px; display:block;"></i>
+                    Không tìm thấy khiếu nại nào
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    const statusText = {
+        pending: 'Chờ xử lý',
+        processing: 'Đang xử lý',
+        resolved: 'Đã giải quyết'
+    };
+
+    tbody.innerHTML = filteredComplaints.map(item => {
+        const complaintId = item.id || item.complaint_id || item.ComplaintID || item.complaintId;
+        
+        return `
+            <tr>
+                <td><span class="code-badge">${item.complaint_code || 'N/A'}</span></td>
                 <td>${item.order?.order_code || 'N/A'}</td>
                 <td>${item.customer?.full_name || 'Khách lạ'}</td>
-                <td style="line-height:1.5; max-width:300px;">${item.title || item.content || ''}</td>
-                <td>${item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : 'N/A'}</td>
+                <td style="line-height:1.5; max-width:300px;">
+                    <div class="truncate-text" title="${item.title || item.content}">${item.title || item.content || ''}</div>
+                </td>
+                <td>${formatDate(item.created_at)}</td>
                 <td>
                     <span class="badge-status status-${item.status || 'unknown'}">
                         ${statusText[item.status] || item.status || 'Không rõ'}
                     </span>
                 </td>
                 <td style="text-align:center;">
-                    <button type="button" class="btn-process" ${complaintId ? `onclick="openComplaintModal(${complaintId})"` : 'disabled'} title="Xử lý">
+                    <button type="button" class="btn-process" onclick="openComplaintModal(${complaintId})" title="Xử lý">
                         <i class="fas fa-edit"></i>
                     </button>
                 </td>
-            `;
+            </tr>
+        `;
+    }).join('');
+}
 
-            tbody.appendChild(row);
-        });
+// ========================================================================
+// 4. PHÂN TRANG (GIỐNG ORDERS.JS)
+// ========================================================================
+function renderPagination(totalPages, totalItems) {
+    const oldPagination = document.querySelector('.pagination-controls');
+    if (oldPagination) oldPagination.remove();
 
-    } catch (error) {
-        console.error('Lỗi khi tải danh sách khiếu nại:', error);
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:red;">Lỗi kết nối: ${error.message}</td></tr>`;
+    if (totalPages <= 1) return;
+
+    let html = `
+        <div class="pagination-controls">
+            <div class="pagination-info">
+                Hiển thị ${(currentPage - 1) * itemsPerPage + 1} -
+                ${Math.min(currentPage * itemsPerPage, totalItems)}
+                của ${totalItems} khiếu nại
+            </div>
+            <div class="pagination-buttons">
+    `;
+
+    if (currentPage > 1) {
+        html += `<button class="page-btn" onclick="changePage(${currentPage - 1})">&laquo; Trước</button>`;
+    }
+
+    if (totalPages <= 10) {
+        for (let i = 1; i <= totalPages; i++) {
+            html += i === currentPage 
+                ? `<strong class="page-btn active">${i}</strong>`
+                : `<button class="page-btn" onclick="changePage(${i})">${i}</button>`;
+        }
+    } else {
+        for (let i = 1; i <= 3; i++) {
+            html += i === currentPage
+                ? `<strong class="page-btn active">${i}</strong>`
+                : `<button class="page-btn" onclick="changePage(${i})">${i}</button>`;
+        }
+        html += `<span class="page-dots">...</span>`;
+        
+        html += currentPage === totalPages
+            ? `<strong class="page-btn active">${totalPages}</strong>`
+            : `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+
+        html += `
+            <div class="page-jump">
+                <input type="number" id="jumpPageInput" min="1" max="${totalPages}" value="${currentPage}" placeholder="Trang">
+                <button class="page-btn" onclick="jumpToPage(${totalPages})">Go</button>
+            </div>
+        `;
+    }
+
+    if (currentPage < totalPages) {
+        html += `<button class="page-btn" onclick="changePage(${currentPage + 1})">Sau &raquo;</button>`;
+    }
+
+    html += `</div></div>`;
+
+    // Chèn vào sau bảng (tìm wrapper của bảng)
+    const tableWrapper = document.querySelector('.complaints-table-wrapper') || document.querySelector('.table-responsive') || document.getElementById('complaints-table-body').parentNode.parentNode;
+    if(tableWrapper) {
+        tableWrapper.insertAdjacentHTML('beforeend', html);
     }
 }
 
-// Mở modal chi tiết
+function jumpToPage(totalPages) {
+    const input = document.getElementById('jumpPageInput');
+    let page = parseInt(input.value);
+
+    if (isNaN(page) || page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
+
+    input.value = page;
+
+    if (page !== currentPage) {
+        currentPage = page;
+        applyFiltersAndPaginate();
+    }
+}
+
+function changePage(page) {
+    currentPage = page;
+    applyFiltersAndPaginate();
+    // Scroll lên đầu bảng
+    const table = document.getElementById('complaints-table-body');
+    if(table) table.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ========================================================================
+// 5. CÁC HÀM XỬ LÝ MODAL & API (GIỮ NGUYÊN LOGIC CŨ)
+// ========================================================================
 async function openComplaintModal(id) {
     console.log('openComplaintModal called with id:', id);
 
@@ -275,4 +381,21 @@ async function handleUpdateComplaint(options = { send_to_customer: false }) {
         btnOutline.textContent = originalOutline;
         btnSave.textContent = originalSave;
     }
+}
+
+// ========================================================================
+// 6. HELPER FUNCTIONS
+// ========================================================================
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
 }
