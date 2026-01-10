@@ -46,7 +46,7 @@ class PromotionController extends Controller
             'promotion_code' => $request->code,
             'promotion_name' => $request->title,
             'description' => $request->description ?? $request->title,
-            'promotion_type' => $request->type === 'percent' ? 'percentage' : ($request->type === 'fixed' ? 'fixed_amount' : 'free_shipping'),
+            'promotion_type' => $request->type === 'percent' ? 'percent' : ($request->type === 'fixed' ? 'fixed_amount' : 'free_shipping'),
             'discount_value' => $request->value,
             'min_order_value' => $request->min_order,
             'quantity' => $request->quantity ?? 0,
@@ -82,7 +82,7 @@ class PromotionController extends Controller
         if ($request->has('code')) $updateData['promotion_code'] = $request->code;
         if ($request->has('description')) $updateData['description'] = $request->description;
         if ($request->has('type')) {
-            $updateData['promotion_type'] = $request->type === 'percent' ? 'percentage' : ($request->type === 'fixed' ? 'fixed_amount' : 'free_shipping');
+            $updateData['promotion_type'] = $request->type === 'percent' ? 'percent' : ($request->type === 'fixed' ? 'fixed_amount' : 'free_shipping');
         }
         if ($request->has('value')) $updateData['discount_value'] = $request->value;
         if ($request->has('min_order')) $updateData['min_order_value'] = $request->min_order;

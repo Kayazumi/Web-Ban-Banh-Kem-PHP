@@ -133,7 +133,7 @@ class OrderController extends Controller
 
         // Get user's cart for reference (only to clear it later if needed)
         // We do NOT use cart items to build order. We use request->items because that is what user confirmed.
-        
+
         $validItems = [];
         $totalAmount = 0;
         $shouldClearCart = false;
@@ -146,10 +146,11 @@ class OrderController extends Controller
         // Process Request Items
         if ($request->has('items') && is_array($request->items)) {
             foreach ($request->items as $itemData) {
-                if (!isset($itemData['id']) || !isset($itemData['quantity'])) continue;
+                if (!isset($itemData['id']) || !isset($itemData['quantity']))
+                    continue;
 
                 $product = \App\Models\Product::find($itemData['id']);
-                $qty = (int)$itemData['quantity'];
+                $qty = (int) $itemData['quantity'];
 
                 if (!$product || !$product->is_active || $product->quantity < $qty) {
                     $pName = $product ? $product->product_name : 'Sản phẩm';
@@ -158,10 +159,10 @@ class OrderController extends Controller
                         'message' => "Sản phẩm '$pName' không đủ số lượng hoặc không khả dụng"
                     ], 400);
                 }
-                
+
                 $sub = $product->price * $qty;
                 $totalAmount += $sub;
-                
+
                 $validItems[] = [
                     'product' => $product,
                     'quantity' => $qty,
@@ -174,12 +175,13 @@ class OrderController extends Controller
         // 3. Process Gift Items
         if ($request->has('gift_items') && is_array($request->gift_items)) {
             foreach ($request->gift_items as $giftData) {
-                if (!isset($giftData['id'])) continue;
+                if (!isset($giftData['id']))
+                    continue;
                 $product = \App\Models\Product::find($giftData['id']);
                 if ($product) {
                     $validItems[] = [
                         'product' => $product,
-                        'quantity' => (int)($giftData['quantity'] ?? 1),
+                        'quantity' => (int) ($giftData['quantity'] ?? 1),
                         'subtotal' => 0, // Free
                         'note' => 'Quà tặng'
                     ];
@@ -195,10 +197,27 @@ class OrderController extends Controller
         }
 
         // Calculate VAT and Shipping to match logic in HomeController::checkout
-        // Frontend: VAT = 8%, Shipping = Free
+        // Frontend: VAT = 8%
         $vatRate = 0.08;
         $vatAmount = round($totalAmount * $vatRate);
-        $shippingFee = 0; // Free shipping
+
+        // Shipping Logic
+        $shippingFee = 0;
+        $deliveryMethod = $request->input('delivery_method', 'pickup');
+
+        if ($deliveryMethod === 'delivery') {
+            // Check threshold (Subtotal + VAT >= 700k ? or just Subtotal? 
+            // Usually "Order Value" implies Subtotal. Let's use Subtotal + VAT to be generous or match "Total Bill")
+            // Let's use (TotalAmount + VAT) as the basis for "Order Value"
+            $currentTotal = $totalAmount + $vatAmount;
+
+            if ($currentTotal >= 700000) {
+                $shippingFee = 0;
+            } else {
+                $shippingFee = 30000;
+            }
+        }
+        // If pickup, shippingFee remains 0
 
         // Calculate Discount from Promotion Code
         $discountAmount = 0;
@@ -217,6 +236,8 @@ class OrderController extends Controller
                     }
                 } elseif ($promotion->promotion_type === 'fixed_amount') {
                     $discountAmount = $promotion->discount_value;
+                } elseif ($promotion->promotion_type === 'free_shipping') {
+                    $shippingFee = 0;
                 }
             }
         }
@@ -449,8 +470,8 @@ class OrderController extends Controller
 
         // Check if order exists and belongs to the user
         $order = Order::where('customer_id', Auth::id())
-                     ->where('OrderID', $id)
-                     ->first();
+            ->where('OrderID', $id)
+            ->first();
 
         if (!$order) {
             return response()->json([
