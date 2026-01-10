@@ -461,12 +461,22 @@
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .contact-form h3 {
-    font-size: 1.5rem;
-    color: #324F29;
+    font-size: 1rem;
+    color: #666;
     margin-bottom: 1.5rem;
+    font-weight: normal;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.contact-form button[type="submit"] {
+    display: block;
+    margin: 0 auto;
 }
 
 /* ========================================================================
@@ -688,8 +698,8 @@
    BUTTON STYLES
    ======================================================================== */
 .btn-primary {
-    background-color: #c4a574 !important;
-    border-color: #c4a574 !important;
+    background-color: #324F29 !important;
+    border-color: #324F29 !important;
     color: white !important;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
     position: relative;
@@ -715,16 +725,17 @@
 }
 
 .btn-primary:hover {
-    background-color: #b89560 !important;
-    border-color: #b89560 !important;
+    background-color: #1f3810 !important;
+    border-color: #1f3810 !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 5px 15px rgba(196, 165, 116, 0.4) !important;
+    box-shadow: 0 5px 15px rgba(50, 79, 41, 0.4) !important;
 }
 
 .btn-primary:active {
     transform: translateY(0) !important;
-    box-shadow: 0 2px 8px rgba(196, 165, 116, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(50, 79, 41, 0.3) !important;
 }
+
 /* Button Outline Styles */
 .btn-outline {
     background: transparent !important;
@@ -755,5 +766,3 @@
 .btn:hover {
     text-decoration: none;
 }
-
-

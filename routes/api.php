@@ -45,6 +45,8 @@ Route::controller(ProductController::class)->group(function () {
 
 Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store']);
 
+
+
 // Protected API routes (require authentication)
 Route::middleware('auth')->group(function () {
     // Cart API
