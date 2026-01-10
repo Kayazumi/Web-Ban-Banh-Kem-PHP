@@ -9,6 +9,7 @@
     <div class="checkout-wrapper">
         <form action="{{ route('api.orders.store') }}" method="POST" id="checkoutForm">
             @csrf
+            <input type="hidden" name="is_buy_now" value="{{ $isBuyNow ? '1' : '0' }}">
             <div class="row">
                 <!-- Cột 1: Thông tin người dùng -->
                 <div class="col-md-6 info-column pe-md-5">
@@ -89,18 +90,11 @@
                     <h3 class="column-title mt-4">Phương thức thanh toán</h3>
                     
                     <div class="payment-methods mb-4">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="payment_method" 
-                                   id="payment_cod" value="cod" checked>
-                            <label class="form-check-label fw-bold" for="payment_cod">
-                                💵 Thanh toán khi nhận hàng (COD)
-                            </label>
-                        </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="payment_method" 
-                                   id="payment_bank" value="bank_transfer">
-                            <label class="form-check-label" for="payment_bank">
-                                🏦 Chuyển khoản ngân hàng
+                                   id="payment_bank" value="bank_transfer" checked>
+                            <label class="form-check-label fw-bold" for="payment_bank">
+                                🏦 Chuyển khoản ngân hàng (Quét mã QR)
                             </label>
                         </div>
                     </div>

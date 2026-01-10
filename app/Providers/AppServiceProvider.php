@@ -19,6 +19,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Share cart count globally
+        view()->composer('*', function ($view) {
+            $cartCount = 0;
+            if (\Illuminate\Support\Facades\Auth::check()) {
+                $cartCount = \App\Models\Cart::where('user_id', \Illuminate\Support\Facades\Auth::id())->sum('quantity');
+            }
+            $view->with('cartCount', $cartCount);
+        });
     }
 }
