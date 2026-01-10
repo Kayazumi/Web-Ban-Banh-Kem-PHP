@@ -721,7 +721,7 @@ function fileToBase64(file) {
 }
 
 async function deleteProduct(productId) {
-    showConfirm('Bạn có chắc chắn muốn xóa sản phẩm này?', function() {
+    showConfirm('Bạn có chắc chắn muốn xóa sản phẩm này?', async function() {
 
     try {
         const response = await fetch(`/api/admin/products/${productId}`, {
@@ -743,6 +743,7 @@ async function deleteProduct(productId) {
         console.error('Error deleting product:', error);
         showAlert('Có lỗi xảy ra');
     }
+    });
 }
 
 function closeModal() {

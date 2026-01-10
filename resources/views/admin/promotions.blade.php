@@ -906,7 +906,7 @@ function closePromoModal(){
 }
 
 async function deletePromo(){
-    showConfirm('Bạn có chắc chắn muốn xóa khuyến mãi này?', function() {
+    showConfirm('Bạn có chắc chắn muốn xóa khuyến mãi này?', async function() {
     
     try {
         const token = localStorage.getItem('api_token');
@@ -929,6 +929,7 @@ async function deletePromo(){
         console.error(e);
         showAlert('Lỗi kết nối');
     }
+    });
 }
 </script>
 @endpush

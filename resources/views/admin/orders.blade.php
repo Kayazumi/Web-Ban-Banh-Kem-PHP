@@ -878,6 +878,7 @@ async function markAsPaid(orderId) {
         console.error(e);
         showAlert('Lỗi hệ thống khi cập nhật thanh toán');
     }
+    });
 }
 </script>
 @endpush

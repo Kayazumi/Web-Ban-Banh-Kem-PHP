@@ -688,9 +688,9 @@ function closeComplaintModal() {
 
 async function deleteComplaint(complaintId) {
     showConfirm('Bạn có chắc chắn muốn xóa khiếu nại này?', function() {
-    
-    // Implement delete functionality if needed
-    showAlert('Chức năng xóa chưa được triển khai');
+        // Implement delete functionality if needed
+        showAlert('Chức năng xóa chưa được triển khai');
+    });
 }
 
 function formatDate(dateString) {

@@ -741,7 +741,7 @@ function closeUserModal() {
 
 async function toggleStatus(userId, currentStatus) {
     const action = currentStatus === 'active' ? 'khóa' : 'mở khóa';
-    showConfirm(`Bạn có chắc chắn muốn ${action} tài khoản này?`, function() {
+    showConfirm(`Bạn có chắc chắn muốn ${action} tài khoản này?`, async function() {
 
     const newStatus = currentStatus === 'active' ? 'banned' : 'active';
 
@@ -775,6 +775,7 @@ async function toggleStatus(userId, currentStatus) {
         console.error('Error updating user status:', error);
         showAlert('Có lỗi xảy ra');
     }
+    });
 }
 
 function getRoleText(role) {
