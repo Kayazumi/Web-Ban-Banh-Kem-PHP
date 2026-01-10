@@ -74,7 +74,7 @@ window.formatPrice = function (price) {
 
 // DOM ready
 document.addEventListener('DOMContentLoaded', function () {
-    updateCartCount();
+    // updateCartCount(); // Removed to prevent flicker - handled by server-side View Composer
 
     // Auto-hide alerts
     const alerts = document.querySelectorAll('.alert');

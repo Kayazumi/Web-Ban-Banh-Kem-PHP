@@ -61,9 +61,11 @@ class HomeController extends Controller
     {
         $items = [];
         $subtotal = 0;
+        $isBuyNow = false;
 
         // Case 1: Buy Now (Direct purchase of one item)
         if ($request->has('product_id') && $request->has('quantity')) {
+            $isBuyNow = true;
             $product = Product::find($request->product_id);
             if ($product) {
                 $quantity = (int) $request->quantity;
@@ -138,7 +140,7 @@ class HomeController extends Controller
             })
             ->get();
 
-        return view('orders', compact('items', 'subtotal', 'vat', 'total', 'promotions', 'giftItem'));
+        return view('orders', compact('items', 'subtotal', 'vat', 'total', 'promotions', 'giftItem', 'isBuyNow'));
     }
 
     public function history()

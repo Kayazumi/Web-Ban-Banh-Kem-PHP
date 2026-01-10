@@ -159,6 +159,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [HomeController::class, 'checkout'])->name('orders');
     Route::get('/oderdetail', [HomeController::class, 'history'])->name('order.history');
     Route::get('/oderdetail/{id}', [HomeController::class, 'orderDetail'])->name('order.details');
+    Route::post('/orders/{id}/submit-complaint', [\App\Http\Controllers\OrderController::class, 'submitComplaint'])->name('orders.submit-complaint');
 
     Route::get('/fix-db-schema', function () {
         try {

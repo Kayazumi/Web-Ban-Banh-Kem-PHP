@@ -9,6 +9,7 @@
     <div class="checkout-wrapper">
         <form action="{{ route('api.orders.store') }}" method="POST" id="checkoutForm">
             @csrf
+            <input type="hidden" name="is_buy_now" value="{{ $isBuyNow ? '1' : '0' }}">
             <div class="row">
                 <!-- Cột 1: Thông tin người dùng -->
                 <div class="col-md-6 info-column pe-md-5">
@@ -89,18 +90,11 @@
                     <h3 class="column-title mt-4">Phương thức thanh toán</h3>
                     
                     <div class="payment-methods mb-4">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="payment_method" 
-                                   id="payment_cod" value="cod" checked>
-                            <label class="form-check-label fw-bold" for="payment_cod">
-                                💵 Thanh toán khi nhận hàng (COD)
-                            </label>
-                        </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="payment_method" 
-                                   id="payment_bank" value="bank_transfer">
-                            <label class="form-check-label" for="payment_bank">
-                                🏦 Chuyển khoản ngân hàng
+                                   id="payment_bank" value="bank_transfer" checked>
+                            <label class="form-check-label fw-bold" for="payment_bank">
+                                🏦 Chuyển khoản ngân hàng (Quét mã QR)
                             </label>
                         </div>
                     </div>
@@ -188,7 +182,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-secondary">Phí vận chuyển</span>
-                                    <span class="fw-bold">Miễn phí</span>
+                                    <span class="fw-bold shipping-fee-text text-success">Miễn phí</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-secondary">Giảm giá</span>
@@ -358,6 +352,32 @@
     document.getElementById('promotionSelect')?.addEventListener('change', calculateTotal);
 
     function calculateTotal() {
+        // --- 1. Calculate Shipping Fee ---
+        let shippingFee = 0;
+        const isDelivery = document.getElementById('delivery').checked;
+        const baseOrderValue = originalSubtotal + originalVat; // Value to check for free ship threshold
+
+        if (isDelivery) {
+            if (baseOrderValue >= 700000) {
+                shippingFee = 0;
+            } else {
+                shippingFee = 30000;
+            }
+        }
+        
+        // Update Shipping Fee Display
+        const shippingDisplay = document.querySelector('.shipping-fee-text');
+        if (shippingDisplay) {
+            if (shippingFee === 0) {
+                shippingDisplay.textContent = 'Miễn phí';
+                shippingDisplay.classList.add('text-success');
+            } else {
+                shippingDisplay.textContent = shippingFee.toLocaleString('vi-VN') + ' ₫';
+                shippingDisplay.classList.remove('text-success');
+            }
+        }
+
+        // --- 2. Calculate Discount ---
         const select = document.getElementById('promotionSelect');
         const selectedOption = select.options[select.selectedIndex];
         
@@ -374,26 +394,52 @@
             if (originalSubtotal < minOrder) {
                 showAlert(`Đơn hàng tối thiểu ${minOrder.toLocaleString('vi-VN')}₫ để sử dụng mã này`);
                 select.value = '';
-                return;
-            }
-            
-            // Calculate discount based on type
-            if (type === 'percent') {
-                discount = originalSubtotal * (value / 100);
-                if (maxDiscount > 0) {
-                    discount = Math.min(discount, maxDiscount);
+                // Recursively call calculateTotal to reset discount
+                // But careful of infinite loop. Just returning is safer if we reset select.value
+                // But we need to recalculate totals with 0 discount.
+                // Let's just set discount to 0 and continue.
+                // We already set select.value = '', so next time it won't be entered.
+                // But for this run, we need to ensure discount is 0.
+            } else {
+                 // Calculate discount based on type
+                if (type === 'percent') {
+                    discount = originalSubtotal * (value / 100);
+                    if (maxDiscount > 0) {
+                        discount = Math.min(discount, maxDiscount);
+                    }
+                } else if (type === 'fixed_amount') {
+                    discount = value;
+                } else if (type === 'free_shipping') {
+                    // Start of tricky part: "Free Shipping" promotion.
+                    // Usually this sets shippingFee to 0. 
+                    // But our backend PromotionController logic (OrderController logic) says:
+                    // OrderController: discountAmount = 0 for free_shipping (lines 204-222 don't handle free_shipping explicitly to reduce shipping fee locally, they set discountAmount. 
+                    // Actually OrderController lines 213-221 only handle 'percent' and 'fixed_amount'. 
+                    // It ignores 'free_shipping' there!
+                    // This means 'free_shipping' coupon currently does NOTHING in backend?
+                    // Let's check OrderController again.
+                    // Line 203: $discountAmount calc.
+                    // Line 213: if percent... elseif fixed_amount...
+                    // No else for free_shipping.
+                    // So Backend ignores free_shipping. User didn't ask to fix that explicitly, but "đảm bảo các mã giảm giá hoạt động đúng".
+                    // I should probably fix the Backend to handle free_shipping coupon too if I see it here.
+                    // But for now let's focus on the "Shipping Logic" request which is automatic based on price.
+                    
+                    // If the user selects a "Free Ship" coupon, we should force shippingFee to 0.
+                    shippingFee = 0; 
+                    // And update display to "Miễn phí (Coupon)"? Or just "Miễn phí"
+                    if (shippingDisplay) {
+                        shippingDisplay.textContent = 'Miễn phí';
+                        shippingDisplay.classList.add('text-success');
+                    }
+                    discount = 0; // It's a shipping discount, not a price reduction
                 }
-            } else if (type === 'fixed_amount') {
-                discount = value;
-            } else if (type === 'free_shipping') {
-                // Free shipping doesn't affect total in this implementation
-                discount = 0;
+                
+                discountText = discount.toLocaleString('vi-VN') + ' ₫';
             }
-            
-            discountText = discount.toLocaleString('vi-VN') + ' ₫';
         }
         
-        const total = originalSubtotal + originalVat - discount;
+        const total = originalSubtotal + originalVat + shippingFee - discount;
         
         // Update display
         document.querySelector('.discount-amount').textContent = discountText;
@@ -417,8 +463,15 @@
     }
     
     // Init and listen
-    deliveryMethodRadios.forEach(r => r.addEventListener('change', toggleShipping));
+    deliveryMethodRadios.forEach(r => {
+        r.addEventListener('change', () => {
+             toggleShipping();
+             calculateTotal();
+        });
+    });
     toggleShipping(); // Run on load
+    // Run calculateTotal once to set initial state just in case
+    calculateTotal();
 
     document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
         e.preventDefault();

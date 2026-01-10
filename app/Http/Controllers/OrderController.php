@@ -24,9 +24,9 @@ class OrderController extends Controller
         }
 
         $orders = Order::where('customer_id', Auth::id())
-                      ->with(['orderItems.product'])
-                      ->orderBy('created_at', 'desc')
-                      ->paginate(5);
+            ->with(['orderItems.product'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
         return view('order-history', compact('orders'));
     }
@@ -44,7 +44,7 @@ class OrderController extends Controller
         }
 
         $query = Order::with(['orderItems.product', 'staff'])
-                     ->where('customer_id', Auth::id());
+            ->where('customer_id', Auth::id());
 
         // Filter by status
         if ($request->has('status')) {
@@ -80,8 +80,8 @@ class OrderController extends Controller
         }
 
         $order = Order::with(['orderItems.product', 'staff', 'statusHistory'])
-                     ->where('customer_id', Auth::id())
-                     ->find($id);
+            ->where('customer_id', Auth::id())
+            ->find($id);
 
         if (!$order) {
             return response()->json([
@@ -118,7 +118,7 @@ class OrderController extends Controller
             'ward' => 'nullable|string|max:50',
             'district' => 'nullable|string|max:50',
             'city' => 'nullable|string|max:50',
-            'payment_method' => 'required|in:cod,bank_transfer',
+            'payment_method' => 'required|in:bank_transfer',
             'note' => 'nullable|string|max:500',
             'delivery_time' => 'required|date|after:+2 hours',
         ]);
@@ -131,44 +131,26 @@ class OrderController extends Controller
             ], 400);
         }
 
-        // Get user's cart
-        $cartItems = Cart::with('product')
-                        ->where('user_id', Auth::id())
-                        ->get();
+        // Get user's cart for reference (only to clear it later if needed)
+        // We do NOT use cart items to build order. We use request->items because that is what user confirmed.
 
         $validItems = [];
         $totalAmount = 0;
         $shouldClearCart = false;
 
-        // 1. Try DB Cart
-        if ($cartItems->isNotEmpty()) {
+        // Determine if we should clear cart (only if NOT buy-now flow)
+        if ($request->is_buy_now != '1') {
             $shouldClearCart = true;
-            foreach ($cartItems as $cartItem) {
-                if (!$cartItem->product || !$cartItem->product->is_active || $cartItem->product->quantity < $cartItem->quantity) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => "Sản phẩm '{$cartItem->product->product_name}' không đủ số lượng hoặc không khả dụng"
-                    ], 400);
-                }
+        }
 
-                $subtotal = $cartItem->product->price * $cartItem->quantity;
-                $totalAmount += $subtotal;
-
-                $validItems[] = [
-                    'product' => $cartItem->product,
-                    'quantity' => $cartItem->quantity,
-                    'subtotal' => $subtotal,
-                    'note' => $cartItem->note
-                ];
-            }
-        } 
-        // 2. Try Request Items (Direct Buy)
-        elseif ($request->has('items') && is_array($request->items)) {
+        // Process Request Items
+        if ($request->has('items') && is_array($request->items)) {
             foreach ($request->items as $itemData) {
-                if (!isset($itemData['id']) || !isset($itemData['quantity'])) continue;
+                if (!isset($itemData['id']) || !isset($itemData['quantity']))
+                    continue;
 
                 $product = \App\Models\Product::find($itemData['id']);
-                $qty = (int)$itemData['quantity'];
+                $qty = (int) $itemData['quantity'];
 
                 if (!$product || !$product->is_active || $product->quantity < $qty) {
                     $pName = $product ? $product->product_name : 'Sản phẩm';
@@ -177,10 +159,10 @@ class OrderController extends Controller
                         'message' => "Sản phẩm '$pName' không đủ số lượng hoặc không khả dụng"
                     ], 400);
                 }
-                
+
                 $sub = $product->price * $qty;
                 $totalAmount += $sub;
-                
+
                 $validItems[] = [
                     'product' => $product,
                     'quantity' => $qty,
@@ -193,12 +175,13 @@ class OrderController extends Controller
         // 3. Process Gift Items
         if ($request->has('gift_items') && is_array($request->gift_items)) {
             foreach ($request->gift_items as $giftData) {
-                if (!isset($giftData['id'])) continue;
+                if (!isset($giftData['id']))
+                    continue;
                 $product = \App\Models\Product::find($giftData['id']);
                 if ($product) {
                     $validItems[] = [
                         'product' => $product,
-                        'quantity' => (int)($giftData['quantity'] ?? 1),
+                        'quantity' => (int) ($giftData['quantity'] ?? 1),
                         'subtotal' => 0, // Free
                         'note' => 'Quà tặng'
                     ];
@@ -209,20 +192,56 @@ class OrderController extends Controller
         if (empty($validItems)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Giỏ hàng trống hoặc không hợp lệ'
+                'message' => 'Danh sách sản phẩm trống hoặc không hợp lệ'
             ], 400);
         }
 
         // Calculate VAT and Shipping to match logic in HomeController::checkout
-        // Frontend: VAT = 8%, Shipping = Free
+        // Frontend: VAT = 8%
         $vatRate = 0.08;
         $vatAmount = round($totalAmount * $vatRate);
-        $shippingFee = 0; // Free shipping
-        
-        // Apply 10% Discount
-        $discountRate = 0.10;
-        $discountAmount = round($totalAmount * $discountRate);
-        
+
+        // Shipping Logic
+        $shippingFee = 0;
+        $deliveryMethod = $request->input('delivery_method', 'pickup');
+
+        if ($deliveryMethod === 'delivery') {
+            // Check threshold (Subtotal + VAT >= 700k ? or just Subtotal? 
+            // Usually "Order Value" implies Subtotal. Let's use Subtotal + VAT to be generous or match "Total Bill")
+            // Let's use (TotalAmount + VAT) as the basis for "Order Value"
+            $currentTotal = $totalAmount + $vatAmount;
+
+            if ($currentTotal >= 700000) {
+                $shippingFee = 0;
+            } else {
+                $shippingFee = 30000;
+            }
+        }
+        // If pickup, shippingFee remains 0
+
+        // Calculate Discount from Promotion Code
+        $discountAmount = 0;
+        if ($request->has('promotion_code') && $request->promotion_code) {
+            $promotion = \App\Models\Promotion::where('promotion_code', $request->promotion_code)
+                ->where('status', 'active')
+                ->first();
+
+            if ($promotion) {
+                // Double check validity (optional but recommended)
+                // logic similar to frontend or helper
+                if ($promotion->promotion_type === 'percent') {
+                    $discountAmount = round($totalAmount * ($promotion->discount_value / 100));
+                    if ($promotion->max_discount > 0 && $discountAmount > $promotion->max_discount) {
+                        $discountAmount = $promotion->max_discount;
+                    }
+                } elseif ($promotion->promotion_type === 'fixed_amount') {
+                    $discountAmount = $promotion->discount_value;
+                } elseif ($promotion->promotion_type === 'free_shipping') {
+                    $shippingFee = 0;
+                }
+            }
+        }
+
         $finalAmount = $totalAmount + $vatAmount + $shippingFee - $discountAmount;
 
         DB::beginTransaction();
@@ -232,7 +251,7 @@ class OrderController extends Controller
             // If any update affects 0 rows => not enough stock, rollback and return conflict.
             foreach ($validItems as $item) {
                 $pid = $item['product']->ProductID;
-                $qty = (int)$item['quantity'];
+                $qty = (int) $item['quantity'];
 
                 $affected = DB::update(
                     'UPDATE products SET quantity = quantity - ? WHERE ProductID = ? AND quantity >= ?',
@@ -258,8 +277,7 @@ class OrderController extends Controller
 
             // Set payment_status based on payment_method
             // Bank transfer: auto-mark as paid (customer sees QR and pays immediately)
-            // COD: pending until delivery
-            $paymentStatus = ($request->payment_method === 'bank_transfer') ? 'paid' : 'pending';
+            $paymentStatus = 'paid'; // Always paid since we only allow bank_transfer now
 
             // Create order
             $order = Order::create([
@@ -275,8 +293,8 @@ class OrderController extends Controller
                 'total_amount' => $totalAmount,
                 'shipping_fee' => $shippingFee,
                 'final_amount' => $finalAmount,
-                'discount_amount' => $discountAmount, // Save discount amount if column exists, otherwise optional
-                'payment_method' => $request->payment_method,
+                'discount_amount' => $discountAmount,
+                'payment_method' => 'bank_transfer', // Force bank_transfer
                 'payment_status' => $paymentStatus,
                 'note' => $request->note,
                 'delivery_date' => $deliveryDateTime->toDateString(),
@@ -352,9 +370,9 @@ class OrderController extends Controller
         }
 
         $order = Order::where('customer_id', Auth::id())
-                     ->where('OrderID', $id)
-                     ->whereIn('order_status', ['pending', 'order_received'])
-                     ->first();
+            ->where('OrderID', $id)
+            ->whereIn('order_status', ['pending', 'order_received'])
+            ->first();
 
         if (!$order) {
             return response()->json([
@@ -425,6 +443,76 @@ class OrderController extends Controller
     }
 
     /**
+     * Submit a complaint for an order
+     */
+    public function submitComplaint(Request $request, $id)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập'
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'complaint_type' => 'required|in:product_quality,delivery,service,other',
+            'title' => 'required|string|max:200',
+            'content' => 'required|string|max:1000'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        // Check if order exists and belongs to the user
+        $order = Order::where('customer_id', Auth::id())
+            ->where('OrderID', $id)
+            ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy đơn hàng hoặc bạn không có quyền khiếu nại đơn hàng này'
+            ], 404);
+        }
+
+        try {
+            // Generate unique complaint code
+            $complaintCode = 'CPL' . date('Ymd') . strtoupper(Str::random(6));
+
+            // Create complaint
+            $complaint = \App\Models\Complaint::create([
+                'complaint_code' => $complaintCode,
+                'order_id' => $order->OrderID,
+                'customer_id' => Auth::id(),
+                'complaint_type' => $request->complaint_type,
+                'title' => $request->title,
+                'content' => $request->content,
+                'status' => 'pending',
+                'priority' => 'medium'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Gửi khiếu nại thành công. Chúng tôi sẽ xử lý trong thời gian sớm nhất.',
+                'data' => [
+                    'complaint' => $complaint
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi gửi khiếu nại: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Generate VietQR dynamic URL
      */
     private function generateVietQR($order)
@@ -434,7 +522,7 @@ class OrderController extends Controller
         $amount = (int) $order->final_amount;
         $description = urlencode($order->order_code);
         $template = 'compact2'; // or 'compact', 'print', 'qr_only'
-        
+
         // VietQR format: https://img.vietqr.io/image/{bin}-{account}-{template}.png?amount={amount}&addInfo={info}&accountName={name}
         // Using default bank BIN for VietQR (you can specify exact bank if needed)
         return "https://img.vietqr.io/image/970422-{$accountNo}-{$template}.png?amount={$amount}&addInfo={$description}&accountName={$accountName}";

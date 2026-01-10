@@ -215,7 +215,7 @@
                 <li>
                     <a href="{{ route('cart') }}" class="nav-cart" style="padding: 0 10px;">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cartCount">0</span>
+                        <span class="cart-count" id="cartCount">{{ $cartCount }}</span>
                     </a>
                 </li>
                 @endif
@@ -346,7 +346,7 @@
                 <h3>La Cuisine Ngọt</h3>
                 <p>Thương hiệu bánh kem cao cấp hàng đầu Việt Nam</p>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61582884282557" target="_blank"><i class="fab fa-facebook"></i></a>
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>

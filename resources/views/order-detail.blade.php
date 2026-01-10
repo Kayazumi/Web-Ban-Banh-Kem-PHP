@@ -128,6 +128,42 @@
                             @endif
                         </div>
 
+                        @if(in_array($order->order_status, ['delivery_successful', 'delivery_failed']))
+                        <div class="complaint-section">
+                            <h3 class="section-title">Gửi Khiếu Nại</h3>
+                            <form id="complaintForm" class="complaint-form">
+                                <div class="form-group">
+                                    <label for="complaint_type">Loại khiếu nại <span class="required">*</span></label>
+                                    <select id="complaint_type" name="complaint_type" class="form-control" required>
+                                        <option value="">-- Chọn loại khiếu nại --</option>
+                                        <option value="product_quality">Chất lượng sản phẩm</option>
+                                        <option value="delivery">Vấn đề giao hàng</option>
+                                        <option value="service">Dịch vụ</option>
+                                        <option value="other">Khác</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="complaint_title">Tiêu đề <span class="required">*</span></label>
+                                    <input type="text" id="complaint_title" name="title" class="form-control" 
+                                           placeholder="Nhập tiêu đề khiếu nại" maxlength="200" required>
+                                    <small class="form-text">Tối đa 200 ký tự</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="complaint_content">Nội dung <span class="required">*</span></label>
+                                    <textarea id="complaint_content" name="content" class="form-control" 
+                                              placeholder="Mô tả chi tiết vấn đề của bạn" 
+                                              rows="5" maxlength="1000" required></textarea>
+                                    <small class="form-text">Tối đa 1000 ký tự</small>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary" id="submitComplaintBtn">
+                                        <i class="fas fa-paper-plane"></i> Gửi Khiếu Nại
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        @endif
+
                         @if(in_array($order->order_status, ['pending', 'order_received']))
                         <div class="text-center">
                             <button onclick="cancelOrder('{{ $order->OrderID }}')" class="btn btn-secondary">
@@ -333,14 +369,137 @@
     font-size: 1.1rem;
 }
 
+}
+
 .text-center {
     text-align: center;
+}
+
+/* Complaint Form Styles */
+.complaint-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.complaint-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #c4a574;
+    box-shadow: 0 0 0 0.2rem rgba(196, 165, 116, 0.25);
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.btn-primary i {
+    margin-right: 0.5rem;
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 </style>
 @endpush
 
 @push('scripts')
 <script>
+// Complaint Form Handler
+document.addEventListener('DOMContentLoaded', function() {
+    const complaintForm = document.getElementById('complaintForm');
+    
+    if (complaintForm) {
+        complaintForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const orderId = '{{ $order->OrderID ?? '' }}';
+            const submitBtn = document.getElementById('submitComplaintBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // Validate form
+            const complaintType = document.getElementById('complaint_type').value;
+            const title = document.getElementById('complaint_title').value.trim();
+            const content = document.getElementById('complaint_content').value.trim();
+            
+            if (!complaintType || !title || !content) {
+                alert('Vui lòng điền đầy đủ thông tin');
+                return;
+            }
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
+            
+            try {
+                const response = await fetch(`/orders/${orderId}/submit-complaint`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        complaint_type: complaintType,
+                        title: title,
+                        content: content
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    // Reset form
+                    complaintForm.reset();
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra khi gửi khiếu nại');
+                }
+            } catch (error) {
+                console.error('Error submitting complaint:', error);
+                alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    }
+});
+
+// Cancel Order Function
 async function cancelOrder(orderId) {
     const reason = prompt('Vui lòng nhập lý do hủy đơn hàng:');
     if (!reason || !reason.trim()) return;
