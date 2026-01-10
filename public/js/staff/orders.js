@@ -254,49 +254,49 @@ async function updateOrderStatus(selectElement) {
     const orderId = selectElement.dataset.orderId;
     const newStatus = selectElement.value;
 
-    if (!confirm('Bạn có chắc muốn cập nhật trạng thái đơn hàng này?')) {
-        const order = ordersData.find(o => o.OrderID === orderId);
-        if (order) selectElement.value = order.Status;
-        return;
-    }
+    showConfirm('Bạn có chắc muốn cập nhật trạng thái đơn hàng này?', async function () {
+        try {
+            const response = await fetch(`/staff/api/orders/${orderId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
 
-    try {
-        const response = await fetch(`/staff/api/orders/${orderId}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ status: newStatus })
-        });
+            if (!response.ok) throw new Error('Không thể cập nhật trạng thái');
 
-        if (!response.ok) throw new Error('Không thể cập nhật trạng thái');
+            const data = await response.json();
 
-        const data = await response.json();
+            const orderIndex = ordersData.findIndex(o => o.OrderID === orderId);
+            if (orderIndex !== -1) {
+                ordersData[orderIndex].Status = newStatus;
+            }
 
-        const orderIndex = ordersData.findIndex(o => o.OrderID === orderId);
-        if (orderIndex !== -1) {
-            ordersData[orderIndex].Status = newStatus;
+            // Cập nhật hiển thị màu và text
+            const wrapper = selectElement.nextElementSibling;
+            wrapper.className = `status-display ${newStatus}`;
+
+            const statusText = wrapper.querySelector('.status-text');
+            statusText.textContent = getStatusLabel(newStatus);
+
+            showSuccess('Cập nhật trạng thái thành công!');
+
+            // Cập nhật lại phân trang nếu cần
+            applyFiltersAndPaginate();
+        } catch (error) {
+            console.error('Lỗi:', error);
+            showError('Không thể cập nhật trạng thái. Vui lòng thử lại!');
+            const order = ordersData.find(o => o.OrderID === orderId);
+            if (order) selectElement.value = order.Status;
         }
-
-        // Cập nhật hiển thị màu và text
-        const wrapper = selectElement.nextElementSibling;
-        wrapper.className = `status-display ${newStatus}`;
-
-        const statusText = wrapper.querySelector('.status-text');
-        statusText.textContent = getStatusLabel(newStatus);
-
-        showSuccess('Cập nhật trạng thái thành công!');
-
-        // Cập nhật lại phân trang nếu cần
-        applyFiltersAndPaginate();
-    } catch (error) {
-        console.error('Lỗi:', error);
-        showError('Không thể cập nhật trạng thái. Vui lòng thử lại!');
+    }, function () {
+        // Cancel callback - reset to original status
         const order = ordersData.find(o => o.OrderID === orderId);
         if (order) selectElement.value = order.Status;
-    }
+    });
 }
 
 // ========================================================================

@@ -9,6 +9,11 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inspiration&display=swap" rel="stylesheet">
 
     <!-- THAY ĐỔI TẠI ĐÂY: Load CSS thủ công -->
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
@@ -128,6 +133,186 @@
                 }
             }
         };
+    </script>
+
+    <!-- Global Modal CSS -->
+    <style>
+        .global-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99999;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .global-modal-overlay.show {
+            opacity: 1;
+        }
+
+        .global-modal {
+            background: #0f1b1a;
+            color: #e8fff9;
+            border-radius: 12px;
+            max-width: 440px;
+            width: 92%;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            transform: scale(0.9);
+            transition: transform 0.25s ease;
+        }
+
+        .global-modal-overlay.show .global-modal {
+            transform: scale(1);
+        }
+
+        .global-modal .modal-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .global-modal .modal-body {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .global-modal .modal-actions {
+            text-align: right;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .global-modal .btn-primary {
+            background: #7fe3d0;
+            color: #05332d;
+            border: 0;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .global-modal .btn-primary:hover {
+            background: #6dd4bf;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(127, 227, 208, 0.4);
+        }
+
+        .global-modal .btn-secondary {
+            background: transparent;
+            color: #cdebe5;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .global-modal .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+
+    <!-- Global Modal HTML -->
+    <div id="globalModalOverlay" class="global-modal-overlay" aria-hidden="true">
+        <div class="global-modal" role="dialog" aria-modal="true" aria-labelledby="globalModalTitle">
+            <div id="globalModalTitle" class="modal-title">Thông báo</div>
+            <div id="globalModalBody" class="modal-body"></div>
+            <div class="modal-actions">
+                <button id="globalModalCancel" class="btn-secondary" style="display:none;">Huỷ</button>
+                <button id="globalModalOk" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Modal JavaScript -->
+    <script>
+    (function() {
+        const overlay = document.getElementById('globalModalOverlay');
+        const titleEl = document.getElementById('globalModalTitle');
+        const bodyEl = document.getElementById('globalModalBody');
+        const okBtn = document.getElementById('globalModalOk');
+        const cancelBtn = document.getElementById('globalModalCancel');
+
+        function showConfirm(message, onOk, onCancel, opts = {}) {
+            titleEl.textContent = opts.title || 'Xác nhận';
+            bodyEl.innerHTML = escapeHtml(message);
+            cancelBtn.style.display = 'inline-block';
+            okBtn.textContent = opts.okText || 'OK';
+            cancelBtn.textContent = opts.cancelText || 'Huỷ';
+            overlay.style.display = 'flex';
+            overlay.setAttribute('aria-hidden', 'false');
+            setTimeout(() => overlay.classList.add('show'), 10);
+
+            function handleOk() {
+                hide();
+                okBtn.removeEventListener('click', handleOk);
+                cancelBtn.removeEventListener('click', handleCancel);
+                if (onOk) onOk();
+            }
+            function handleCancel() {
+                hide();
+                okBtn.removeEventListener('click', handleOk);
+                cancelBtn.removeEventListener('click', handleCancel);
+                if (onCancel) onCancel();
+            }
+
+            okBtn.addEventListener('click', handleOk);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+
+        function showAlert(message, onOk, opts = {}) {
+            titleEl.textContent = opts.title || 'Thông báo';
+            bodyEl.innerHTML = escapeHtml(message);
+            cancelBtn.style.display = 'none';
+            okBtn.textContent = opts.okText || 'OK';
+            overlay.style.display = 'flex';
+            overlay.setAttribute('aria-hidden', 'false');
+            setTimeout(() => overlay.classList.add('show'), 10);
+
+            function handleOk() {
+                hide();
+                okBtn.removeEventListener('click', handleOk);
+                if (onOk) onOk();
+            }
+            okBtn.addEventListener('click', handleOk);
+            if (onOk && opts.autoClose) {
+                setTimeout(handleOk, opts.timeout || 2000);
+            }
+        }
+
+        function hide() {
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.setAttribute('aria-hidden', 'true');
+            }, 250);
+        }
+
+        function escapeHtml(unsafe) {
+            return String(unsafe)
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+        }
+
+        window.showConfirm = showConfirm;
+        window.showAlert = showAlert;
+    })();
     </script>
 </body>
 

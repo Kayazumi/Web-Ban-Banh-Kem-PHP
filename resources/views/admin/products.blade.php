@@ -649,7 +649,7 @@ function editProduct(productId) {
         })
         .catch(error => {
             console.error('Error loading product:', error);
-            alert('Lỗi tải dữ liệu sản phẩm');
+            showAlert('Lỗi tải dữ liệu sản phẩm');
         });
 }
 
@@ -678,7 +678,7 @@ async function handleProductSubmit(e) {
             data.imageUrl = base64;
         } catch (err) {
             console.error('Error converting image:', err);
-            alert('Lỗi khi xử lý hình ảnh');
+            showAlert('Lỗi khi xử lý hình ảnh');
             return;
         }
     }
@@ -699,15 +699,15 @@ async function handleProductSubmit(e) {
         const result = await response.json();
 
         if (result.success) {
-            alert(productId ? 'Cập nhật sản phẩm thành công!' : 'Thêm sản phẩm thành công!');
+            showAlert(productId ? 'Cập nhật sản phẩm thành công!' : 'Thêm sản phẩm thành công!');
             closeModal();
             loadProducts();
         } else {
-            alert(result.message || 'Có lỗi xảy ra');
+            showAlert(result.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error saving product:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 
@@ -721,7 +721,7 @@ function fileToBase64(file) {
 }
 
 async function deleteProduct(productId) {
-    if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) return;
+    showConfirm('Bạn có chắc chắn muốn xóa sản phẩm này?', function() {
 
     try {
         const response = await fetch(`/api/admin/products/${productId}`, {
@@ -734,14 +734,14 @@ async function deleteProduct(productId) {
         const data = await response.json();
 
         if (data.success) {
-            alert('Xóa sản phẩm thành công!');
+            showAlert('Xóa sản phẩm thành công!');
             loadProducts();
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error deleting product:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 

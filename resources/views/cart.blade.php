@@ -234,11 +234,11 @@ async function updateQuantity(cartId, quantity) {
         if (data.success) {
             loadCart(); // Reload cart
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error updating quantity:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 
@@ -258,11 +258,11 @@ async function removeItem(cartId) {
         if (data.success) {
             loadCart(); // Reload cart
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error removing item:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 

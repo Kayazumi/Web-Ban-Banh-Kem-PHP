@@ -544,15 +544,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             const data = await res.json();
             if (data.success) {
-                alert('Cập nhật người dùng thành công');
+                showAlert('Cập nhật người dùng thành công');
                 closeUserModal();
                 loadUsers();
             } else {
-                alert(data.message || 'Có lỗi xảy ra');
+                showAlert(data.message || 'Có lỗi xảy ra');
             }
         } catch (err) {
             console.error(err);
-            alert('Có lỗi xảy ra');
+            showAlert('Có lỗi xảy ra');
         }
     });
 });
@@ -717,7 +717,7 @@ async function editUser(userId) {
             const res = await fetch(`/api/admin/users/${userId}`, { headers });
             const data = await res.json();
         if (!data.success) {
-            alert('Không thể tải người dùng');
+            showAlert('Không thể tải người dùng');
             return;
         }
         const user = data.data.user;
@@ -731,7 +731,7 @@ async function editUser(userId) {
         document.getElementById('userModal').style.display = 'block';
     } catch (err) {
         console.error(err);
-        alert('Lỗi tải người dùng');
+        showAlert('Lỗi tải người dùng');
     }
 }
 
@@ -741,7 +741,7 @@ function closeUserModal() {
 
 async function toggleStatus(userId, currentStatus) {
     const action = currentStatus === 'active' ? 'khóa' : 'mở khóa';
-    if (!confirm(`Bạn có chắc chắn muốn ${action} tài khoản này?`)) return;
+    showConfirm(`Bạn có chắc chắn muốn ${action} tài khoản này?`, function() {
 
     const newStatus = currentStatus === 'active' ? 'banned' : 'active';
 
@@ -766,14 +766,14 @@ async function toggleStatus(userId, currentStatus) {
         const data = await response.json();
 
         if (data.success) {
-            alert(`Đã ${action} tài khoản thành công!`);
+            showAlert(`Đã ${action} tài khoản thành công!`);
             loadUsers();
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error updating user status:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 
@@ -839,15 +839,15 @@ document.getElementById('userForm').addEventListener('submit', async function(e)
 
         const result = await response.json();
         if (result.success) {
-            alert('Cập nhật người dùng thành công!');
+            showAlert('Cập nhật người dùng thành công!');
             closeUserModal();
             loadUsers();
         } else {
-            alert(result.message || 'Có lỗi xảy ra');
+            showAlert(result.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error updating user:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 });
 
@@ -883,15 +883,15 @@ document.getElementById('addUserForm').addEventListener('submit', async function
 
         const result = await response.json();
         if (result.success) {
-            alert('Thêm người dùng thành công!');
+            showAlert('Thêm người dùng thành công!');
             closeAddUserModal();
             loadUsers();
         } else {
-            alert(result.message || 'Có lỗi xảy ra');
+            showAlert(result.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error adding user:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 });
 

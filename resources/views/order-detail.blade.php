@@ -360,14 +360,14 @@ async function cancelOrder(orderId) {
         const data = await response.json();
 
         if (data.success) {
-            alert('Đã hủy đơn hàng thành công');
+            showAlert('Đã hủy đơn hàng thành công');
             window.location.reload();
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error cancelling order:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 </script>

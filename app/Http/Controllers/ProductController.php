@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Promotion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -246,5 +247,51 @@ class ProductController extends Controller
                 'total' => $products->count()
             ]
         ]);
+    }
+
+    /**
+     * Get active promotions for homepage
+     */
+    public function activePromotions()
+    {
+        try {
+            $promotions = Promotion::where('status', 'active')
+                ->where(function($query) {
+                    $query->whereNull('start_date')
+                          ->orWhere('start_date', '<=', now());
+                })
+                ->where(function($query) {
+                    $query->whereNull('end_date')
+                          ->orWhere('end_date', '>=', now());
+                })
+                ->where(function($query) {
+                    $query->where('quantity', -1) // Unlimited
+                          ->orWhereRaw('quantity > used_count');
+                })
+                ->select('PromotionID', 'promotion_name', 'description', 'image_url', 'promotion_type', 'discount_value')
+                ->limit(6)
+                ->get()
+                ->map(function ($promo) {
+                    return [
+                        'promotion_id' => $promo->PromotionID,
+                        'promotion_name' => $promo->promotion_name,
+                        'description' => $promo->description,
+                        'image_url' => $promo->image_url ? asset($promo->image_url) : asset('images/placeholder.jpg'),
+                        'promotion_type' => $promo->promotion_type,
+                        'discount_value' => $promo->discount_value,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => ['promotions' => $promotions]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('API active promotions error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể tải khuyến mãi'
+            ], 500);
+        }
     }
 }

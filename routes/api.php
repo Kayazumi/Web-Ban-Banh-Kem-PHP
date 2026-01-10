@@ -41,6 +41,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/products/search', 'search');
     Route::get('/products/{id}', 'show');
     Route::get('/categories', 'categories');
+    Route::get('/promotions/active', 'activePromotions');
 });
 
 Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'store']);

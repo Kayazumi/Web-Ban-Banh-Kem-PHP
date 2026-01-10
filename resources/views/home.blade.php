@@ -546,26 +546,11 @@
 <section id="khuyenmai" class="promotions-section">
     <div class="container">
         <h2 class="section-title">Khuyến mãi hấp dẫn</h2>
-        <div class="promotions-grid">
+        <div class="promotions-grid" id="promotionsGrid">
+            <!-- Loading state -->
             <div class="promotion-card">
-                <img src="{{ asset('images/buy-1-get-1.jpg') }}" alt="Mua 1 tặng 1">
-                <div class="promotion-content">
-                    <h3>Mua 1 tặng 1</h3>
-                    <p>Áp dụng cho các loại bánh entremet</p>
-                </div>
-            </div>
-            <div class="promotion-card">
-                <img src="{{ asset('images/free-ship.jpg') }}" alt="Miễn phí giao hàng">
-                <div class="promotion-content">
-                    <h3>Miễn phí giao hàng</h3>
-                    <p>Đơn hàng từ 500.000đ</p>
-                </div>
-            </div>
-            <div class="promotion-card">
-                <img src="{{ asset('images/gg.jpg') }}" alt="Giảm giá">
-                <div class="promotion-content">
-                    <h3>Giảm 10%</h3>
-                    <p>Cho khách hàng thân thiết</p>
+                <div class="promotion-content" style="text-align: center; padding: 2rem;">
+                    <p class="text-muted">Đang tải khuyến mãi...</p>
                 </div>
             </div>
         </div>
@@ -609,6 +594,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadFeaturedProducts();
     loadCategoryProducts();
+    loadPromotions();
 
     // Smooth scroll cho các link #
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -645,17 +631,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 
                 if (response.ok && data.success) {
-                    alert(data.message || 'Gửi tin nhắn thành công!');
+                    showAlert(data.message || 'Gửi tin nhắn thành công!');
                     this.reset();
                 } else {
                     const errorMessage = data.message || 'Có lỗi xảy ra. Vui lòng thử lại.';
-                    const detailedError = data.error ? `\nChi tiết: ${data.error}` : '';
-                    alert(`${errorMessage}${detailedError}`);
+                    const detailedError = data.error ? `<br>Chi tiết: ${data.error}` : '';
+                    showAlert(`${errorMessage}${detailedError}`);
                     console.error('Errors:', data);
                 }
             } catch (error) {
                 console.error('Error submitting contact form:', error);
-                alert(`Có lỗi xảy ra kết nối: ${error.message}`);
+                showAlert(`Có lỗi xảy ra kết nối: ${error.message}`);
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -896,6 +882,49 @@ function showCategoryEmptyMessage(selector, msg) {
 
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+}
+
+// ============================================
+// PROMOTIONS FUNCTIONALITY
+// ============================================
+async function loadPromotions() {
+    try {
+        const response = await fetch('/api/promotions/active');
+        const data = await response.json();
+        
+        if (data.success && data.data.promotions.length > 0) {
+            displayPromotions(data.data.promotions);
+        } else {
+            showEmptyPromotions();
+        }
+    } catch (error) {
+        console.error('Error loading promotions:', error);
+        showEmptyPromotions();
+    }
+}
+
+function displayPromotions(promotions) {
+    const grid = document.getElementById('promotionsGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = promotions.map(promo => `
+        <div class="promotion-card">
+            <img src="${promo.image_url}" 
+                 alt="${promo.promotion_name}"
+                 onerror="this.src='/images/placeholder.jpg'">
+            <div class="promotion-content">
+                <h3>${promo.promotion_name}</h3>
+                <p>${promo.description || ''}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showEmptyPromotions() {
+    const grid = document.getElementById('promotionsGrid');
+    if (grid) {
+        grid.innerHTML = '<div class="promotion-card"><div class="promotion-content" style="text-align:center; padding: 2rem;"><p class="text-muted">Hiện chưa có khuyến mãi nào.</p></div></div>';
+    }
 }
 
 // ============================================

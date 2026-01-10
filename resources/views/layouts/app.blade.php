@@ -36,52 +36,85 @@
             display: none;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 99999;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .global-modal-overlay.show {
+            opacity: 1;
         }
 
         .global-modal {
             background: #0f1b1a;
             color: #e8fff9;
-            border-radius: 10px;
-            max-width: 540px;
+            border-radius: 12px;
+            max-width: 440px;
             width: 92%;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            transform: scale(0.9);
+            transition: transform 0.25s ease;
+        }
+
+        .global-modal-overlay.show .global-modal {
+            transform: scale(1);
         }
 
         .global-modal .modal-title {
             font-weight: 700;
-            margin-bottom: 8px;
+            font-size: 18px;
+            margin-bottom: 12px;
         }
 
         .global-modal .modal-body {
-            margin-bottom: 14px;
-            line-height: 1.45;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 15px;
         }
 
         .global-modal .modal-actions {
             text-align: right;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
         }
 
         .global-modal .btn-primary {
             background: #7fe3d0;
             color: #05332d;
             border: 0;
-            padding: 8px 14px;
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .global-modal .btn-primary:hover {
+            background: #6dd4bf;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(127, 227, 208, 0.4);
         }
 
         .global-modal .btn-secondary {
             background: transparent;
             color: #cdebe5;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            margin-right: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .global-modal .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         /* Auth links in navbar - make login/register visually prominent */
@@ -461,6 +494,8 @@
             cancelBtn.textContent = opts.cancelText || 'Huỷ';
             overlay.style.display = 'flex';
             overlay.setAttribute('aria-hidden', 'false');
+            // Trigger animation
+            setTimeout(() => overlay.classList.add('show'), 10);
 
             function handleOk() {
                 hide();
@@ -481,11 +516,13 @@
 
         function showAlert(message, onOk, opts = {}) {
             titleEl.textContent = opts.title || 'Thông báo';
-            bodyEl.innerHTML = message;
+            bodyEl.innerHTML = escapeHtml(message);
             cancelBtn.style.display = 'none';
             okBtn.textContent = opts.okText || 'OK';
             overlay.style.display = 'flex';
             overlay.setAttribute('aria-hidden', 'false');
+            // Trigger animation
+            setTimeout(() => overlay.classList.add('show'), 10);
 
             function handleOk() {
                 hide();
@@ -499,8 +536,11 @@
         }
 
         function hide() {
-            overlay.style.display = 'none';
-            overlay.setAttribute('aria-hidden', 'true');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.setAttribute('aria-hidden', 'true');
+            }, 250); // Match transition duration
         }
 
         function escapeHtml(unsafe) {

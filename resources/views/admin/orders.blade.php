@@ -517,15 +517,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             const data = await response.json();
             if (data.success) {
-                alert('Cập nhật trạng thái thành công');
+                showAlert('Cập nhật trạng thái thành công');
                 closeOrderModal();
                 loadOrders();
             } else {
-                alert(data.message || 'Có lỗi xảy ra');
+                showAlert(data.message || 'Có lỗi xảy ra');
             }
         } catch (err) {
             console.error(err);
-            alert('Có lỗi xảy ra');
+            showAlert('Có lỗi xảy ra');
         }
     });
 });
@@ -690,14 +690,14 @@ async function updateStatus(orderId, currentStatus) {
         const data = await response.json();
 
         if (data.success) {
-            alert('Cập nhật trạng thái thành công!');
+            showAlert('Cập nhật trạng thái thành công!');
             loadOrders();
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error updating status:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 
@@ -738,7 +738,7 @@ async function showOrderDetail(orderId) {
         });
         const payload = await res.json();
         if (!payload.success) {
-            alert('Không thể tải chi tiết đơn hàng');
+            showAlert('Không thể tải chi tiết đơn hàng');
             return;
         }
         const order = payload.data.order;
@@ -826,7 +826,7 @@ async function showOrderDetail(orderId) {
         document.getElementById('orderDetailModal').style.display = 'block';
     } catch (e) {
         console.error(e);
-        alert('Lỗi tải chi tiết đơn hàng');
+        showAlert('Lỗi tải chi tiết đơn hàng');
     }
 }
 
@@ -845,7 +845,7 @@ window.onclick = function(event) {
 <script>
 // Separate function for marking as paid
 async function markAsPaid(orderId) {
-    if (!confirm('Xác nhận đơn hàng này đã được thanh toán?')) return;
+    showConfirm('Xác nhận đơn hàng này đã được thanh toán?', function() {
     
     try {
         const token = localStorage.getItem('api_token');
@@ -866,17 +866,17 @@ async function markAsPaid(orderId) {
         const data = await response.json();
         
         if (data.success) {
-            alert('Cập nhật trạng thái thanh toán thành công!');
+            showAlert('Cập nhật trạng thái thanh toán thành công!');
             // Refresh modal
             showOrderDetail(orderId);
             // Refresh list
             loadOrders(window.currentOrdersFilters ? (window.currentOrdersFilters.page || 1) : 1);
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (e) {
         console.error(e);
-        alert('Lỗi hệ thống khi cập nhật thanh toán');
+        showAlert('Lỗi hệ thống khi cập nhật thanh toán');
     }
 }
 </script>

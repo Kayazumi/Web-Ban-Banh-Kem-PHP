@@ -571,7 +571,7 @@ function resetFilters() {
 
 async function addToCart(productId) {
     if (!window.Laravel.user) {
-        alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+        showAlert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
         return;
     }
 
@@ -591,17 +591,17 @@ async function addToCart(productId) {
         const data = await response.json();
 
         if (data.success) {
-            alert('Đã thêm sản phẩm vào giỏ hàng!');
+            showAlert('Đã thêm sản phẩm vào giỏ hàng!');
             // Update cart count if available
             if (window.updateCartCount) {
                 window.updateCartCount();
             }
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error adding to cart:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 

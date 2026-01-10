@@ -16,7 +16,7 @@
     position: relative;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #324F29 0%, #4a7338 100%);
+    background: linear-gradient(135deg, #c4a574 0%, #A0522D 100%);
     border: none;
     border-radius: 50%;
     color: white;
@@ -92,7 +92,7 @@
 
 /* Header */
 .chatbot-header {
-    background: linear-gradient(135deg, #324F29 0%, #4a7338 100%);
+    background: linear-gradient(135deg, #c4a574 0%, #A0522D 100%);
     color: white;
     padding: 1.25rem 1.5rem;
     display: flex;
@@ -192,7 +192,7 @@
 }
 
 .chatbot-messages::-webkit-scrollbar-thumb {
-    background: #324F29;
+    background: #c4a574;
     border-radius: 10px;
 }
 
@@ -218,7 +218,7 @@
 .message-avatar {
     width: 35px;
     height: 35px;
-    background: linear-gradient(135deg, #324F29 0%, #4a7338 100%);
+    background: linear-gradient(135deg, #c4a574 0%, #A0522D 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -248,7 +248,7 @@
 }
 
 .user-message .message-content {
-    background: linear-gradient(135deg, #324F29 0%, #4a7338 100%);
+    background: linear-gradient(135deg, #c4a574 0%, #A0522D 100%);
     color: white;
     border-bottom-right-radius: 4px;
 }
@@ -266,7 +266,7 @@
 .typing-dots span {
     width: 8px;
     height: 8px;
-    background: #324F29;
+    background: #c4a574;
     border-radius: 50%;
     animation: typing 1.4s infinite;
 }
@@ -333,14 +333,14 @@
 }
 
 .product-price {
-    color: #324F29;
+    color: #c4a574;
     font-weight: 700;
     font-size: 0.95rem;
     margin: 0;
 }
 
 .product-link {
-    color: #324F29;
+    color: #c4a574;
     font-size: 0.85rem;
     text-decoration: none;
     font-weight: 600;
@@ -348,7 +348,7 @@
 }
 
 .product-link:hover {
-    color: #4a7338;
+    color: #A0522D;
 }
 
 /* Quick Replies */
@@ -363,8 +363,8 @@
 
 .quick-reply-btn {
     background: white;
-    border: 2px solid #324F29;
-    color: #324F29;
+    border: 2px solid #c4a574;
+    color: #c4a574;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -374,7 +374,7 @@
 }
 
 .quick-reply-btn:hover {
-    background: #324F29;
+    background: #c4a574;
     color: white;
     transform: translateY(-2px);
 }
@@ -399,14 +399,14 @@
 }
 
 .chatbot-input input:focus {
-    border-color: #324F29;
+    border-color: #c4a574;
     box-shadow: 0 0 0 3px rgba(50, 79, 41, 0.1);
 }
 
 .chatbot-input button {
     width: 45px;
     height: 45px;
-    background: linear-gradient(135deg, #324F29 0%, #4a7338 100%);
+    background: linear-gradient(135deg, #c4a574 0%, #A0522D 100%);
     border: none;
     border-radius: 50%;
     color: white;

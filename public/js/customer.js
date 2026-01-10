@@ -5,39 +5,40 @@
 // public/js/customer.js
 
 window.logout = function () {
-    if (!confirm('Bạn có chắc muốn đăng xuất?')) return;
-
-    // Hiệu ứng Loading
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.disabled = true;
-        logoutBtn.textContent = 'Đang xử lý...';
-    }
-
-    fetch(window.Laravel.routes.logout, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': window.Laravel.csrfToken,
-            'Accept': 'application/json'
+    showConfirm('Bạn có chắc muốn đăng xuất?', function () {
+        // Hiệu ứng Loading
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.disabled = true;
+            logoutBtn.textContent = 'Đang xử lý...';
         }
-    })
-        .then(response => {
-            if (response.redirected) {
-                window.location.href = response.url;
-                return;
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data && data.success) {
-                window.location.href = '/';
+
+
+        fetch(window.Laravel.routes.logout, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': window.Laravel.csrfToken,
+                'Accept': 'application/json'
             }
         })
-        .catch(error => {
-            console.error('Lỗi:', error);
-            window.location.href = '/login';
-        });
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.success) {
+                    window.location.href = '/';
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                window.location.href = '/login';
+            });
+    }); // Close showConfirm callback
 };
 
 // Cart count update

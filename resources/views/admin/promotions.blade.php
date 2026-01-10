@@ -653,7 +653,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 body.image_url = base64;
             } catch (err) {
                 console.error('Error converting image:', err);
-                alert('Lỗi khi xử lý hình ảnh');
+                showAlert('Lỗi khi xử lý hình ảnh');
                 return;
             }
         }
@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const data = await res.json();
             
             if (data.success) {
-                alert(editId ? 'Cập nhật khuyến mãi thành công!' : 'Tạo khuyến mãi thành công!');
+                showAlert(editId ? 'Cập nhật khuyến mãi thành công!' : 'Tạo khuyến mãi thành công!');
                 loadPromotions();
                 e.target.reset();
                 document.getElementById('promoImagePreview').style.display = 'none';
@@ -688,11 +688,11 @@ document.addEventListener('DOMContentLoaded', function(){
                 submitBtn.textContent = 'Tạo khuyến mãi mới';
                 delete submitBtn.dataset.editId;
             } else {
-                alert('Lỗi: ' + (data.message || 'Không thể lưu khuyến mãi'));
+                showAlert('Lỗi: ' + (data.message || 'Không thể lưu khuyến mãi'));
             }
         } catch(err){
             console.error(err);
-            alert('Lỗi kết nối');
+            showAlert('Lỗi kết nối');
         }
     });
     
@@ -709,7 +709,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const payload = await res.json();
             
             if (!payload.success) {
-                alert('Không tải được thông tin');
+                showAlert('Không tải được thông tin');
                 return;
             }
             
@@ -772,7 +772,7 @@ document.addEventListener('DOMContentLoaded', function(){
             
         } catch(e) {
             console.error(e);
-            alert('Lỗi tải thông tin');
+            showAlert('Lỗi tải thông tin');
         }
     });
 });
@@ -825,7 +825,7 @@ async function showPromo(id) {
         const res = await fetch('/api/admin/promotions/'+id,{ headers });
         const payload = await res.json();
         
-        if (!payload.success) return alert('Không tải được thông tin');
+        if (!payload.success) return showAlert('Không tải được thông tin');
         
         const p = payload.data.promotion;
         currentPromoId = p.PromotionID;
@@ -896,7 +896,7 @@ async function showPromo(id) {
         document.getElementById('promoDetailModal').style.display='flex';
     } catch(e){
         console.error(e);
-        alert('Lỗi tải thông tin');
+        showAlert('Lỗi tải thông tin');
     }
 }
 
@@ -906,7 +906,7 @@ function closePromoModal(){
 }
 
 async function deletePromo(){
-    if (!confirm('Bạn có chắc chắn muốn xóa khuyến mãi này?')) return;
+    showConfirm('Bạn có chắc chắn muốn xóa khuyến mãi này?', function() {
     
     try {
         const token = localStorage.getItem('api_token');
@@ -919,15 +919,15 @@ async function deletePromo(){
         const data = await res.json();
         
         if (data.success) {
-            alert('Đã xóa khuyến mãi thành công!');
+            showAlert('Đã xóa khuyến mãi thành công!');
             closePromoModal();
             loadPromotions();
         } else {
-            alert('Lỗi: ' + (data.message || 'Không thể xóa'));
+            showAlert('Lỗi: ' + (data.message || 'Không thể xóa'));
         }
     } catch(e){
         console.error(e);
-        alert('Lỗi kết nối');
+        showAlert('Lỗi kết nối');
     }
 }
 </script>

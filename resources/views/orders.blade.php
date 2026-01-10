@@ -372,7 +372,7 @@
             
             // Check minimum order value
             if (originalSubtotal < minOrder) {
-                alert(`Đơn hàng tối thiểu ${minOrder.toLocaleString('vi-VN')}₫ để sử dụng mã này`);
+                showAlert(`Đơn hàng tối thiểu ${minOrder.toLocaleString('vi-VN')}₫ để sử dụng mã này`);
                 select.value = '';
                 return;
             }
@@ -449,11 +449,11 @@
                 if (result.errors) {
                     msg += '\n' + Object.values(result.errors).flat().join('\n');
                 }
-                alert(msg);
+                showAlert(msg);
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Có lỗi hệ thống. Vui lòng thử lại.');
+            showAlert('Có lỗi hệ thống. Vui lòng thử lại.');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;

@@ -586,7 +586,7 @@ async function viewComplaint(complaintId) {
 
         const data = await response.json();
         if (!data.success) {
-            alert('Không thể tải chi tiết khiếu nại');
+            showAlert('Không thể tải chi tiết khiếu nại');
             return;
         }
 
@@ -644,7 +644,7 @@ async function viewComplaint(complaintId) {
         document.getElementById('complaintModal').style.display = 'flex';
     } catch (error) {
         console.error('Error viewing complaint:', error);
-        alert('Lỗi tải chi tiết khiếu nại');
+        showAlert('Lỗi tải chi tiết khiếu nại');
     }
 }
 
@@ -670,15 +670,15 @@ async function saveComplaintStatus() {
 
         const data = await response.json();
         if (data.success) {
-            alert('Cập nhật trạng thái thành công!');
+            showAlert('Cập nhật trạng thái thành công!');
             closeComplaintModal();
             loadComplaints(currentPage);
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
         }
     } catch (error) {
         console.error('Error updating status:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
     }
 }
 
@@ -687,10 +687,10 @@ function closeComplaintModal() {
 }
 
 async function deleteComplaint(complaintId) {
-    if (!confirm('Bạn có chắc chắn muốn xóa khiếu nại này?')) return;
+    showConfirm('Bạn có chắc chắn muốn xóa khiếu nại này?', function() {
     
     // Implement delete functionality if needed
-    alert('Chức năng xóa chưa được triển khai');
+    showAlert('Chức năng xóa chưa được triển khai');
 }
 
 function formatDate(dateString) {

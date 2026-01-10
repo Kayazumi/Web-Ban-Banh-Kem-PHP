@@ -267,41 +267,39 @@ async function showContactDetail(contactId) {
 async function markAsResponded() {
     if (!currentContactId) return;
 
-    if (!confirm('Xác nhận bạn đã phản hồi khách hàng này qua điện thoại/email?')) {
-        return;
-    }
+    showConfirm('Xác nhận bạn đã phản hồi khách hàng này qua điện thoại/email?', async function () {
+        try {
+            const response = await fetch(`/staff/api/contacts/${currentContactId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ status: 'responded' })
+            });
 
-    try {
-        const response = await fetch(`/staff/api/contacts/${currentContactId}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ status: 'responded' })
-        });
+            if (!response.ok) throw new Error('Không thể cập nhật trạng thái');
 
-        if (!response.ok) throw new Error('Không thể cập nhật trạng thái');
+            const data = await response.json();
 
-        const data = await response.json();
+            // Cập nhật dữ liệu local
+            const contactIndex = contactsData.findIndex(c => c.ContactID === currentContactId);
+            if (contactIndex !== -1) {
+                contactsData[contactIndex].Status = 'responded';
+                contactsData[contactIndex].RespondedAt = data.contact.RespondedAt;
+                contactsData[contactIndex].staff_name = data.contact.staff_name;
+            }
 
-        // Cập nhật dữ liệu local
-        const contactIndex = contactsData.findIndex(c => c.ContactID === currentContactId);
-        if (contactIndex !== -1) {
-            contactsData[contactIndex].Status = 'responded';
-            contactsData[contactIndex].RespondedAt = data.contact.RespondedAt;
-            contactsData[contactIndex].staff_name = data.contact.staff_name;
+            showSuccess('Đã đánh dấu phản hồi thành công!');
+            closeContactModal();
+            applyFiltersAndPaginate();
+
+        } catch (error) {
+            console.error('Lỗi:', error);
+            showError('Không thể cập nhật trạng thái. Vui lòng thử lại!');
         }
-
-        showSuccess('Đã đánh dấu phản hồi thành công!');
-        closeContactModal();
-        applyFiltersAndPaginate();
-
-    } catch (error) {
-        console.error('Lỗi:', error);
-        showError('Không thể cập nhật trạng thái. Vui lòng thử lại!');
-    }
+    });
 }
 
 function closeContactModal() {
@@ -338,12 +336,12 @@ function formatDate(dateString) {
 
 function formatDateTime(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleString('vi-VN', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit' 
+    return date.toLocaleString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     });
 }
 

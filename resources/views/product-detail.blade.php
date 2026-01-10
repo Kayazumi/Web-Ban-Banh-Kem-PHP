@@ -763,7 +763,7 @@ function changeQuantity(delta) {
 
 async function addToCart(productId, qty = null, isBuyNow = false) {
     if (!window.Laravel.user) {
-        alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+        showAlert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
         window.location.href = '/login';
         return;
     }
@@ -788,7 +788,7 @@ async function addToCart(productId, qty = null, isBuyNow = false) {
 
         if (data.success) {
             if (!isBuyNow) {
-                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                showAlert('Đã thêm sản phẩm vào giỏ hàng!');
             }
             // Update cart count if available
             if (window.updateCartCount) {
@@ -796,12 +796,12 @@ async function addToCart(productId, qty = null, isBuyNow = false) {
             }
             return true;
         } else {
-            alert(data.message || 'Có lỗi xảy ra');
+            showAlert(data.message || 'Có lỗi xảy ra');
             return false;
         }
     } catch (error) {
         console.error('Error adding to cart:', error);
-        alert('Có lỗi xảy ra');
+        showAlert('Có lỗi xảy ra');
         return false;
     }
 }
@@ -839,7 +839,7 @@ function decreaseQuantity() {
 
 async function buyNow(productId) {
     if (!window.Laravel.user) {
-        alert('Vui lòng đăng nhập để tiếp tục thanh toán');
+        showAlert('Vui lòng đăng nhập để tiếp tục thanh toán');
         // Store current page URL as redirect parameter
         const currentUrl = window.location.pathname;
         window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
