@@ -425,6 +425,76 @@ class OrderController extends Controller
     }
 
     /**
+     * Submit a complaint for an order
+     */
+    public function submitComplaint(Request $request, $id)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập'
+            ], 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'complaint_type' => 'required|in:product_quality,delivery,service,other',
+            'title' => 'required|string|max:200',
+            'content' => 'required|string|max:1000'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        // Check if order exists and belongs to the user
+        $order = Order::where('customer_id', Auth::id())
+                     ->where('OrderID', $id)
+                     ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy đơn hàng hoặc bạn không có quyền khiếu nại đơn hàng này'
+            ], 404);
+        }
+
+        try {
+            // Generate unique complaint code
+            $complaintCode = 'CPL' . date('Ymd') . strtoupper(Str::random(6));
+
+            // Create complaint
+            $complaint = \App\Models\Complaint::create([
+                'complaint_code' => $complaintCode,
+                'order_id' => $order->OrderID,
+                'customer_id' => Auth::id(),
+                'complaint_type' => $request->complaint_type,
+                'title' => $request->title,
+                'content' => $request->content,
+                'status' => 'pending',
+                'priority' => 'medium'
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Gửi khiếu nại thành công. Chúng tôi sẽ xử lý trong thời gian sớm nhất.',
+                'data' => [
+                    'complaint' => $complaint
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi gửi khiếu nại: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Generate VietQR dynamic URL
      */
     private function generateVietQR($order)
