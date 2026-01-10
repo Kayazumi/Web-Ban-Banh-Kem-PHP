@@ -10,6 +10,12 @@
 <div class="form-container">
     <h2 class="form-title">Đăng nhập</h2>
 
+    @if(session('status'))
+        <div class="alert alert-success" style="background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin-bottom: 20px; color: #155724;">
+            {{ session('status') }}
+        </div>
+    @endif
+
     <form id="loginForm">
         @csrf
         <div class="form-group">
@@ -24,6 +30,12 @@
                 <i class="fas fa-eye" id="togglePassword" 
                    style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
             </div>
+        </div>
+
+        <div style="text-align: right; margin-bottom: 20px;">
+            <a href="{{ route('password.request') }}" style="color: #ff6b6b; text-decoration: none; font-size: 14px;">
+                Quên mật khẩu?
+            </a>
         </div>
 
         <button type="submit" class="btn-submit">Đăng nhập</button>
@@ -68,7 +80,7 @@
             const formData = {
                 username: document.getElementById('username').value.trim(),
                 password: passwordInput.value,
-                redirect_url: redirectUrl // Pass redirect URL to backend
+                redirect_url: redirectUrl
             };
 
             try {
@@ -85,7 +97,6 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Đăng nhập thành công
                     showNotification('success', 'Đăng nhập thành công! Đang chuyển trang...');
                     
                     if (data.data.token) {
@@ -96,7 +107,6 @@
                         window.location.href = data.data.redirect || '/';
                     }, 1000);
                 } else {
-                    // Đăng nhập thất bại
                     showNotification('error', data.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
                     submitBtn.classList.remove('loading');
                     submitBtn.textContent = 'Đăng nhập';
@@ -111,34 +121,31 @@
             }
         });
 
-        // Hàm hiển thị thông báo đẹp
         function showNotification(type, message) {
-    const oldNotif = document.querySelector('.login-notification');
-    if (oldNotif) oldNotif.remove();
+            const oldNotif = document.querySelector('.login-notification');
+            if (oldNotif) oldNotif.remove();
 
-    const notif = document.createElement('div');
-    notif.className = `login-notification ${type}`;
-    notif.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-        <span>${message}</span>
-        <button class="notif-close" type="button">&times;</button>
-    `;
+            const notif = document.createElement('div');
+            notif.className = `login-notification ${type}`;
+            notif.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+                <button class="notif-close" type="button">&times;</button>
+            `;
 
-    loginForm.insertBefore(notif, loginForm.firstChild);
+            loginForm.insertBefore(notif, loginForm.firstChild);
 
-    // Tự động ẩn sau 5 giây
-    const autoHide = setTimeout(() => {
-        notif.classList.add('fade-out');
-        setTimeout(() => notif.remove(), 300);
-    }, 5000);
+            const autoHide = setTimeout(() => {
+                notif.classList.add('fade-out');
+                setTimeout(() => notif.remove(), 300);
+            }, 5000);
 
-    // Nút đóng thủ công
-    notif.querySelector('.notif-close').addEventListener('click', function() {
-        clearTimeout(autoHide);
-        notif.classList.add('fade-out');
-        setTimeout(() => notif.remove(), 300);
-    });
-}
+            notif.querySelector('.notif-close').addEventListener('click', function() {
+                clearTimeout(autoHide);
+                notif.classList.add('fade-out');
+                setTimeout(() => notif.remove(), 300);
+            });
+        }
     });
 </script>
 @endpush

@@ -24,19 +24,19 @@ class ComplaintController extends Controller
         // Apply search filter
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('complaint_code', 'LIKE', "%{$search}%")
-                  ->orWhereHas('order', function($q) use ($search) {
-                      $q->where('order_code', 'LIKE', "%{$search}%");
-                  })
-                  ->orWhereHas('customer', function($q) use ($search) {
-                      $q->where('full_name', 'LIKE', "%{$search}%");
-                  });
+                    ->orWhereHas('order', function ($q) use ($search) {
+                        $q->where('order_code', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('customer', function ($q) use ($search) {
+                        $q->where('full_name', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
         $complaints = $query->orderBy('created_at', 'desc')
-                           ->paginate(10);
+            ->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -101,7 +101,7 @@ class ComplaintController extends Controller
         }
 
         $updateData = ['status' => $request->status];
-        
+
         if ($request->status === 'resolved') {
             $updateData['resolved_at'] = now();
         }
